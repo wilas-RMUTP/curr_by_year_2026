@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบบริหารจัดการหลักสูตร 2569 - มทร.พระนคร</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Sarabun', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
+    <div id="toast-content" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-sm font-medium text-white bg-slate-900 border border-slate-700">
+      <span id="toast-icon">✨</span>
+      <span id="toast-message">แจ้งเตือน</span>
+    </div>
+  </div>
+
+  <!-- Top Header -->
+  <header class="bg-gradient-to-r from-sky-950 via-blue-900 to-indigo-950 text-white shadow-xl sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center font-bold text-xl text-amber-300 shadow-inner">
+          RMUTP
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold tracking-tight flex items-center gap-2">
+            💻 ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
+          </h1>
+          <p class="text-xs text-sky-200">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร (ข้อมูลหลักสูตรอุดมศึกษา, ปวช. และแผนพัฒนาหลักสูตร)</p>
+        </div>
+      </div>
+
+      <!-- Mode Indicator & Restore Button -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <button type="button" onclick="restoreDefaultData()" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-200 px-3 py-1.5 rounded-lg flex items-center gap-1 transition">
+          <span>🔄</span> รีเซ็ตข้อมูลตัวอย่าง
+        </button>
+
+        <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="api-status-text">โหมดในเครื่อง (Offline Mode)</span>
+          <span class="text-[10px] text-sky-300">⚙️ ตั้งค่า API</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/10 mt-1">
+      <nav class="flex space-x-6 text-sm font-medium pt-2 overflow-x-auto">
+        <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2.5 px-2 text-amber-300 border-b-2 border-amber-400 font-semibold flex items-center gap-1.5">
+          📊 แดชบอร์ดสรุปภาพรวม (Summary)
+        </button>
+        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+          🎓 หลักสูตรอุดมศึกษา (Program2026)
+        </button>
+        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+          🛠️ หลักสูตร ปวช. (ProgramV2026)
+        </button>
+        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+          🗓️ แผนพัฒนาหลักสูตร (Plan)
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- API Drawer -->
+  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all">
+    <div class="max-w-7xl mx-auto space-y-3 text-xs">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">⚙️ ตั้งค่าการเชื่อมต่อ Google Sheets API</h3>
+        <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
+      </div>
+      <p class="text-slate-300">เมื่อต้องการเชื่อมต่อ Google Sheets ให้ใส่ Web App URL ของบัญชี <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">wilas.w@rmutp.ac.th</code> หากทดลองบนเครื่อง ให้ลบ URL ออกแล้วกด "ใช้งานโหมดในเครื่อง (Offline)"</p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500 font-mono text-xs">
+        <button type="button" onclick="saveGasUrl()" class="bg-sky-600 hover:bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg transition">บันทึก & เชื่อมต่อสด</button>
+        <button type="button" onclick="resetToLocalData()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition">ใช้งานโหมดในเครื่อง (Offline)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ==================== TAB 1: DASHBOARD SUMMARY ==================== -->
+    <section id="sec-dashboard" class="space-y-6">
+      
+      <!-- Top Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">หลักสูตรทั้งหมดรวมทุกระดับ</p>
+            <h3 class="text-3xl font-extrabold text-sky-900 mt-1" id="dash-total-all">0</h3>
+            <p class="text-xs text-sky-600 font-medium mt-1">ปีการศึกษา 2569</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl border border-sky-100">📚</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">หลักสูตรระดับอุดมศึกษา</p>
+            <h3 class="text-3xl font-extrabold text-indigo-800 mt-1" id="dash-total-higher">0</h3>
+            <p class="text-xs text-indigo-600 font-medium mt-1">ตรี / โท / เอก / ป.บัณฑิต</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl border border-indigo-100">🎓</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">หลักสูตรระดับ ปวช.</p>
+            <h3 class="text-3xl font-extrabold text-amber-700 mt-1" id="dash-total-voc">0</h3>
+            <p class="text-xs text-amber-600 font-medium mt-1">ทุกประเภทวิชา / กลุ่มอาชีพ</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">🛠️</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">แผนพัฒนาหลักสูตรในระบบ</p>
+            <h3 class="text-3xl font-extrabold text-emerald-700 mt-1" id="dash-total-plan">0</h3>
+            <p class="text-xs text-emerald-600 font-medium mt-1">ติดตามสถานะ 4 ขั้นตอน</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">🗓️</div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Faculty Breakdown -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <span>🏛️</span> จำนวนหลักสูตรแยกตามคณะ/วิทยาลัย
+            </h3>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">ปี 2569</span>
+          </div>
+          <div id="chart-faculty-bars" class="space-y-3 pt-2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Level & Plan Step Breakdown -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <span>📊</span> สัดส่วนหลักสูตรตามระดับการศึกษา & ขั้นตอนการขับเคลื่อน
+            </h3>
+            <span class="text-xs bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full font-medium">5 ระดับการศึกษา</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="dash-level-cards">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 space-y-3">
+            <h4 class="font-semibold text-xs text-slate-500 uppercase tracking-wider">ความคืบหน้าตามขั้นตอนแผนการเสนอหลักสูตร (Plan Progress)</h4>
+            <div id="dash-plan-progress" class="grid grid-cols-4 gap-2">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 2: PROGRAM 2026 (อุดมศึกษา CRUD) ==================== -->
+    <section id="sec-p2026" class="hidden space-y-4">
+      
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขา, ปี..." class="w-full sm:w-64 border border-slate-300 text-sm rounded-xl px-3 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+          
+          <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-p2026-level" onchange="filterP2026()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <option value="">ทุกระดับการศึกษา</option>
+            <option value="ปริญญาตรี">ปริญญาตรี</option>
+            <option value="ปริญญาโท">ปริญญาโท</option>
+            <option value="ปริญญาเอก">ปริญญาเอก</option>
+            <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+          </select>
+
+          <select id="filter-p2026-iqa" onchange="filterP2026()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <option value="">ทุกเกณฑ์ IQA (สป.อว./AUNQA/ABET)</option>
+            <option value="สป.อว.">สป.อว.</option>
+            <option value="AUNQA">AUNQA</option>
+            <option value="ABET">ABET</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <span class="text-xs font-semibold text-slate-500" id="p2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalP2026('create')" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มหลักสูตรอุดมศึกษา
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200 text-xs uppercase">
+              <tr>
+                <th class="py-3 px-4">รหัสหลักสูตร</th>
+                <th class="py-3 px-4">คณะ/วิทยาลัย</th>
+                <th class="py-3 px-4">ระดับ</th>
+                <th class="py-3 px-4">หลักสูตร</th>
+                <th class="py-3 px-4">สาขาวิชา</th>
+                <th class="py-3 px-4">ปี (ประเภทหลักสูตร & พ.ศ.)</th>
+                <th class="py-3 px-4 text-center">IQA</th>
+                <th class="py-3 px-4 text-center">เกณฑ์มาตรฐาน</th>
+                <th class="py-3 px-4">ISCED</th>
+                <th class="py-3 px-4">หมายเหตุ</th>
+                <th class="py-3 px-4 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-p2026" class="divide-y divide-slate-100 text-xs">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 3: PROGRAM V2026 (ปวช. CRUD) ==================== -->
+    <section id="sec-pV2026" class="hidden space-y-4">
+      
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหาสาขา, ประเภทวิชา, กลุ่มอาชีพ..." class="w-full sm:w-64 border border-slate-300 text-sm rounded-xl px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          
+          <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-pV2026-cat" onchange="filterPV2026()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+            <option value="">ทุกประเภทวิชา</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <span class="text-xs font-semibold text-slate-500" id="pV2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalPV2026('create')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มหลักสูตร ปวช.
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-amber-50/70 text-slate-800 font-semibold border-b border-amber-200/60 text-xs uppercase">
+              <tr>
+                <th class="py-3 px-4">คณะ/วิทยาลัย</th>
+                <th class="py-3 px-4">ประเภทวิชา</th>
+                <th class="py-3 px-4">กลุ่มอาชีพ</th>
+                <th class="py-3 px-4">สาขาวิชา</th>
+                <th class="py-3 px-4 text-center">ปี</th>
+                <th class="py-3 px-4 text-center">ระดับ</th>
+                <th class="py-3 px-4 text-center">ประเภท</th>
+                <th class="py-3 px-4">หมายเหตุ</th>
+                <th class="py-3 px-4 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-pV2026" class="divide-y divide-slate-100 text-xs">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 4: PLAN (แผนพัฒนาหลักสูตร CRUD) ==================== -->
+    <section id="sec-plan" class="hidden space-y-4">
+      
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-300 text-sm rounded-xl px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          
+          <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-plan-level" onchange="filterPlan()" class="border border-slate-300 text-sm rounded-xl px-3 py-2 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <option value="">ทุกระดับการศึกษา</option>
+            <option value="ปริญญาตรี">ปริญญาตรี</option>
+            <option value="ปริญญาโท">ปริญญาโท</option>
+            <option value="ปริญญาเอก">ปริญญาเอก</option>
+            <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+            <option value="ปวช.">ปวช.</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <span class="text-xs font-semibold text-slate-500" id="plan-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalPlan('create')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มรายการแผนหลักสูตร (Plan)
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-emerald-900 text-white font-semibold text-xs uppercase">
+              <tr>
+                <th class="py-3.5 px-4">คณะ/วิทยาลัย</th>
+                <th class="py-3.5 px-4">หลักสูตร</th>
+                <th class="py-3.5 px-4">สาขาวิชา</th>
+                <th class="py-3.5 px-4 text-center">ปี พ.ศ.</th>
+                <th class="py-3.5 px-4 text-center">ระดับ</th>
+                <th class="py-3.5 px-3 text-center bg-emerald-800">วิพากษ์</th>
+                <th class="py-3.5 px-3 text-center bg-emerald-800">ขับเคลื่อนฯ</th>
+                <th class="py-3.5 px-3 text-center bg-emerald-800">สภาวิชาการ</th>
+                <th class="py-3.5 px-3 text-center bg-emerald-800">สภามหาวิทยาลัย</th>
+                <th class="py-3.5 px-4">หมายเหตุ</th>
+                <th class="py-3.5 px-4 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-plan" class="divide-y divide-slate-100 text-xs">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: PROGRAM 2026 (อุดมศึกษา) -->
+  <div id="modal-p2026" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">🎓 <span id="p2026-form-title">เพิ่มหลักสูตรอุดมศึกษา</span></h3>
+        <button type="button" onclick="closeModalP2026()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <form onsubmit="submitFormP2026(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">รหัสหลักสูตร *</label><input type="text" id="p2026-id" required class="w-full border rounded-xl p-2.5"></div>
+          <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="p2026-fac" required class="w-full border rounded-xl p-2.5 bg-white"></select></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">ระดับ *</label><select id="p2026-level" required class="w-full border rounded-xl p-2.5 bg-white"><option>ปริญญาตรี</option><option>ปริญญาโท</option><option>ปริญญาเอก</option><option>ประกาศนียบัตรบัณฑิต</option></select></div>
+          
+          <div>
+            <label class="block font-semibold mb-1">ปี (ประเภทหลักสูตร & พ.ศ.) *</label>
+            <input type="text" id="p2026-year" list="year-options" required placeholder="เลือกหรือพิมพ์ เช่น หลักสูตรปรับปรุง พ.ศ. 2565" class="w-full border rounded-xl p-2.5 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <datalist id="year-options">
+              <option value="หลักสูตรปรับปรุง พ.ศ. 2565"></option>
+              <option value="หลักสูตรปรับปรุง พ.ศ. 2566"></option>
+              <option value="หลักสูตรปรับปรุง พ.ศ. 2567"></option>
+              <option value="หลักสูตรปรับปรุง พ.ศ. 2568"></option>
+              <option value="หลักสูตรปรับปรุง พ.ศ. 2569"></option>
+              <option value="หลักสูตรใหม่ พ.ศ. 2569"></option>
+              <option value="หลักสูตรใหม่ พ.ศ. 2570"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="p2026-name" required placeholder="เช่น วิศวกรรมศาสตรบัณฑิต" class="w-full border rounded-xl p-2.5"></div>
+        <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="p2026-major" required placeholder="เช่น วิศวกรรมเครื่องกล" class="w-full border rounded-xl p-2.5"></div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">IQA *</label>
+            <select id="p2026-iqa" required class="w-full border rounded-xl p-2.5 bg-white font-medium">
+              <option value="สป.อว.">สป.อว.</option>
+              <option value="AUNQA">AUNQA</option>
+              <option value="ABET">ABET</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-1">เกณฑ์มาตรฐาน *</label>
+            <select id="p2026-std" required class="w-full border rounded-xl p-2.5 bg-white font-medium">
+              <option value="พ.ศ. 2558">พ.ศ. 2558</option>
+              <option value="พ.ศ. 2565">พ.ศ. 2565</option>
+            </select>
+          </div>
+
+          <div><label class="block font-semibold mb-1">รหัส ISCED</label><input type="text" id="p2026-isced" placeholder="เช่น 0715" class="w-full border rounded-xl p-2.5"></div>
+        </div>
+        <div><label class="block font-semibold mb-1">หมายเหตุ</label><input type="text" id="p2026-note" placeholder="รายละเอียดเพิ่มเติม..." class="w-full border rounded-xl p-2.5"></div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button type="button" onclick="closeModalP2026()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 bg-sky-600 text-white rounded-xl font-semibold shadow">บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PROGRAM V2026 (ปวช.) -->
+  <div id="modal-pV2026" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-amber-900 text-lg flex items-center gap-2">🛠️ <span id="pV2026-form-title">เพิ่มหลักสูตร ปวช.</span></h3>
+        <button type="button" onclick="closeModalPV2026()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <form onsubmit="submitFormPV2026(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="pV2026-fac" required class="w-full border rounded-xl p-2.5 bg-white"></select></div>
+          <div><label class="block font-semibold mb-1">ประเภทวิชา *</label><input type="text" id="pV2026-cat" required placeholder="เช่น ช่างอุตสาหกรรม" class="w-full border rounded-xl p-2.5"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">กลุ่มอาชีพ *</label><input type="text" id="pV2026-career" required placeholder="เช่น ช่างไฟฟ้า" class="w-full border rounded-xl p-2.5"></div>
+          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="pV2026-major" required placeholder="เช่น สาขาวิชาช่างไฟฟ้ากำลัง" class="w-full border rounded-xl p-2.5"></div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div><label class="block font-semibold mb-1">ปี *</label><input type="text" id="pV2026-year" value="2569" required class="w-full border rounded-xl p-2.5"></div>
+          <div><label class="block font-semibold mb-1">ระดับ</label><input type="text" id="pV2026-level" value="ปวช." readonly class="w-full border rounded-xl p-2.5 bg-slate-100"></div>
+          <div><label class="block font-semibold mb-1">ประเภท</label><input type="text" id="pV2026-type" value="ปกติ" class="w-full border rounded-xl p-2.5"></div>
+        </div>
+        <div><label class="block font-semibold mb-1">หมายเหตุ</label><input type="text" id="pV2026-note" class="w-full border rounded-xl p-2.5"></div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button type="button" onclick="closeModalPV2026()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 bg-amber-600 text-white rounded-xl font-semibold shadow">บันทึกข้อมูล ปวช.</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PLAN (แผนพัฒนาหลักสูตร) -->
+  <div id="modal-plan" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-emerald-900 text-lg flex items-center gap-2">🗓️ <span id="plan-form-title">เพิ่มแผนพัฒนาหลักสูตร</span></h3>
+        <button type="button" onclick="closeModalPlan()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+      </div>
+
+      <form onsubmit="submitFormPlan(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="plan-fac" required class="w-full border rounded-xl p-2.5 bg-white"></select></div>
+          <div>
+            <label class="block font-semibold mb-1">ระดับการศึกษา *</label>
+            <select id="plan-level" required class="w-full border rounded-xl p-2.5 bg-white">
+              <option>ปริญญาตรี</option><option>ปริญญาโท</option><option>ปริญญาเอก</option><option>ประกาศนียบัตรบัณฑิต</option><option>ปวช.</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="plan-name" required placeholder="เช่น บริหารธุรกิจบัณฑิต" class="w-full border rounded-xl p-2.5"></div>
+          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="plan-major" required placeholder="เช่น การจัดการนวัตกรรม" class="w-full border rounded-xl p-2.5"></div>
+        </div>
+
+        <div><label class="block font-semibold mb-1">ปี พ.ศ. เสนอเปิด/ปรับปรุง *</label><input type="text" id="plan-year" value="2569" required class="w-full border rounded-xl p-2.5"></div>
+
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 space-y-2">
+          <label class="block font-bold text-emerald-900 text-xs">สถานะขั้นตอนการพิจารณาหลักสูตร (กรอกวันที่ / ผ่านแล้ว / กำลังดำเนินการ)</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div><label class="block font-medium mb-1 text-slate-700">1. ขั้นตอนวิพากษ์</label><input type="text" id="plan-step1" placeholder="เช่น ผ่านแล้ว / ม.ค. 69" class="w-full border rounded-lg p-2 bg-white"></div>
+            <div><label class="block font-medium mb-1 text-slate-700">2. ขั้นตอนขับเคลื่อนฯ</label><input type="text" id="plan-step2" placeholder="เช่น ก.พ. 69" class="w-full border rounded-lg p-2 bg-white"></div>
+            <div><label class="block font-medium mb-1 text-slate-700">3. ขั้นตอนสภาวิชาการ</label><input type="text" id="plan-step3" placeholder="เช่น มี.ค. 69" class="w-full border rounded-lg p-2 bg-white"></div>
+            <div><label class="block font-medium mb-1 text-slate-700">4. ขั้นตอนสภามหาวิทยาลัย</label><input type="text" id="plan-step4" placeholder="เช่น เม.ย. 69" class="w-full border rounded-lg p-2 bg-white"></div>
+          </div>
+        </div>
+
+        <div><label class="block font-semibold mb-1">หมายเหตุ</label><input type="text" id="plan-note" placeholder="รายละเอียดเพิ่มเติม..." class="w-full border rounded-xl p-2.5"></div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button type="button" onclick="closeModalPlan()" class="px-4 py-2 bg-slate-100 rounded-xl font-semibold">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 text-white rounded-xl font-semibold shadow">บันทึกแผนพัฒนาหลักสูตร</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL DELETE -->
+  <div id="modal-del" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-200">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto">⚠️</div>
+      <div>
+        <h3 class="font-bold text-slate-900 text-base">ยืนยันการลบหลักสูตร</h3>
+        <p class="text-xs text-slate-600 mt-1">ต้องการลบรายการ <span id="del-name" class="font-bold text-rose-700"></span> ใช่หรือไม่?</p>
+      </div>
+      <div class="flex justify-center gap-2 pt-2">
+        <button type="button" onclick="closeModalDel()" class="px-4 py-2 bg-slate-100 rounded-xl text-xs font-semibold">ยกเลิก</button>
+        <button type="button" onclick="confirmDel()" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-xs font-semibold shadow">ยืนยันลบข้อมูล</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const facultiesList = [
+      "คณะครุศาสตร์อุตสาหกรรม",
+      "คณะเทคโนโลยีสื่อสารมวลชน",
+      "คณะบริหารธุรกิจ",
+      "คณะวิทยาศาสตร์และเทคโนโลยี",
+      "คณะวิศวกรรมศาสตร์",
+      "คณะศิลปศาสตร์",
+      "คณะอุตสาหกรรมสิ่งทอและออกแบบแฟชั่น",
+      "คณะเทคโนโลยีคหกรรมศาสตร์",
+      "คณะสถาปัตยกรรมศาสตร์และการออกแบบ",
+      "วิทยาลัยบริหารแห่งรัฐ",
+      "วิทยาลัยนานาชาติ"
+    ];
+
+    const defaultP2026 = [
+      { "รหัสหลักสูตร": "10169001", "คณะ": "คณะวิศวกรรมศาสตร์", "ระดับ": "ปริญญาตรี", "หลักสูตร": "วิศวกรรมศาสตรบัณฑิต", "สาขาวิชา": "วิศวกรรมเครื่องกล", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0715", "หมายเหตุ": "ปรับปรุง 2565" },
+      { "รหัสหลักสูตร": "10169002", "คณะ": "คณะวิศวกรรมศาสตร์", "ระดับ": "ปริญญาโท", "หลักสูตร": "วิศวกรรมศาสตรมหาบัณฑิต", "สาขาวิชา": "วิศวกรรมไฟฟ้า", "ปี": "หลักสูตรใหม่ พ.ศ. 2570", "IQA": "ABET", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0713", "หมายเหตุ": "หลักสูตรใหม่ 2570" },
+      { "รหัสหลักสูตร": "10269001", "คณะ": "คณะบริหารธุรกิจ", "ระดับ": "ปริญญาตรี", "หลักสูตร": "บริหารธุรกิจบัณฑิต", "สาขาวิชา": "การตลาดดิจิทัล", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "AUNQA", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0415", "หมายเหตุ": "-" },
+      { "รหัสหลักสูตร": "10869001", "คณะ": "คณะสถาปัตยกรรมศาสตร์และการออกแบบ", "ระดับ": "ปริญญาตรี", "หลักสูตร": "สถาปัตยกรรมศาสตรบัณฑิต", "สาขาวิชา": "สถาปัตยกรรม", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2566", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0731", "หมายเหตุ": "หลักสูตรปรับปรุง" },
+      { "รหัสหลักสูตร": "10769001", "คณะ": "คณะอุตสาหกรรมสิ่งทอและออกแบบแฟชั่น", "ระดับ": "ปริญญาตรี", "หลักสูตร": "วิทยาศาสตรบัณฑิต", "สาขาวิชา": "การออกแบบแฟชั่นและสิ่งทอ", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0212", "หมายเหตุ": "-" },
+      { "รหัสหลักสูตร": "10969001", "คณะ": "วิทยาลัยบริหารแห่งรัฐ", "ระดับ": "ปริญญาโท", "หลักสูตร": "รัฐประศาสนศาสตรมหาบัณฑิต", "สาขาวิชา": "การบริหารภาครัฐดิจิทัล", "ปี": "หลักสูตรใหม่ พ.ศ. 2569", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0413", "หมายเหตุ": "หลักสูตรใหม่" }
+    ];
+
+    const defaultPV2026 = [
+      { "คณะ": "คณะครุศาสตร์อุตสาหกรรม", "ประเภทวิชา": "ช่างอุตสาหกรรม", "กลุ่มอาชีพ": "ช่างไฟฟ้า", "สาขาวิชา": "สาขาวิชาช่างไฟฟ้ากำลัง", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "รับ ม.3" },
+      { "คณะ": "คณะครุศาสตร์อุตสาหกรรม", "ประเภทวิชา": "ช่างอุตสาหกรรม", "กลุ่มอาชีพ": "ช่างยนต์", "สาขาวิชา": "สาขาวิชาช่างยนต์", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "-" },
+      { "คณะ": "คณะบริหารธุรกิจ", "ประเภทวิชา": "พาณิชยกรรม", "กลุ่มอาชีพ": "การบัญชี", "สาขาวิชา": "สาขาวิชาการบัญชี", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "-" }
+    ];
+
+    const defaultPlan = [
+      { "คณะ": "คณะวิศวกรรมศาสตร์", "หลักสูตร": "วิศวกรรมศาสตรบัณฑิต", "สาขาวิชา": "วิศวกรรมคอมพิวเตอร์และระบบปัญญาประดิษฐ์", "ปี": "2569", "ระดับ": "ปริญญาตรี", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "ผ่านแล้ว", "สภาวิชาการ": "กุมภาพันธ์ 2569", "สภามหาวิทยาลัย": "มีนาคม 2569", "หมายเหตุ": "หลักสูตรใหม่" },
+      { "คณะ": "คณะบริหารธุรกิจ", "หลักสูตร": "บริหารธุรกิจบัณฑิต", "สาขาวิชา": "ธุรกิจระหว่างประเทศและโลจิสติกส์", "ปี": "2569", "ระดับ": "ปริญญาตรี", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "มกราคม 2569", "สภาวิชาการ": "มีนาคม 2569", "สภามหาวิทยาลัย": "เมษายน 2569", "หมายเหตุ": "ปรับปรุง พ.ศ. 2569" },
+      { "คณะ": "วิทยาลัยบริหารแห่งรัฐ", "หลักสูตร": "รัฐประศาสนศาสตรมหาบัณฑิต", "สาขาวิชา": "การบริหารงานภาครัฐและนวัตกรรม", "ปี": "2569", "ระดับ": "ปริญญาโท", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "ผ่านแล้ว", "สภาวิชาการ": "ผ่านแล้ว", "สภามหาวิทยาลัย": "กุมภาพันธ์ 2569", "หมายเหตุ": "เตรียมเสนอสภามหาวิทยาลัย" }
+    ];
+
+    let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || '';
+
+    // Robust Auto-Recovery Initialization
+    let dataP2026 = JSON.parse(localStorage.getItem('RMUTP_LOCAL_P2026'));
+    if (!Array.isArray(dataP2026) || dataP2026.length === 0) dataP2026 = [...defaultP2026];
+
+    let dataPV2026 = JSON.parse(localStorage.getItem('RMUTP_LOCAL_PV2026'));
+    if (!Array.isArray(dataPV2026) || dataPV2026.length === 0) dataPV2026 = [...defaultPV2026];
+
+    let dataPlan = JSON.parse(localStorage.getItem('RMUTP_LOCAL_PLAN'));
+    if (!Array.isArray(dataPlan) || dataPlan.length === 0) dataPlan = [...defaultPlan];
+
+    saveLocalStorage();
+
+    let delContext = { sheet: '', index: -1, displayName: '' };
+    let editContext = { sheet: '', index: -1 };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      populateFaculties();
+      if (gasUrl) {
+        document.getElementById('gas-url-input').value = gasUrl;
+        fetchData();
+      } else {
+        renderAll();
+      }
+    });
+
+    function saveLocalStorage() {
+      localStorage.setItem('RMUTP_LOCAL_P2026', JSON.stringify(dataP2026));
+      localStorage.setItem('RMUTP_LOCAL_PV2026', JSON.stringify(dataPV2026));
+      localStorage.setItem('RMUTP_LOCAL_PLAN', JSON.stringify(dataPlan));
+    }
+
+    function restoreDefaultData() {
+      dataP2026 = [...defaultP2026];
+      dataPV2026 = [...defaultPV2026];
+      dataPlan = [...defaultPlan];
+      saveLocalStorage();
+      renderAll();
+      showToast("🔄 รีเซ็ตข้อมูลตัวอย่างเริ่มต้นเรียบร้อยแล้ว", "success");
+    }
+
+    function resetToLocalData() {
+      localStorage.removeItem('RMUTP_GAS_URL_FULL');
+      gasUrl = '';
+      document.getElementById('gas-url-input').value = '';
+      restoreDefaultData();
+      toggleApiSettings();
+    }
+
+    function populateFaculties() {
+      const f1 = document.getElementById('filter-p2026-fac');
+      const f2 = document.getElementById('filter-pV2026-fac');
+      const f3 = document.getElementById('filter-plan-fac');
+      const m1 = document.getElementById('p2026-fac');
+      const m2 = document.getElementById('pV2026-fac');
+      const m3 = document.getElementById('plan-fac');
+
+      f1.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      f2.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      f3.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      m1.innerHTML = '';
+      m2.innerHTML = '';
+      m3.innerHTML = '';
+
+      facultiesList.forEach(fac => {
+        f1.add(new Option(fac, fac));
+        f2.add(new Option(fac, fac));
+        f3.add(new Option(fac, fac));
+        m1.add(new Option(fac, fac));
+        m2.add(new Option(fac, fac));
+        m3.add(new Option(fac, fac));
+      });
+    }
+
+    function switchTab(t) {
+      ['dashboard', 'p2026', 'pV2026', 'plan'].forEach(tab => {
+        document.getElementById(`sec-${tab}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${tab}`);
+        if (btn) btn.className = "pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal";
+      });
+
+      document.getElementById(`sec-${t}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${t}`);
+      if (activeBtn) activeBtn.className = "pb-2.5 px-2 text-amber-300 border-b-2 border-amber-400 font-semibold flex items-center gap-1.5";
+    }
+
+    function toggleApiSettings() { document.getElementById('api-drawer').classList.toggle('hidden'); }
+
+    function saveGasUrl() {
+      const u = document.getElementById('gas-url-input').value.trim();
+      if (!u) {
+        resetToLocalData();
+        return;
+      }
+      gasUrl = u;
+      localStorage.setItem('RMUTP_GAS_URL_FULL', gasUrl);
+      fetchData();
+      toggleApiSettings();
+    }
+
+    async function fetchData() {
+      if (!gasUrl) {
+        renderAll();
+        return;
+      }
+      showToast("⏳ กำลังเชื่อมต่อ Google Sheets...", "info");
+      try {
+        const [res1, res2, res3] = await Promise.all([
+          fetch(`${gasUrl}?sheet=Program2026`).then(r => r.json()),
+          fetch(`${gasUrl}?sheet=ProgramV2026`).then(r => r.json()),
+          fetch(`${gasUrl}?sheet=Plan`).then(r => r.json())
+        ]);
+        if (Array.isArray(res1) && res1.length > 0) dataP2026 = res1;
+        if (Array.isArray(res2) && res2.length > 0) dataPV2026 = res2;
+        if (Array.isArray(res3) && res3.length > 0) dataPlan = res3;
+        saveLocalStorage();
+        renderAll();
+        showToast("✅ เชื่อมต่อ Google Sheets สำเร็จ", "success");
+      } catch (err) {
+        console.warn("GAS Fetch warning:", err);
+        renderAll();
+      }
+    }
+
+    async function postApi(sheetName, action, item) {
+      if (gasUrl) {
+        try {
+          await fetch(gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sheet: sheetName, action, data: item })
+          });
+        } catch (e) {
+          console.warn("GAS Post warning:", e);
+        }
+      }
+      saveLocalStorage();
+      renderAll();
+      return true;
+    }
+
+    function renderAll() {
+      renderDashboard();
+      filterP2026();
+      filterPV2026();
+      filterPlan();
+    }
+
+    function renderDashboard() {
+      const totHigher = dataP2026.length;
+      const totVoc = dataPV2026.length;
+      const totAll = totHigher + totVoc;
+
+      document.getElementById('dash-total-all').innerText = totAll;
+      document.getElementById('dash-total-higher').innerText = totHigher;
+      document.getElementById('dash-total-voc').innerText = totVoc;
+      document.getElementById('dash-total-plan').innerText = dataPlan.length;
+
+      const facMap = {};
+      facultiesList.forEach(f => facMap[f] = { h: 0, v: 0 });
+      dataP2026.forEach(d => { if (facMap[d["คณะ"]]) facMap[d["คณะ"]].h++; });
+      dataPV2026.forEach(d => { if (facMap[d["คณะ"]]) facMap[d["คณะ"]].v++; });
+
+      const maxCount = Math.max(...Object.values(facMap).map(m => m.h + m.v), 1);
+      const container = document.getElementById('chart-faculty-bars');
+      container.innerHTML = '';
+
+      Object.keys(facMap).forEach(fac => {
+        const total = facMap[fac].h + facMap[fac].v;
+        if (total === 0) return;
+        const hPct = (facMap[fac].h / maxCount) * 100;
+        const vPct = (facMap[fac].v / maxCount) * 100;
+
+        const row = document.createElement('div');
+        row.className = "text-xs space-y-1";
+        row.innerHTML = `
+          <div class="flex justify-between font-medium text-slate-700">
+            <span>${fac}</span>
+            <span class="text-slate-500">${total} หลักสูตร (อุดมศึกษา ${facMap[fac].h} | ปวช. ${facMap[fac].v})</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-3 flex overflow-hidden">
+            <div class="bg-sky-600 h-3" style="width: ${hPct}%"></div>
+            <div class="bg-amber-500 h-3" style="width: ${vPct}%"></div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      const levels = { "ปริญญาตรี": 0, "ปริญญาโท": 0, "ปริญญาเอก": 0, "ป.บัณฑิต": 0, "ปวช.": totVoc };
+      dataP2026.forEach(d => {
+        const l = d["ระดับ"] || "";
+        if (l.includes("ตรี")) levels["ปริญญาตรี"]++;
+        else if (l.includes("โท")) levels["ปริญญาโท"]++;
+        else if (l.includes("เอก")) levels["ปริญญาเอก"]++;
+        else levels["ป.บัณฑิต"]++;
+      });
+
+      document.getElementById('dash-level-cards').innerHTML = `
+        <div class="bg-sky-50 p-3 rounded-xl border border-sky-100 text-center">
+          <p class="text-xs text-sky-700">ปริญญาตรี</p>
+          <p class="text-xl font-bold text-sky-900 mt-0.5">${levels["ปริญญาตรี"]}</p>
+        </div>
+        <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100 text-center">
+          <p class="text-xs text-indigo-700">ปริญญาโท</p>
+          <p class="text-xl font-bold text-indigo-900 mt-0.5">${levels["ปริญญาโท"]}</p>
+        </div>
+        <div class="bg-purple-50 p-3 rounded-xl border border-purple-100 text-center">
+          <p class="text-xs text-purple-700">ปริญญาเอก</p>
+          <p class="text-xl font-bold text-purple-900 mt-0.5">${levels["ปริญญาเอก"]}</p>
+        </div>
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 text-center">
+          <p class="text-xs text-blue-700">ป.บัณฑิต</p>
+          <p class="text-xl font-bold text-blue-900 mt-0.5">${levels["ป.บัณฑิต"]}</p>
+        </div>
+        <div class="bg-amber-50 p-3 rounded-xl border border-amber-100 text-center col-span-2 sm:col-span-1">
+          <p class="text-xs text-amber-800 font-semibold">ปวช.</p>
+          <p class="text-xl font-bold text-amber-900 mt-0.5">${levels["ปวช."]}</p>
+        </div>
+      `;
+
+      let st1 = 0, st2 = 0, st3 = 0, st4 = 0;
+      dataPlan.forEach(p => {
+        if (p["วิพากษ์"] && p["วิพากษ์"].includes("ผ่าน")) st1++;
+        if (p["ขับเคลื่อนฯ"] && p["ขับเคลื่อนฯ"].includes("ผ่าน")) st2++;
+        if (p["สภาวิชาการ"] && p["สภาวิชาการ"].includes("ผ่าน")) st3++;
+        if (p["สภามหาวิทยาลัย"] && p["สภามหาวิทยาลัย"].includes("ผ่าน")) st4++;
+      });
+
+      document.getElementById('dash-plan-progress').innerHTML = `
+        <div class="p-2.5 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
+          <p class="text-[10px] text-emerald-800 font-medium">1. วิพากษ์</p>
+          <p class="text-base font-bold text-emerald-950 mt-0.5">${st1}/${dataPlan.length}</p>
+        </div>
+        <div class="p-2.5 bg-teal-50 border border-teal-100 rounded-xl text-center">
+          <p class="text-[10px] text-teal-800 font-medium">2. ขับเคลื่อนฯ</p>
+          <p class="text-base font-bold text-teal-950 mt-0.5">${st2}/${dataPlan.length}</p>
+        </div>
+        <div class="p-2.5 bg-sky-50 border border-sky-100 rounded-xl text-center">
+          <p class="text-[10px] text-sky-800 font-medium">3. สภาวิชาการ</p>
+          <p class="text-base font-bold text-sky-950 mt-0.5">${st3}/${dataPlan.length}</p>
+        </div>
+        <div class="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-center">
+          <p class="text-[10px] text-indigo-800 font-medium">4. สภามหาวิทยาลัย</p>
+          <p class="text-base font-bold text-indigo-950 mt-0.5">${st4}/${dataPlan.length}</p>
+        </div>
+      `;
+    }
+
+    function filterP2026() {
+      const search = (document.getElementById('search-p2026')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-p2026-fac')?.value || '';
+      const level = document.getElementById('filter-p2026-level')?.value || '';
+      const iqa = document.getElementById('filter-p2026-iqa')?.value || '';
+
+      const filtered = dataP2026.filter(d => {
+        const text = `${d["รหัสหลักสูตร"]} ${d["คณะ"]} ${d["หลักสูตร"]} ${d["สาขาวิชา"]} ${d["ปี"]}`.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || d["คณะ"] === fac;
+        const matchLevel = !level || d["ระดับ"] === level;
+        const matchIqa = !iqa || d["IQA"] === iqa;
+        return matchSearch && matchFac && matchLevel && matchIqa;
+      });
+
+      renderP2026(filtered);
+    }
+
+    function renderP2026(data) {
+      const tbody = document.getElementById('tbody-p2026');
+      document.getElementById('p2026-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ไม่พบข้อมูลหลักสูตรอุดมศึกษา</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const globalIdx = dataP2026.indexOf(item);
+        const displayName = encodeURIComponent(item["สาขาวิชา"] || item["หลักสูตร"]);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 font-mono font-semibold text-sky-800">${item["รหัสหลักสูตร"]}</td>
+          <td class="py-2.5 px-4 font-medium">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded font-medium bg-sky-100 text-sky-800">${item["ระดับ"]}</span></td>
+          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-4">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-4 font-medium text-indigo-900">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center">
+            <span class="px-2 py-0.5 rounded font-bold ${getIqaBadgeClass(item["IQA"])}">${item["IQA"] || "-"}</span>
+          </td>
+          <td class="py-2.5 px-4 text-center font-medium text-slate-700">${item["เกณฑ์"] || "-"}</td>
+          <td class="py-2.5 px-4 font-mono text-slate-500">${item["ISCED"] || "-"}</td>
+          <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center">
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" class="p-1 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" class="p-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getIqaBadgeClass(iqa) {
+      if (!iqa) return "bg-slate-100 text-slate-700";
+      if (iqa.includes("สป.อว")) return "bg-emerald-100 text-emerald-800";
+      if (iqa.includes("AUN")) return "bg-sky-100 text-sky-800";
+      if (iqa.includes("ABET")) return "bg-indigo-100 text-indigo-800";
+      return "bg-amber-100 text-amber-800";
+    }
+
+    function filterPV2026() {
+      const search = (document.getElementById('search-pV2026')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-pV2026-fac')?.value || '';
+      const cat = document.getElementById('filter-pV2026-cat')?.value || '';
+
+      const filtered = dataPV2026.filter(d => {
+        const text = `${d["คณะ"]} ${d["ประเภทวิชา"]} ${d["กลุ่มอาชีพ"]} ${d["สาขาวิชา"]}`.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || d["คณะ"] === fac;
+        const matchCat = !cat || d["ประเภทวิชา"] === cat;
+        return matchSearch && matchFac && matchCat;
+      });
+
+      renderPV2026(filtered);
+    }
+
+    function renderPV2026(data) {
+      const tbody = document.getElementById('tbody-pV2026');
+      document.getElementById('pV2026-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">ไม่พบข้อมูลหลักสูตร ปวช.</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const globalIdx = dataPV2026.indexOf(item);
+        const displayName = encodeURIComponent(item["สาขาวิชา"]);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-amber-50/40 transition border-b border-slate-100";
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 font-medium">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4 text-slate-700">${item["ประเภทวิชา"]}</td>
+          <td class="py-2.5 px-4 text-slate-600">${item["กลุ่มอาชีพ"]}</td>
+          <td class="py-2.5 px-4 font-semibold text-amber-950">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-4 text-center font-medium">${item["ปี"] || 2569}</td>
+          <td class="py-2.5 px-4 text-center"><span class="px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-900">${item["ระดับ"] || "ปวช."}</span></td>
+          <td class="py-2.5 px-4 text-center text-slate-600">${item["ประเภท"] || "ปกติ"}</td>
+          <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center">
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" class="p-1 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" class="p-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Fixed & Robust Plan Filter
+    function filterPlan() {
+      const search = (document.getElementById('search-plan')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-plan-fac')?.value || '';
+      const level = document.getElementById('filter-plan-level')?.value || '';
+
+      const filtered = dataPlan.filter(d => {
+        if (!d) return false;
+        const facName = d["คณะ"] || "";
+        const progName = d["หลักสูตร"] || "";
+        const majName = d["สาขาวิชา"] || "";
+        const itemLevel = d["ระดับ"] || "";
+
+        const text = `${facName} ${progName} ${majName}`.toLowerCase();
+        
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || facName === fac;
+        const matchLevel = !level || level === "ทุกระดับการศึกษา" || itemLevel.includes(level) || level.includes(itemLevel);
+
+        return matchSearch && matchFac && matchLevel;
+      });
+
+      renderPlan(filtered);
+    }
+
+    function renderPlan(data) {
+      const tbody = document.getElementById('tbody-plan');
+      document.getElementById('plan-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ไม่พบรายการแผนพัฒนาหลักสูตร</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const globalIdx = dataPlan.indexOf(item);
+        const displayName = encodeURIComponent(`${item["หลักสูตร"]} (${item["สาขาวิชา"]})`);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-emerald-50/40 transition border-b border-slate-100";
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 font-medium text-slate-900">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4 font-semibold text-emerald-950">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-4">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-4 text-center font-mono font-medium">${item["ปี"] || "2569"}</td>
+          <td class="py-2.5 px-4 text-center"><span class="px-2 py-0.5 rounded font-medium bg-emerald-100 text-emerald-800">${item["ระดับ"]}</span></td>
+          <td class="py-2.5 px-3 text-center">${getStepBadge(item["วิพากษ์"])}</td>
+          <td class="py-2.5 px-3 text-center">${getStepBadge(item["ขับเคลื่อนฯ"])}</td>
+          <td class="py-2.5 px-3 text-center">${getStepBadge(item["สภาวิชาการ"])}</td>
+          <td class="py-2.5 px-3 text-center">${getStepBadge(item["สภามหาวิทยาลัย"])}</td>
+          <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center">
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalPlan('edit', ${globalIdx})" class="p-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" class="p-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getStepBadge(val) {
+      if (!val) return '<span class="text-slate-400">-</span>';
+      if (val.includes("ผ่าน")) return `<span class="px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 text-[11px]">✓ ${val}</span>`;
+      return `<span class="px-2 py-0.5 rounded-full font-medium bg-amber-100 text-amber-900 text-[11px]">${val}</span>`;
+    }
+
+    function openModalP2026(mode, globalIdx = -1) {
+      editContext = { sheet: 'Program2026', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('p2026-form-title').innerText = mode === 'edit' ? `แก้ไขหลักสูตร` : "เพิ่มหลักสูตรอุดมศึกษา";
+      
+      const idInp = document.getElementById('p2026-id');
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataP2026.length) {
+        idInp.readOnly = true;
+        const item = dataP2026[globalIdx];
+        idInp.value = item["รหัสหลักสูตร"];
+        document.getElementById('p2026-fac').value = item["คณะ"];
+        document.getElementById('p2026-level').value = item["ระดับ"];
+        document.getElementById('p2026-name').value = item["หลักสูตร"];
+        document.getElementById('p2026-major').value = item["สาขาวิชา"];
+        document.getElementById('p2026-year').value = item["ปี"] || "หลักสูตรปรับปรุง พ.ศ. 2565";
+        document.getElementById('p2026-iqa').value = item["IQA"] || "สป.อว.";
+        document.getElementById('p2026-std').value = item["เกณฑ์"] || "พ.ศ. 2565";
+        document.getElementById('p2026-isced').value = item["ISCED"] || "";
+        document.getElementById('p2026-note').value = item["หมายเหตุ"] || "";
+      } else {
+        idInp.readOnly = false;
+        idInp.value = "10169" + Math.floor(100 + Math.random() * 900);
+        document.getElementById('p2026-year').value = "หลักสูตรปรับปรุง พ.ศ. 2565";
+        document.getElementById('p2026-iqa').value = "สป.อว.";
+        document.getElementById('p2026-std').value = "พ.ศ. 2565";
+      }
+      document.getElementById('modal-p2026').classList.remove('hidden');
+    }
+
+    function closeModalP2026() { document.getElementById('modal-p2026').classList.add('hidden'); }
+
+    async function submitFormP2026(e) {
+      e.preventDefault();
+      try {
+        const item = {
+          "รหัสหลักสูตร": document.getElementById('p2026-id').value.trim(),
+          "คณะ": document.getElementById('p2026-fac').value,
+          "ระดับ": document.getElementById('p2026-level').value,
+          "หลักสูตร": document.getElementById('p2026-name').value.trim(),
+          "สาขาวิชา": document.getElementById('p2026-major').value.trim(),
+          "ปี": document.getElementById('p2026-year').value.trim(),
+          "IQA": document.getElementById('p2026-iqa').value,
+          "เกณฑ์": document.getElementById('p2026-std').value,
+          "ISCED": document.getElementById('p2026-isced').value.trim(),
+          "หมายเหตุ": document.getElementById('p2026-note').value.trim()
+        };
+
+        if (editContext.index >= 0 && editContext.index < dataP2026.length) {
+          dataP2026[editContext.index] = item;
+          await postApi('Program2026', 'update', item);
+          showToast("✅ แก้ไขหลักสูตรเรียบร้อยแล้ว", "success");
+        } else {
+          dataP2026.unshift(item);
+          await postApi('Program2026', 'create', item);
+          showToast("✅ บันทึกหลักสูตรใหม่เรียบร้อยแล้ว", "success");
+        }
+
+        closeModalP2026();
+        renderAll();
+      } catch (err) {
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
+      }
+    }
+
+    function openModalPV2026(mode, globalIdx = -1) {
+      editContext = { sheet: 'ProgramV2026', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('pV2026-form-title').innerText = mode === 'edit' ? `แก้ไขหลักสูตร ปวช.` : "เพิ่มหลักสูตร ปวช.";
+
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataPV2026.length) {
+        const item = dataPV2026[globalIdx];
+        document.getElementById('pV2026-fac').value = item["คณะ"];
+        document.getElementById('pV2026-cat').value = item["ประเภทวิชา"];
+        document.getElementById('pV2026-career').value = item["กลุ่มอาชีพ"];
+        document.getElementById('pV2026-major').value = item["สาขาวิชา"];
+        document.getElementById('pV2026-year').value = item["ปี"];
+        document.getElementById('pV2026-type').value = item["ประเภท"];
+        document.getElementById('pV2026-note').value = item["หมายเหตุ"];
+      }
+      document.getElementById('modal-pV2026').classList.remove('hidden');
+    }
+
+    function closeModalPV2026() { document.getElementById('modal-pV2026').classList.add('hidden'); }
+
+    async function submitFormPV2026(e) {
+      e.preventDefault();
+      try {
+        const item = {
+          "คณะ": document.getElementById('pV2026-fac').value,
+          "ประเภทวิชา": document.getElementById('pV2026-cat').value.trim(),
+          "กลุ่มอาชีพ": document.getElementById('pV2026-career').value.trim(),
+          "สาขาวิชา": document.getElementById('pV2026-major').value.trim(),
+          "ปี": document.getElementById('pV2026-year').value.trim() || "2569",
+          "ระดับ": "ปวช.",
+          "ประเภท": document.getElementById('pV2026-type').value.trim() || "ปกติ",
+          "หมายเหตุ": document.getElementById('pV2026-note').value.trim()
+        };
+
+        if (editContext.index >= 0 && editContext.index < dataPV2026.length) {
+          dataPV2026[editContext.index] = item;
+          await postApi('ProgramV2026', 'update', item);
+          showToast("✅ แก้ไขหลักสูตร ปวช. เรียบร้อยแล้ว", "success");
+        } else {
+          dataPV2026.unshift(item);
+          await postApi('ProgramV2026', 'create', item);
+          showToast("✅ บันทึกหลักสูตร ปวช. เรียบร้อยแล้ว", "success");
+        }
+
+        closeModalPV2026();
+        renderAll();
+      } catch (err) {
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
+      }
+    }
+
+    // Modal Plan Handlers
+    function openModalPlan(mode, globalIdx = -1) {
+      editContext = { sheet: 'Plan', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('plan-form-title').innerText = mode === 'edit' ? `แก้ไขแผนพัฒนาหลักสูตร` : "เพิ่มแผนพัฒนาหลักสูตร";
+
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataPlan.length) {
+        const item = dataPlan[globalIdx];
+        document.getElementById('plan-fac').value = item["คณะ"] || facultiesList[0];
+        document.getElementById('plan-name').value = item["หลักสูตร"] || "";
+        document.getElementById('plan-major').value = item["สาขาวิชา"] || "";
+        document.getElementById('plan-year').value = item["ปี"] || "2569";
+        document.getElementById('plan-level').value = item["ระดับ"] || "ปริญญาตรี";
+        document.getElementById('plan-step1').value = item["วิพากษ์"] || "";
+        document.getElementById('plan-step2').value = item["ขับเคลื่อนฯ"] || "";
+        document.getElementById('plan-step3').value = item["สภาวิชาการ"] || "";
+        document.getElementById('plan-step4').value = item["สภามหาวิทยาลัย"] || "";
+        document.getElementById('plan-note').value = item["หมายเหตุ"] || "";
+      } else {
+        document.getElementById('plan-fac').selectedIndex = 0;
+        document.getElementById('plan-level').selectedIndex = 0;
+        document.getElementById('plan-name').value = "";
+        document.getElementById('plan-major').value = "";
+        document.getElementById('plan-year').value = "2569";
+        document.getElementById('plan-step1').value = "";
+        document.getElementById('plan-step2').value = "";
+        document.getElementById('plan-step3').value = "";
+        document.getElementById('plan-step4').value = "";
+        document.getElementById('plan-note').value = "";
+      }
+      document.getElementById('modal-plan').classList.remove('hidden');
+    }
+
+    function closeModalPlan() { document.getElementById('modal-plan').classList.add('hidden'); }
+
+    async function submitFormPlan(e) {
+      e.preventDefault();
+      try {
+        const item = {
+          "คณะ": document.getElementById('plan-fac').value,
+          "หลักสูตร": document.getElementById('plan-name').value.trim(),
+          "สาขาวิชา": document.getElementById('plan-major').value.trim(),
+          "ปี": document.getElementById('plan-year').value.trim() || "2569",
+          "ระดับ": document.getElementById('plan-level').value,
+          "วิพากษ์": document.getElementById('plan-step1').value.trim(),
+          "ขับเคลื่อนฯ": document.getElementById('plan-step2').value.trim(),
+          "สภาวิชาการ": document.getElementById('plan-step3').value.trim(),
+          "สภามหาวิทยาลัย": document.getElementById('plan-step4').value.trim(),
+          "หมายเหตุ": document.getElementById('plan-note').value.trim()
+        };
+
+        if (editContext.index >= 0 && editContext.index < dataPlan.length) {
+          dataPlan[editContext.index] = item;
+          await postApi('Plan', 'update', item);
+          showToast("✅ แก้ไขแผนพัฒนาหลักสูตรเรียบร้อยแล้ว", "success");
+        } else {
+          dataPlan.unshift(item);
+          await postApi('Plan', 'create', item);
+          showToast("✅ บันทึกแผนพัฒนาหลักสูตรเรียบร้อยแล้ว", "success");
+        }
+
+        closeModalPlan();
+        renderAll();
+      } catch (err) {
+        console.error("Submit plan error:", err);
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
+      }
+    }
+
+    // Fail-proof Index-based Delete Handler
+    function openModalDel(sheet, globalIdx, encodedName) {
+      const displayName = decodeURIComponent(encodedName);
+      delContext = { sheet, index: globalIdx, displayName };
+      document.getElementById('del-name').innerText = displayName;
+      document.getElementById('modal-del').classList.remove('hidden');
+    }
+
+    function closeModalDel() { document.getElementById('modal-del').classList.add('hidden'); }
+
+    async function confirmDel() {
+      try {
+        const idx = delContext.index;
+        if (delContext.sheet === 'Program2026' && idx >= 0 && idx < dataP2026.length) {
+          const deleted = dataP2026.splice(idx, 1)[0];
+          await postApi('Program2026', 'delete', deleted);
+        } else if (delContext.sheet === 'ProgramV2026' && idx >= 0 && idx < dataPV2026.length) {
+          const deleted = dataPV2026.splice(idx, 1)[0];
+          await postApi('ProgramV2026', 'delete', deleted);
+        } else if (delContext.sheet === 'Plan' && idx >= 0 && idx < dataPlan.length) {
+          const deleted = dataPlan.splice(idx, 1)[0];
+          await postApi('Plan', 'delete', deleted);
+        }
+
+        closeModalDel();
+        saveLocalStorage();
+        renderAll();
+        showToast("🗑️ ลบข้อมูลเรียบร้อยแล้ว", "info");
+      } catch (err) {
+        console.error("Delete error:", err);
+        showToast("❌ เกิดข้อผิดพลาดในการลบ: " + err.message, "error");
+      }
+    }
+
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      document.getElementById('toast-icon').innerText = type === "success" ? "✅" : (type === "error" ? "❌" : "ℹ️");
+      toast.classList.remove('translate-x-full', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-x-full', 'opacity-0'), 3000);
+    }
+  </script>
+</body>
+</html>

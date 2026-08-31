@@ -536,15 +536,18 @@
 
     let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || '';
 
-    // Robust Auto-Recovery Initialization
-    let dataP2026 = JSON.parse(localStorage.getItem('RMUTP_LOCAL_P2026'));
-    if (!Array.isArray(dataP2026) || dataP2026.length === 0) dataP2026 = [...defaultP2026];
+    // Fixed Persistence Initialization (Support complete deletion without restoring defaults on refresh)
+    let rawP2026 = localStorage.getItem('RMUTP_LOCAL_P2026');
+    let dataP2026 = rawP2026 !== null ? JSON.parse(rawP2026) : [...defaultP2026];
+    if (!Array.isArray(dataP2026)) dataP2026 = [...defaultP2026];
 
-    let dataPV2026 = JSON.parse(localStorage.getItem('RMUTP_LOCAL_PV2026'));
-    if (!Array.isArray(dataPV2026) || dataPV2026.length === 0) dataPV2026 = [...defaultPV2026];
+    let rawPV2026 = localStorage.getItem('RMUTP_LOCAL_PV2026');
+    let dataPV2026 = rawPV2026 !== null ? JSON.parse(rawPV2026) : [...defaultPV2026];
+    if (!Array.isArray(dataPV2026)) dataPV2026 = [...defaultPV2026];
 
-    let dataPlan = JSON.parse(localStorage.getItem('RMUTP_LOCAL_PLAN'));
-    if (!Array.isArray(dataPlan) || dataPlan.length === 0) dataPlan = [...defaultPlan];
+    let rawPlan = localStorage.getItem('RMUTP_LOCAL_PLAN');
+    let dataPlan = rawPlan !== null ? JSON.parse(rawPlan) : [...defaultPlan];
+    if (!Array.isArray(dataPlan)) dataPlan = [...defaultPlan];
 
     saveLocalStorage();
 
@@ -647,9 +650,9 @@
           fetch(`${gasUrl}?sheet=ProgramV2026`).then(r => r.json()),
           fetch(`${gasUrl}?sheet=Plan`).then(r => r.json())
         ]);
-        if (Array.isArray(res1) && res1.length > 0) dataP2026 = res1;
-        if (Array.isArray(res2) && res2.length > 0) dataPV2026 = res2;
-        if (Array.isArray(res3) && res3.length > 0) dataPlan = res3;
+        if (Array.isArray(res1)) dataP2026 = res1;
+        if (Array.isArray(res2)) dataPV2026 = res2;
+        if (Array.isArray(res3)) dataPlan = res3;
         saveLocalStorage();
         renderAll();
         showToast("✅ เชื่อมต่อ Google Sheets สำเร็จ", "success");

@@ -8,9 +8,26 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Sarabun', sans-serif; }
+    
+    /* Custom Sleek Scrollbar */
+    ::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-700 min-h-screen">
+<body class="bg-[#f8fafc] text-slate-700 min-h-screen flex flex-col">
 
   <!-- Toast Notification -->
   <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
@@ -20,24 +37,31 @@
     </div>
   </div>
 
-  <!-- Top Header (Pastel Slate & Soft Navy Theme) -->
-  <header class="bg-gradient-to-r from-slate-800 via-slate-700 to-indigo-900/90 text-white shadow-md sticky top-0 z-30 border-b border-indigo-200/20">
-    <div class="max-w-7xl mx-auto px-4 py-3.5 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-3">
-      <div class="flex items-center gap-3">
-        <!-- Logo RMUTP in Soft Pastel Purple -->
-        <div class="w-10 h-10 rounded-xl bg-purple-500/20 backdrop-blur border border-purple-300/30 text-[#d8b4fe] font-bold text-lg flex items-center justify-center shadow-inner">
-          RMUTP
+  <!-- Top Header (Pastel Slate & Soft Navy Theme - Full Responsive Width) -->
+  <header class="bg-gradient-to-r from-slate-800 via-slate-700 to-indigo-900/90 text-white shadow-md sticky top-0 z-30 border-b border-indigo-200/20 w-full">
+    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3">
+          <!-- Logo RMUTP in Soft Pastel Purple -->
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 backdrop-blur border border-purple-300/30 text-[#d8b4fe] font-bold text-lg flex items-center justify-center shadow-inner flex-shrink-0">
+            RMUTP
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
+            </h1>
+            <p class="text-xs text-slate-300 font-normal">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-base md:text-lg font-bold tracking-tight text-white flex items-center gap-2">
-            ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
-          </h1>
-          <p class="text-xs text-slate-300 font-normal">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+
+        <!-- Mobile-only Admin Controls -->
+        <div class="md:hidden flex items-center gap-1.5">
+          <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg text-xs">⚙️</button>
         </div>
       </div>
 
       <!-- Right Controls: Admin Password Mode & API Settings -->
-      <div class="flex items-center gap-2 text-xs flex-wrap justify-end">
+      <div class="hidden md:flex items-center gap-2 text-xs flex-wrap justify-end">
         
         <!-- Admin Mode Toggle Button -->
         <div id="admin-mode-container">
@@ -53,9 +77,9 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/10 mt-1">
-      <nav class="flex space-x-6 text-xs sm:text-sm font-medium pt-2 overflow-x-auto">
+    <!-- Navigation Tabs (Full Responsive Width) -->
+    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 border-t border-white/10 mt-1">
+      <nav class="flex space-x-4 sm:space-x-8 text-xs sm:text-sm font-medium pt-2 overflow-x-auto no-scrollbar">
         <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2 px-1 text-amber-200 border-b-2 border-amber-300 font-semibold flex items-center gap-1.5 whitespace-nowrap">
           📊 สรุปภาพรวม
         </button>
@@ -72,9 +96,18 @@
     </div>
   </header>
 
+  <!-- Mobile Admin Mode Bar -->
+  <div class="md:hidden bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center text-xs">
+    <div id="admin-mode-container-mobile"></div>
+    <div class="flex items-center gap-1.5 text-slate-300">
+      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      <span class="text-[11px]">Google Sheets</span>
+    </div>
+  </div>
+
   <!-- API Drawer -->
-  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all shadow-inner">
-    <div class="max-w-7xl mx-auto space-y-2.5 text-xs">
+  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all shadow-inner w-full">
+    <div class="w-full max-w-[1700px] mx-auto space-y-2.5 text-xs">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-amber-300 text-xs">⚙️ การเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
         <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
@@ -88,50 +121,50 @@
     </div>
   </div>
 
-  <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+  <!-- Main Container (Full Responsive Width up to 1700px) -->
+  <main class="w-full max-w-[1700px] mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 flex-1">
 
     <!-- ==================== TAB 1: DASHBOARD SUMMARY (สรุปภาพรวม) ==================== -->
-    <section id="sec-dashboard" class="space-y-5">
+    <section id="sec-dashboard" class="space-y-4">
       
       <!-- 1. Top Metric Cards in Pastel Palette -->
       <div>
-        <h2 class="text-xs font-bold text-slate-700 mb-2.5 flex items-center gap-1.5">
+        <h2 class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
           <span>📊</span> 1. สรุปจำนวนหลักสูตรตามระดับการศึกษา (ปีการศึกษา 2569)
         </h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
           
-          <div class="bg-[#f1f5f9] p-3.5 rounded-xl border border-slate-200 text-center">
+          <div class="bg-[#f1f5f9] p-3 rounded-xl border border-slate-200 text-center shadow-sm">
             <p class="text-[11px] font-medium text-slate-500">รวมทุกระดับ</p>
             <h3 class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5" id="dash-total-all">0</h3>
             <p class="text-[10px] text-slate-400">หลักสูตร</p>
           </div>
 
-          <div class="bg-[#eff6ff] p-3.5 rounded-xl border border-blue-100 text-center">
+          <div class="bg-[#eff6ff] p-3 rounded-xl border border-blue-100 text-center shadow-sm">
             <p class="text-[11px] font-medium text-blue-700">ปริญญาตรี</p>
             <h3 class="text-xl sm:text-2xl font-bold text-blue-900 mt-0.5" id="dash-total-bachelor">0</h3>
             <p class="text-[10px] text-blue-400">หลักสูตร</p>
           </div>
 
-          <div class="bg-[#eef2ff] p-3.5 rounded-xl border border-indigo-100 text-center">
+          <div class="bg-[#eef2ff] p-3 rounded-xl border border-indigo-100 text-center shadow-sm">
             <p class="text-[11px] font-medium text-indigo-700">ปริญญาโท</p>
             <h3 class="text-xl sm:text-2xl font-bold text-indigo-900 mt-0.5" id="dash-total-master">0</h3>
             <p class="text-[10px] text-indigo-400">หลักสูตร</p>
           </div>
 
-          <div class="bg-[#faf5ff] p-3.5 rounded-xl border border-purple-100 text-center">
+          <div class="bg-[#faf5ff] p-3 rounded-xl border border-purple-100 text-center shadow-sm">
             <p class="text-[11px] font-medium text-purple-700">ปริญญาเอก</p>
             <h3 class="text-xl sm:text-2xl font-bold text-purple-900 mt-0.5" id="dash-total-doctor">0</h3>
             <p class="text-[10px] text-purple-400">หลักสูตร</p>
           </div>
 
-          <div class="bg-[#f0fdfa] p-3.5 rounded-xl border border-teal-100 text-center">
+          <div class="bg-[#f0fdfa] p-3 rounded-xl border border-teal-100 text-center shadow-sm">
             <p class="text-[11px] font-medium text-teal-700">ป.บัณฑิต</p>
             <h3 class="text-xl sm:text-2xl font-bold text-teal-900 mt-0.5" id="dash-total-gradcert">0</h3>
             <p class="text-[10px] text-teal-400">หลักสูตร</p>
           </div>
 
-          <div class="bg-[#fffbeb] p-3.5 rounded-xl border border-amber-100 text-center">
+          <div class="bg-[#fffbeb] p-3 rounded-xl border border-amber-100 text-center shadow-sm">
             <p class="text-[11px] font-medium text-amber-700">ปวช.</p>
             <h3 class="text-xl sm:text-2xl font-bold text-amber-900 mt-0.5" id="dash-total-voc">0</h3>
             <p class="text-[10px] text-amber-400">หลักสูตร</p>
@@ -140,8 +173,8 @@
         </div>
       </div>
 
-      <!-- 2. Faculty Breakdown Table by Level -->
-      <div class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200/80 shadow-sm space-y-2.5">
+      <!-- 2. Faculty Breakdown Table by Level (Full Width) -->
+      <div class="bg-white p-3.5 sm:p-5 rounded-xl border border-slate-200/80 shadow-sm space-y-2.5 w-full">
         <div class="flex justify-between items-center border-b border-slate-100 pb-2">
           <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
             <span>🏛️</span> 2. จำนวนหลักสูตรของแต่ละคณะ แยกตามระดับการศึกษา (11 คณะ/วิทยาลัย)
@@ -149,7 +182,7 @@
           <span class="text-[11px] text-slate-400">จัดเรียงตามลำดับ</span>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto w-full">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
@@ -174,7 +207,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         
         <!-- 3. จำนวนหลักสูตรแยกตาม IQA -->
-        <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
+        <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
           <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
             <span>📋</span> 3. จำนวนหลักสูตรแยกตาม IQA
           </h3>
@@ -184,7 +217,7 @@
         </div>
 
         <!-- 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน -->
-        <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
+        <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
           <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
             <span>📐</span> 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน
           </h3>
@@ -194,7 +227,7 @@
         </div>
 
         <!-- 5. จำนวนหลักสูตรแยกตาม ISCED -->
-        <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
+        <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
           <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
             <span>🌐</span> 5. จำนวนหลักสูตรแยกตาม ISCED
           </h3>
@@ -208,18 +241,19 @@
     </section>
 
 
-    <!-- ==================== TAB 2: PROGRAM 2026 (หลักสูตรอุดมศึกษา) ==================== -->
-    <section id="sec-p2026" class="hidden space-y-3.5">
+    <!-- ==================== TAB 2: PROGRAM 2026 (หลักสูตรอุดมศึกษา - Full Responsive) ==================== -->
+    <section id="sec-p2026" class="hidden space-y-3">
       
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center">
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขา, ปี..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขา, ปี..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
-          <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
           </select>
 
-          <select id="filter-p2026-level" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-p2026-level" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกระดับการศึกษา</option>
             <option value="ปริญญาตรี">ปริญญาตรี</option>
             <option value="ปริญญาโท">ปริญญาโท</option>
@@ -227,7 +261,7 @@
             <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
           </select>
 
-          <select id="filter-p2026-iqa" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-p2026-iqa" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกเกณฑ์ IQA</option>
             <option value="สป.อว.">สป.อว.</option>
             <option value="AUNQA">AUNQA</option>
@@ -235,30 +269,31 @@
           </select>
         </div>
 
-        <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
           <span class="text-xs text-slate-500" id="p2026-count-label">แสดง 0 รายการ</span>
-          <button type="button" id="btn-add-p2026" onclick="checkAuthAndRun(() => openModalP2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+          <button type="button" id="btn-add-p2026" onclick="checkAuthAndRun(() => openModalP2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
             <span>+</span> เพิ่มหลักสูตรอุดมศึกษา
           </button>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-700">
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-3.5 whitespace-nowrap">รหัสหลักสูตร</th>
-                <th class="py-2.5 px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
-                <th class="py-2.5 px-3 whitespace-nowrap">ระดับ</th>
-                <th class="py-2.5 px-3.5 min-w-[180px]">หลักสูตร</th>
-                <th class="py-2.5 px-3.5 min-w-[180px]">สาขาวิชา</th>
-                <th class="py-2.5 px-3.5 min-w-[150px]">ปี พ.ศ.</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">IQA</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">เกณฑ์มาตรฐาน</th>
-                <th class="py-2.5 px-3.5 whitespace-nowrap">ISCED</th>
-                <th class="py-2.5 px-3.5 min-w-[120px]">หมายเหตุ</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap col-manage">จัดการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">ปี พ.ศ.</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">IQA</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[90px]">เกณฑ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">ISCED</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[90px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
             <tbody id="tbody-p2026" class="divide-y divide-slate-100">
@@ -270,44 +305,46 @@
     </section>
 
 
-    <!-- ==================== TAB 3: PROGRAM V2026 (หลักสูตร ปวช.) ==================== -->
-    <section id="sec-pV2026" class="hidden space-y-3.5">
+    <!-- ==================== TAB 3: PROGRAM V2026 (หลักสูตร ปวช. - Full Responsive) ==================== -->
+    <section id="sec-pV2026" class="hidden space-y-3">
       
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center">
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหาสาขา, ประเภทวิชา, กลุ่มอาชีพ..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหาสาขา, ประเภทวิชา, กลุ่มอาชีพ..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
-          <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
           </select>
 
-          <select id="filter-pV2026-cat" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-pV2026-cat" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกประเภทวิชา</option>
           </select>
         </div>
 
-        <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
           <span class="text-xs text-slate-500" id="pV2026-count-label">แสดง 0 รายการ</span>
-          <button type="button" id="btn-add-pV2026" onclick="checkAuthAndRun(() => openModalPV2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+          <button type="button" id="btn-add-pV2026" onclick="checkAuthAndRun(() => openModalPV2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
             <span>+</span> เพิ่มหลักสูตร ปวช.
           </button>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-700">
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
-                <th class="py-2.5 px-3.5 min-w-[140px]">ประเภทวิชา</th>
-                <th class="py-2.5 px-3.5 min-w-[140px]">กลุ่มอาชีพ</th>
-                <th class="py-2.5 px-3.5 min-w-[180px]">สาขาวิชา</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">ปี</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">ระดับ</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">ประเภท</th>
-                <th class="py-2.5 px-3.5 min-w-[120px]">หมายเหตุ</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap col-manage">จัดการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">ประเภทวิชา</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">กลุ่มอาชีพ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ปี</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ระดับ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ประเภท</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[100px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
             <tbody id="tbody-pV2026" class="divide-y divide-slate-100">
@@ -319,18 +356,19 @@
     </section>
 
 
-    <!-- ==================== TAB 4: PLAN (แผนการพัฒนาหลักสูตร) ==================== -->
-    <section id="sec-plan" class="hidden space-y-3.5">
+    <!-- ==================== TAB 4: PLAN (แผนการพัฒนาหลักสูตร - Full Responsive) ==================== -->
+    <section id="sec-plan" class="hidden space-y-3">
       
-      <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center">
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
-          <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
           </select>
 
-          <select id="filter-plan-level" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none">
+          <select id="filter-plan-level" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกระดับการศึกษา</option>
             <option value="ปริญญาตรี">ปริญญาตรี</option>
             <option value="ปริญญาโท">ปริญญาโท</option>
@@ -340,30 +378,31 @@
           </select>
         </div>
 
-        <div class="flex items-center gap-2.5 w-full md:w-auto justify-end">
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
           <span class="text-xs text-slate-500" id="plan-count-label">แสดง 0 รายการ</span>
-          <button type="button" id="btn-add-plan" onclick="checkAuthAndRun(() => openModalPlan('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+          <button type="button" id="btn-add-plan" onclick="checkAuthAndRun(() => openModalPlan('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
             <span>+</span> เพิ่มแผนการพัฒนาหลักสูตร
           </button>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-700">
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
-                <th class="py-2.5 px-3.5 min-w-[180px]">หลักสูตร</th>
-                <th class="py-2.5 px-3.5 min-w-[180px]">สาขาวิชา</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">ปี พ.ศ.</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap">ระดับ</th>
-                <th class="py-2.5 px-3 min-w-[150px]">1. วิพากษ์หลักสูตร</th>
-                <th class="py-2.5 px-3 min-w-[150px]">2. ขับเคลื่อนฯ</th>
-                <th class="py-2.5 px-3 min-w-[150px]">3. สภาวิชาการ</th>
-                <th class="py-2.5 px-3 min-w-[150px]">4. สภามหาวิทยาลัย</th>
-                <th class="py-2.5 px-3.5 min-w-[120px]">หมายเหตุ</th>
-                <th class="py-2.5 px-3 text-center whitespace-nowrap col-manage">จัดการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[110px]">ปี พ.ศ.</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">1. วิพากษ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">2. ขับเคลื่อนฯ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">3. สภาวิชาการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">4. สภามหาวิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[90px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
             <tbody id="tbody-plan" class="divide-y divide-slate-100">
@@ -377,7 +416,7 @@
   </main>
 
   <!-- MODAL: LOGIN / ENTER PASSWORD -->
-  <div id="modal-auth" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="modal-auth" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl shadow-xl max-w-xs w-full p-5 space-y-3.5 border border-slate-200">
       <div class="text-center space-y-1">
         <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-lg mx-auto">🔐</div>
@@ -396,7 +435,7 @@
   </div>
 
   <!-- MODAL: CHANGE PASSWORD -->
-  <div id="modal-change-pass" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="modal-change-pass" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl shadow-xl max-w-xs w-full p-5 space-y-3.5 border border-slate-200">
       <div class="text-center space-y-1">
         <h3 class="font-bold text-slate-800 text-sm">ตั้งค่ารหัสผ่านใหม่</h3>
@@ -421,20 +460,20 @@
   </div>
 
   <!-- MODAL: PROGRAM 2026 (อุดมศึกษา) -->
-  <div id="modal-p2026" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-5 space-y-3.5 border border-slate-200">
+  <div id="modal-p2026" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-4 sm:p-5 space-y-3.5 border border-slate-200 my-auto">
       <div class="flex justify-between items-center border-b pb-2.5">
         <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">🎓 <span id="p2026-form-title">เพิ่มหลักสูตรอุดมศึกษา</span></h3>
         <button type="button" onclick="closeModalP2026()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
       <form id="form-p2026" onsubmit="submitFormP2026(event)" class="space-y-3 text-xs">
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">รหัสหลักสูตร *</label><input type="text" id="p2026-id" required placeholder="เช่น 25511941103782" class="w-full border border-slate-200 rounded-lg p-2"></div>
           <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="p2026-fac" required class="w-full border border-slate-200 rounded-lg p-2 bg-white"></select></div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">ระดับ *</label><select id="p2026-level" required class="w-full border border-slate-200 rounded-lg p-2 bg-white"><option>ปริญญาตรี</option><option>ปริญญาโท</option><option>ปริญญาเอก</option><option>ประกาศนียบัตรบัณฑิต</option></select></div>
           
           <div>
@@ -455,7 +494,7 @@
         <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="p2026-name" required placeholder="เช่น ศิลปศาสตรบัณฑิต" class="w-full border border-slate-200 rounded-lg p-2"></div>
         <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="p2026-major" required placeholder="เช่น การท่องเที่ยวและการบริการ" class="w-full border border-slate-200 rounded-lg p-2"></div>
 
-        <div class="grid grid-cols-3 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div>
             <label class="block font-semibold mb-1">IQA *</label>
             <select id="p2026-iqa" required class="w-full border border-slate-200 rounded-lg p-2 bg-white font-medium">
@@ -492,25 +531,25 @@
   </div>
 
   <!-- MODAL: PROGRAM V2026 (ปวช.) -->
-  <div id="modal-pV2026" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-5 space-y-3.5 border border-slate-200">
+  <div id="modal-pV2026" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-4 sm:p-5 space-y-3.5 border border-slate-200 my-auto">
       <div class="flex justify-between items-center border-b pb-2.5">
         <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">🛠️ <span id="pV2026-form-title">เพิ่มหลักสูตร ปวช.</span></h3>
         <button type="button" onclick="closeModalPV2026()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
       <form id="form-pV2026" onsubmit="submitFormPV2026(event)" class="space-y-3 text-xs">
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="pV2026-fac" required class="w-full border border-slate-200 rounded-lg p-2 bg-white"></select></div>
           <div><label class="block font-semibold mb-1">ประเภทวิชา *</label><input type="text" id="pV2026-cat" required placeholder="เช่น ช่างอุตสาหกรรม" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">กลุ่มอาชีพ *</label><input type="text" id="pV2026-career" required placeholder="เช่น ช่างไฟฟ้า" class="w-full border border-slate-200 rounded-lg p-2"></div>
           <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="pV2026-major" required placeholder="เช่น สาขาวิชาช่างไฟฟ้ากำลัง" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div><label class="block font-semibold mb-1">ปี *</label><input type="text" id="pV2026-year" required placeholder="เช่น 2569" class="w-full border border-slate-200 rounded-lg p-2"></div>
           <div><label class="block font-semibold mb-1">ระดับ</label><input type="text" id="pV2026-level" value="ปวช." readonly class="w-full border border-slate-200 rounded-lg p-2 bg-slate-50"></div>
           <div><label class="block font-semibold mb-1">ประเภท</label><input type="text" id="pV2026-type" value="ปกติ" class="w-full border border-slate-200 rounded-lg p-2"></div>
@@ -526,15 +565,15 @@
   </div>
 
   <!-- MODAL: PLAN (แผนการพัฒนาหลักสูตร) -->
-  <div id="modal-plan" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-5 space-y-3.5 border border-slate-200">
+  <div id="modal-plan" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-4 sm:p-5 space-y-3.5 border border-slate-200 my-auto">
       <div class="flex justify-between items-center border-b pb-2.5">
         <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">🗓️ <span id="plan-form-title">เพิ่มแผนการพัฒนาหลักสูตร</span></h3>
         <button type="button" onclick="closeModalPlan()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
-      <form id="form-plan" onsubmit="submitFormPlan(event)" class="space-y-3.5 text-xs">
-        <div class="grid grid-cols-2 gap-2.5">
+      <form id="form-plan" onsubmit="submitFormPlan(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="plan-fac" required class="w-full border border-slate-200 rounded-lg p-2 bg-white"></select></div>
           <div>
             <label class="block font-semibold mb-1">ระดับการศึกษา *</label>
@@ -544,7 +583,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="plan-name" required placeholder="เช่น ศิลปศาสตรบัณฑิต" class="w-full border border-slate-200 rounded-lg p-2"></div>
           <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="plan-major" required placeholder="เช่น การท่องเที่ยวและการบริการ" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
@@ -552,18 +591,18 @@
         <div><label class="block font-semibold mb-1">ปี พ.ศ. เสนอเปิด/ปรับปรุง *</label><input type="text" id="plan-year" required placeholder="เช่น หลักสูตรปรับปรุง พ.ศ. 2571" class="w-full border border-slate-200 rounded-lg p-2"></div>
 
         <!-- 4 Step Status Matrix -->
-        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
           <div class="flex justify-between items-center">
             <label class="block font-bold text-slate-800 text-xs">📌 สถานะขั้นตอนการพิจารณาเสนอเข้าที่ประชุมต่าง ๆ</label>
             <span class="text-[11px] text-slate-400">เลือกสถานะ และ พิมพ์เดือน/วันที่</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             
             <!-- Step 1: วิพากษ์ -->
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1.5">
+            <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1">
               <label class="block font-bold text-slate-700 text-xs">1. ขั้นตอนวิพากษ์หลักสูตร</label>
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <select id="plan-step1-status" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs bg-white">
                   <option value="แผนที่ตั้งไว้">📅 แผนที่ตั้งไว้</option>
                   <option value="ผ่านแล้ว">✅ ผ่านแล้ว</option>
@@ -575,9 +614,9 @@
             </div>
 
             <!-- Step 2: ขับเคลื่อนฯ -->
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1.5">
+            <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1">
               <label class="block font-bold text-slate-700 text-xs">2. ขั้นตอนขับเคลื่อนฯ</label>
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <select id="plan-step2-status" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs bg-white">
                   <option value="แผนที่ตั้งไว้">📅 แผนที่ตั้งไว้</option>
                   <option value="ผ่านแล้ว">✅ ผ่านแล้ว</option>
@@ -589,9 +628,9 @@
             </div>
 
             <!-- Step 3: สภาวิชาการ -->
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1.5">
+            <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1">
               <label class="block font-bold text-slate-700 text-xs">3. ขั้นตอนสภาวิชาการ</label>
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <select id="plan-step3-status" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs bg-white">
                   <option value="แผนที่ตั้งไว้">📅 แผนที่ตั้งไว้</option>
                   <option value="ผ่านแล้ว">✅ ผ่านแล้ว</option>
@@ -603,9 +642,9 @@
             </div>
 
             <!-- Step 4: สภามหาวิทยาลัย -->
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 space-y-1.5">
+            <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1">
               <label class="block font-bold text-slate-700 text-xs">4. ขั้นตอนสภามหาวิทยาลัย</label>
-              <div class="space-y-1.5">
+              <div class="space-y-1">
                 <select id="plan-step4-status" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs bg-white">
                   <option value="แผนที่ตั้งไว้">📅 แผนที่ตั้งไว้</option>
                   <option value="ผ่านแล้ว">✅ ผ่านแล้ว</option>
@@ -630,7 +669,7 @@
   </div>
 
   <!-- MODAL DELETE -->
-  <div id="modal-del" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="modal-del" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-5 text-center space-y-3.5 border border-slate-200">
       <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center text-lg mx-auto font-bold">⚠️</div>
       <div>
@@ -715,31 +754,32 @@
     // Password Protection Handling
     function renderAdminUI() {
       const container = document.getElementById('admin-mode-container');
-      if (isAdminUnlocked) {
-        container.innerHTML = `
-          <div class="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-2.5 py-1 rounded-lg">
-            <span class="text-[11px] font-semibold">🔓 โหมดแก้ไข (Admin)</span>
-            <button type="button" onclick="openModalChangePass()" title="เปลี่ยนรหัสผ่าน" class="hover:text-white px-1 font-mono text-[11px]">⚙️</button>
-            <button type="button" onclick="lockAdmin()" class="bg-black/20 hover:bg-black/40 text-slate-200 hover:text-white px-1.5 py-0.5 rounded text-[10px] ml-1">ออกจากโหมดแก้ไข</button>
-          </div>
-        `;
-      } else {
-        container.innerHTML = `
-          <button type="button" onclick="openModalAuth()" class="bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/30 text-amber-200 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition">
-            <span>🔐</span>
-            <span class="text-[11px] font-semibold">เข้าสู่ระบบแก้ไข</span>
-          </button>
-        `;
-      }
+      const containerMobile = document.getElementById('admin-mode-container-mobile');
+      
+      const adminHtml = isAdminUnlocked ? `
+        <div class="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-2.5 py-1 rounded-lg">
+          <span class="text-[11px] font-semibold">🔓 โหมดแก้ไข (Admin)</span>
+          <button type="button" onclick="openModalChangePass()" title="เปลี่ยนรหัสผ่าน" class="hover:text-white px-1 font-mono text-[11px]">⚙️</button>
+          <button type="button" onclick="lockAdmin()" class="bg-black/20 hover:bg-black/40 text-slate-200 hover:text-white px-1.5 py-0.5 rounded text-[10px] ml-1">ออกจากโหมดแก้ไข</button>
+        </div>
+      ` : `
+        <button type="button" onclick="openModalAuth()" class="bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/30 text-amber-200 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <span>🔐</span>
+          <span class="text-[11px] font-semibold">เข้าสู่ระบบแก้ไข</span>
+        </button>
+      `;
+
+      if (container) container.innerHTML = adminHtml;
+      if (containerMobile) containerMobile.innerHTML = adminHtml;
 
       // Toggle visibility or state of Add buttons
       ['btn-add-p2026', 'btn-add-pV2026', 'btn-add-plan'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           if (isAdminUnlocked) {
-            btn.className = "bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1";
+            btn.className = "bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap";
           } else {
-            btn.className = "bg-slate-200 text-slate-500 hover:bg-slate-300 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition flex items-center gap-1";
+            btn.className = "bg-slate-200 text-slate-500 hover:bg-slate-300 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition flex items-center gap-1 whitespace-nowrap";
           }
         }
       });
@@ -841,11 +881,11 @@
       const dot = document.getElementById('api-status-dot');
       const text = document.getElementById('api-status-text');
       if (isConnected) {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-        text.innerText = "Google Sheets สด";
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+        if (text) text.innerText = "Google Sheets สด";
       } else {
-        dot.className = "w-2 h-2 rounded-full bg-amber-400";
-        text.innerText = "ในเครื่อง";
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-amber-400";
+        if (text) text.innerText = "ในเครื่อง";
       }
     }
 
@@ -1129,24 +1169,24 @@
         if (isAdminUnlocked) {
           manageButtons = `
             <div class="flex justify-center gap-1">
-              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
             </div>
           `;
         }
 
         tr.innerHTML = `
-          <td class="py-2.5 px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">${item["รหัสหลักสูตร"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-800">${item["คณะ"]}</td>
-          <td class="py-2.5 px-3 text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
-          <td class="py-2.5 px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-600">${item["ปี"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700 whitespace-nowrap">${item["IQA"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700 whitespace-nowrap">${item["เกณฑ์"] || "-"}</td>
-          <td class="py-2.5 px-3.5 text-slate-700 whitespace-nowrap">${item["ISCED"] || "-"}</td>
-          <td class="py-2.5 px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">${item["รหัสหลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-600">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["IQA"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["เกณฑ์"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["ISCED"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1191,22 +1231,22 @@
         if (isAdminUnlocked) {
           manageButtons = `
             <div class="flex justify-center gap-1">
-              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
             </div>
           `;
         }
 
         tr.innerHTML = `
-          <td class="py-2.5 px-3.5 text-slate-800">${item["คณะ"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-700">${item["ประเภทวิชา"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-600">${item["กลุ่มอาชีพ"]}</td>
-          <td class="py-2.5 px-3.5 font-semibold text-slate-900">${item["สาขาวิชา"]}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700 whitespace-nowrap">${item["ปี"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"] || "ปวช."}</td>
-          <td class="py-2.5 px-3 text-center text-slate-600 whitespace-nowrap">${item["ประเภท"] || "ปกติ"}</td>
-          <td class="py-2.5 px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["ประเภทวิชา"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-600">${item["กลุ่มอาชีพ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"] || "ปวช."}</td>
+          <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ประเภท"] || "ปกติ"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1259,24 +1299,24 @@
         if (isAdminUnlocked) {
           manageButtons = `
             <div class="flex justify-center gap-1">
-              <button type="button" onclick="openModalPlan('edit', ${globalIdx})" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+              <button type="button" onclick="openModalPlan('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
             </div>
           `;
         }
 
         tr.innerHTML = `
-          <td class="py-2.5 px-3.5 text-slate-800">${item["คณะ"]}</td>
-          <td class="py-2.5 px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
-          <td class="py-2.5 px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
-          <td class="py-2.5 px-3 text-center text-slate-600 whitespace-nowrap">${item["ปี"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
-          <td class="py-2.5 px-3 text-slate-700">${item["วิพากษ์"] || "-"}</td>
-          <td class="py-2.5 px-3 text-slate-700">${item["ขับเคลื่อนฯ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-slate-700">${item["สภาวิชาการ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-slate-700">${item["สภามหาวิทยาลัย"] || "-"}</td>
-          <td class="py-2.5 px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["วิพากษ์"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["ขับเคลื่อนฯ"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["สภาวิชาการ"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["สภามหาวิทยาลัย"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
         tbody.appendChild(tr);
       });

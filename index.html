@@ -35,16 +35,12 @@
         </div>
       </div>
 
-      <!-- Mode Indicator & Restore Button -->
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        <button type="button" onclick="restoreDefaultData()" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-200 px-3 py-1.5 rounded-lg flex items-center gap-1 transition">
-          <span>🔄</span> รีเซ็ตข้อมูลตัวอย่าง
-        </button>
-
-        <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
-          <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="api-status-text">โหมดในเครื่อง (Offline Mode)</span>
-          <span class="text-[10px] text-sky-300">⚙️ ตั้งค่า API</span>
+      <!-- Mode Indicator Button -->
+      <div class="flex items-center gap-2 text-xs">
+        <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3 py-2 rounded-xl flex items-center gap-2 transition shadow-sm">
+          <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          <span id="api-status-text" class="font-medium">โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อ Google Sheets)</span>
+          <span class="text-xs bg-sky-500/30 text-sky-200 px-2 py-0.5 rounded-md font-semibold">⚙️ ตั้งค่า API</span>
         </button>
       </div>
     </div>
@@ -55,13 +51,13 @@
         <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2.5 px-2 text-amber-300 border-b-2 border-amber-400 font-semibold flex items-center gap-1.5">
           📊 แดชบอร์ดสรุปภาพรวม (Summary)
         </button>
-        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
           🎓 หลักสูตรอุดมศึกษา (Program2026)
         </button>
-        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
           🛠️ หลักสูตร ปวช. (ProgramV2026)
         </button>
-        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5">
+        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
           🗓️ แผนพัฒนาหลักสูตร (Plan)
         </button>
       </nav>
@@ -72,14 +68,14 @@
   <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all">
     <div class="max-w-7xl mx-auto space-y-3 text-xs">
       <div class="flex justify-between items-center">
-        <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">⚙️ ตั้งค่าการเชื่อมต่อ Google Sheets API</h3>
+        <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">⚙️ ตั้งค่าการเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
         <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
       </div>
-      <p class="text-slate-300">เมื่อต้องการเชื่อมต่อ Google Sheets ให้ใส่ Web App URL ของบัญชี <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">wilas.w@rmutp.ac.th</code> หากทดลองบนเครื่อง ให้ลบ URL ออกแล้วกด "ใช้งานโหมดในเครื่อง (Offline)"</p>
+      <p class="text-slate-300">นำ Web App URL ของไฟล์ Google Sheets <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">curr_by_year_2026</code> ในบัญชี <code class="bg-slate-800 px-1.5 py-0.5 rounded text-sky-300">wilas.w@rmutp.ac.th</code> มาวางเพื่อบันทึกข้อมูลสดลงไฟล์ Google Sheets โดยตรง</p>
       <div class="flex flex-col sm:flex-row gap-2">
         <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500 font-mono text-xs">
-        <button type="button" onclick="saveGasUrl()" class="bg-sky-600 hover:bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg transition">บันทึก & เชื่อมต่อสด</button>
-        <button type="button" onclick="resetToLocalData()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition">ใช้งานโหมดในเครื่อง (Offline)</button>
+        <button type="button" onclick="saveGasUrl()" class="bg-sky-600 hover:bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg transition">บันทึก & เชื่อมต่อ Google Sheets สด</button>
+        <button type="button" onclick="resetToLocalData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold px-4 py-2 rounded-lg transition">ยกเลิกการเชื่อมต่อ</button>
       </div>
     </div>
   </div>
@@ -513,41 +509,25 @@
       "วิทยาลัยนานาชาติ"
     ];
 
-    const defaultP2026 = [
-      { "รหัสหลักสูตร": "10169001", "คณะ": "คณะวิศวกรรมศาสตร์", "ระดับ": "ปริญญาตรี", "หลักสูตร": "วิศวกรรมศาสตรบัณฑิต", "สาขาวิชา": "วิศวกรรมเครื่องกล", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0715", "หมายเหตุ": "ปรับปรุง 2565" },
-      { "รหัสหลักสูตร": "10169002", "คณะ": "คณะวิศวกรรมศาสตร์", "ระดับ": "ปริญญาโท", "หลักสูตร": "วิศวกรรมศาสตรมหาบัณฑิต", "สาขาวิชา": "วิศวกรรมไฟฟ้า", "ปี": "หลักสูตรใหม่ พ.ศ. 2570", "IQA": "ABET", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0713", "หมายเหตุ": "หลักสูตรใหม่ 2570" },
-      { "รหัสหลักสูตร": "10269001", "คณะ": "คณะบริหารธุรกิจ", "ระดับ": "ปริญญาตรี", "หลักสูตร": "บริหารธุรกิจบัณฑิต", "สาขาวิชา": "การตลาดดิจิทัล", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "AUNQA", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0415", "หมายเหตุ": "-" },
-      { "รหัสหลักสูตร": "10869001", "คณะ": "คณะสถาปัตยกรรมศาสตร์และการออกแบบ", "ระดับ": "ปริญญาตรี", "หลักสูตร": "สถาปัตยกรรมศาสตรบัณฑิต", "สาขาวิชา": "สถาปัตยกรรม", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2566", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0731", "หมายเหตุ": "หลักสูตรปรับปรุง" },
-      { "รหัสหลักสูตร": "10769001", "คณะ": "คณะอุตสาหกรรมสิ่งทอและออกแบบแฟชั่น", "ระดับ": "ปริญญาตรี", "หลักสูตร": "วิทยาศาสตรบัณฑิต", "สาขาวิชา": "การออกแบบแฟชั่นและสิ่งทอ", "ปี": "หลักสูตรปรับปรุง พ.ศ. 2565", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0212", "หมายเหตุ": "-" },
-      { "รหัสหลักสูตร": "10969001", "คณะ": "วิทยาลัยบริหารแห่งรัฐ", "ระดับ": "ปริญญาโท", "หลักสูตร": "รัฐประศาสนศาสตรมหาบัณฑิต", "สาขาวิชา": "การบริหารภาครัฐดิจิทัล", "ปี": "หลักสูตรใหม่ พ.ศ. 2569", "IQA": "สป.อว.", "เกณฑ์": "พ.ศ. 2565", "ISCED": "0413", "หมายเหตุ": "หลักสูตรใหม่" }
-    ];
-
-    const defaultPV2026 = [
-      { "คณะ": "คณะครุศาสตร์อุตสาหกรรม", "ประเภทวิชา": "ช่างอุตสาหกรรม", "กลุ่มอาชีพ": "ช่างไฟฟ้า", "สาขาวิชา": "สาขาวิชาช่างไฟฟ้ากำลัง", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "รับ ม.3" },
-      { "คณะ": "คณะครุศาสตร์อุตสาหกรรม", "ประเภทวิชา": "ช่างอุตสาหกรรม", "กลุ่มอาชีพ": "ช่างยนต์", "สาขาวิชา": "สาขาวิชาช่างยนต์", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "-" },
-      { "คณะ": "คณะบริหารธุรกิจ", "ประเภทวิชา": "พาณิชยกรรม", "กลุ่มอาชีพ": "การบัญชี", "สาขาวิชา": "สาขาวิชาการบัญชี", "ปี": "2569", "ระดับ": "ปวช.", "ประเภท": "ปกติ", "หมายเหตุ": "-" }
-    ];
-
-    const defaultPlan = [
-      { "คณะ": "คณะวิศวกรรมศาสตร์", "หลักสูตร": "วิศวกรรมศาสตรบัณฑิต", "สาขาวิชา": "วิศวกรรมคอมพิวเตอร์และระบบปัญญาประดิษฐ์", "ปี": "2569", "ระดับ": "ปริญญาตรี", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "ผ่านแล้ว", "สภาวิชาการ": "กุมภาพันธ์ 2569", "สภามหาวิทยาลัย": "มีนาคม 2569", "หมายเหตุ": "หลักสูตรใหม่" },
-      { "คณะ": "คณะบริหารธุรกิจ", "หลักสูตร": "บริหารธุรกิจบัณฑิต", "สาขาวิชา": "ธุรกิจระหว่างประเทศและโลจิสติกส์", "ปี": "2569", "ระดับ": "ปริญญาตรี", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "มกราคม 2569", "สภาวิชาการ": "มีนาคม 2569", "สภามหาวิทยาลัย": "เมษายน 2569", "หมายเหตุ": "ปรับปรุง พ.ศ. 2569" },
-      { "คณะ": "วิทยาลัยบริหารแห่งรัฐ", "หลักสูตร": "รัฐประศาสนศาสตรมหาบัณฑิต", "สาขาวิชา": "การบริหารงานภาครัฐและนวัตกรรม", "ปี": "2569", "ระดับ": "ปริญญาโท", "วิพากษ์": "ผ่านแล้ว", "ขับเคลื่อนฯ": "ผ่านแล้ว", "สภาวิชาการ": "ผ่านแล้ว", "สภามหาวิทยาลัย": "กุมภาพันธ์ 2569", "หมายเหตุ": "เตรียมเสนอสภามหาวิทยาลัย" }
-    ];
+    // Clean Start: Default arrays are EMPTY (0 items sample data)
+    const defaultP2026 = [];
+    const defaultPV2026 = [];
+    const defaultPlan = [];
 
     let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || '';
 
-    // Fixed Persistence Initialization (Support complete deletion without restoring defaults on refresh)
+    // Data State Initialization
     let rawP2026 = localStorage.getItem('RMUTP_LOCAL_P2026');
-    let dataP2026 = rawP2026 !== null ? JSON.parse(rawP2026) : [...defaultP2026];
-    if (!Array.isArray(dataP2026)) dataP2026 = [...defaultP2026];
+    let dataP2026 = rawP2026 !== null ? JSON.parse(rawP2026) : [];
+    if (!Array.isArray(dataP2026)) dataP2026 = [];
 
     let rawPV2026 = localStorage.getItem('RMUTP_LOCAL_PV2026');
-    let dataPV2026 = rawPV2026 !== null ? JSON.parse(rawPV2026) : [...defaultPV2026];
-    if (!Array.isArray(dataPV2026)) dataPV2026 = [...defaultPV2026];
+    let dataPV2026 = rawPV2026 !== null ? JSON.parse(rawPV2026) : [];
+    if (!Array.isArray(dataPV2026)) dataPV2026 = [];
 
     let rawPlan = localStorage.getItem('RMUTP_LOCAL_PLAN');
-    let dataPlan = rawPlan !== null ? JSON.parse(rawPlan) : [...defaultPlan];
-    if (!Array.isArray(dataPlan)) dataPlan = [...defaultPlan];
+    let dataPlan = rawPlan !== null ? JSON.parse(rawPlan) : [];
+    if (!Array.isArray(dataPlan)) dataPlan = [];
 
     saveLocalStorage();
 
@@ -558,8 +538,10 @@
       populateFaculties();
       if (gasUrl) {
         document.getElementById('gas-url-input').value = gasUrl;
+        updateApiStatusUI(true);
         fetchData();
       } else {
+        updateApiStatusUI(false);
         renderAll();
       }
     });
@@ -570,21 +552,26 @@
       localStorage.setItem('RMUTP_LOCAL_PLAN', JSON.stringify(dataPlan));
     }
 
-    function restoreDefaultData() {
-      dataP2026 = [...defaultP2026];
-      dataPV2026 = [...defaultPV2026];
-      dataPlan = [...defaultPlan];
-      saveLocalStorage();
-      renderAll();
-      showToast("🔄 รีเซ็ตข้อมูลตัวอย่างเริ่มต้นเรียบร้อยแล้ว", "success");
-    }
-
     function resetToLocalData() {
       localStorage.removeItem('RMUTP_GAS_URL_FULL');
       gasUrl = '';
       document.getElementById('gas-url-input').value = '';
-      restoreDefaultData();
+      updateApiStatusUI(false);
+      renderAll();
       toggleApiSettings();
+      showToast("ℹ️ สลับเป็นโหมดในเครื่อง (ยกเลิกเชื่อมต่อแล้ว)", "info");
+    }
+
+    function updateApiStatusUI(isConnected) {
+      const dot = document.getElementById('api-status-dot');
+      const text = document.getElementById('api-status-text');
+      if (isConnected) {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = "🟢 เชื่อมต่อ Google Sheets สดแล้ว (curr_by_year_2026)";
+      } else {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400";
+        text.innerText = "โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อ Google Sheets)";
+      }
     }
 
     function populateFaculties() {
@@ -634,6 +621,7 @@
       }
       gasUrl = u;
       localStorage.setItem('RMUTP_GAS_URL_FULL', gasUrl);
+      updateApiStatusUI(true);
       fetchData();
       toggleApiSettings();
     }
@@ -655,9 +643,10 @@
         if (Array.isArray(res3)) dataPlan = res3;
         saveLocalStorage();
         renderAll();
-        showToast("✅ เชื่อมต่อ Google Sheets สำเร็จ", "success");
+        showToast("✅ เชื่อมต่อสดกับ Google Sheets เรียบร้อยแล้ว", "success");
       } catch (err) {
         console.warn("GAS Fetch warning:", err);
+        showToast("⚠️ ไม่สามารถดึงข้อมูลสดได้: " + err.message, "error");
         renderAll();
       }
     }
@@ -705,9 +694,11 @@
       const container = document.getElementById('chart-faculty-bars');
       container.innerHTML = '';
 
+      let hasFacData = false;
       Object.keys(facMap).forEach(fac => {
         const total = facMap[fac].h + facMap[fac].v;
         if (total === 0) return;
+        hasFacData = true;
         const hPct = (facMap[fac].h / maxCount) * 100;
         const vPct = (facMap[fac].v / maxCount) * 100;
 
@@ -725,6 +716,10 @@
         `;
         container.appendChild(row);
       });
+
+      if (!hasFacData) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">ยังไม่มีข้อมูลหลักสูตรในระบบ</p>`;
+      }
 
       const levels = { "ปริญญาตรี": 0, "ปริญญาโท": 0, "ปริญญาเอก": 0, "ป.บัณฑิต": 0, "ปวช.": totVoc };
       dataP2026.forEach(d => {
@@ -810,7 +805,7 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ไม่พบข้อมูลหลักสูตรอุดมศึกษา</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตรอุดมศึกษา</td></tr>`;
         return;
       }
 
@@ -873,7 +868,7 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">ไม่พบข้อมูลหลักสูตร ปวช.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตร ปวช.</td></tr>`;
         return;
       }
 
@@ -902,7 +897,6 @@
       });
     }
 
-    // Fixed & Robust Plan Filter
     function filterPlan() {
       const search = (document.getElementById('search-plan')?.value || '').toLowerCase().trim();
       const fac = document.getElementById('filter-plan-fac')?.value || '';
@@ -933,7 +927,7 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ไม่พบรายการแผนพัฒนาหลักสูตร</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ยังไม่มีรายการแผนพัฒนาหลักสูตร</td></tr>`;
         return;
       }
 

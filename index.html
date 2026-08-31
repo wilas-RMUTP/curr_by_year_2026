@@ -45,8 +45,8 @@
 
         <!-- API Settings Button -->
         <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/15 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
-          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
-          <span id="api-status-text" class="text-[11px] font-medium">Google Sheets</span>
+          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="api-status-text" class="text-[11px] font-medium">Google Sheets สด</span>
           <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">⚙️</span>
         </button>
       </div>
@@ -78,11 +78,11 @@
         <h3 class="font-bold text-amber-300 text-xs">⚙️ การเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
         <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
       </div>
-      <p class="text-slate-300 text-[11px]">นำ Web App URL ของ Google Sheets มาวางเพื่อเชื่อมต่อข้อมูลสด</p>
+      <p class="text-slate-300 text-[11px]">เชื่อมต่อสดอัตโนมัติผ่าน Google Apps Script Web App</p>
       <div class="flex flex-col sm:flex-row gap-2">
         <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-indigo-400 font-mono text-xs">
         <button type="button" onclick="saveGasUrl()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3.5 py-1.5 rounded-lg transition text-xs">บันทึกเชื่อมต่อสด</button>
-        <button type="button" onclick="resetToLocalData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg transition text-xs">ยกเลิกเชื่อมต่อ</button>
+        <button type="button" onclick="resetToLocalData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg transition text-xs">โหมดในเครื่อง</button>
       </div>
     </div>
   </div>
@@ -644,6 +644,9 @@
   </div>
 
   <script>
+    // URL Google Apps Script ที่เชื่อมต่อ Google Sheet จริงโดยตรง
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwtWApv4ELTYw9ufX0UyjuNjZq9ZKuURh8Ya21X2YFt_DNpxCwb7namOxAKDWZIXPH4/exec";
+
     // 11 Faculties ordered strictly
     const facultiesList = [
       "ศิลปศาสตร์",
@@ -663,22 +666,20 @@
     let adminPass = localStorage.getItem('RMUTP_ADMIN_PASS') || 'rmutp2569';
     let isAdminUnlocked = localStorage.getItem('RMUTP_IS_ADMIN') === 'true';
 
-    let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || '';
+    let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || DEFAULT_GAS_URL;
 
     // Data State Initialization
     let rawP2026 = localStorage.getItem('RMUTP_LOCAL_P2026');
-    let dataP2026 = rawP2026 !== null ? JSON.parse(rawP2026) : [];
+    let dataP2026 = (gasUrl ? [] : (rawP2026 !== null ? JSON.parse(rawP2026) : []));
     if (!Array.isArray(dataP2026)) dataP2026 = [];
 
     let rawPV2026 = localStorage.getItem('RMUTP_LOCAL_PV2026');
-    let dataPV2026 = rawPV2026 !== null ? JSON.parse(rawPV2026) : [];
+    let dataPV2026 = (gasUrl ? [] : (rawPV2026 !== null ? JSON.parse(rawPV2026) : []));
     if (!Array.isArray(dataPV2026)) dataPV2026 = [];
 
     let rawPlan = localStorage.getItem('RMUTP_LOCAL_PLAN');
-    let dataPlan = rawPlan !== null ? JSON.parse(rawPlan) : [];
+    let dataPlan = (gasUrl ? [] : (rawPlan !== null ? JSON.parse(rawPlan) : []));
     if (!Array.isArray(dataPlan)) dataPlan = [];
-
-    saveLocalStorage();
 
     let delContext = { sheet: '', index: -1, displayName: '' };
     let editContext = { sheet: '', index: -1 };
@@ -687,12 +688,12 @@
     document.addEventListener("DOMContentLoaded", () => {
       populateFaculties();
       renderAdminUI();
+      document.getElementById('gas-url-input').value = gasUrl;
+      updateApiStatusUI(!!gasUrl);
+      
       if (gasUrl) {
-        document.getElementById('gas-url-input').value = gasUrl;
-        updateApiStatusUI(true);
         fetchData();
       } else {
-        updateApiStatusUI(false);
         renderAll();
       }
     });
@@ -905,12 +906,12 @@
           fetch(`${gasUrl}?sheet=ProgramV2026`).then(r => r.json()),
           fetch(`${gasUrl}?sheet=Plan`).then(r => r.json())
         ]);
-        if (Array.isArray(res1)) dataP2026 = res1;
-        if (Array.isArray(res2)) dataPV2026 = res2;
-        if (Array.isArray(res3)) dataPlan = res3;
+        dataP2026 = Array.isArray(res1) ? res1 : [];
+        dataPV2026 = Array.isArray(res2) ? res2 : [];
+        dataPlan = Array.isArray(res3) ? res3 : [];
         saveLocalStorage();
         renderAll();
-        showToast("✅ เชื่อมต่อสดกับ Google Sheets เรียบร้อยแล้ว", "success");
+        showToast("✅ ดึงข้อมูลสดจาก Google Sheets สำเร็จ", "success");
       } catch (err) {
         console.warn("GAS Fetch warning:", err);
         showToast("⚠️ ไม่สามารถดึงข้อมูลสดได้: " + err.message, "error");

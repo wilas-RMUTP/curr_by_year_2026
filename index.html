@@ -387,7 +387,13 @@
             </select>
           </div>
 
-          <div><label class="block font-semibold mb-1">รหัส ISCED</label><input type="text" id="p2026-isced" placeholder="เช่น 0715" class="w-full border rounded-xl p-2.5"></div>
+          <div>
+            <label class="block font-semibold mb-1">ISCED *</label>
+            <select id="p2026-isced" required class="w-full border rounded-xl p-2.5 bg-white font-medium">
+              <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
+              <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
+            </select>
+          </div>
         </div>
         <div><label class="block font-semibold mb-1">หมายเหตุ</label><input type="text" id="p2026-note" placeholder="รายละเอียดเพิ่มเติม..." class="w-full border rounded-xl p-2.5"></div>
 
@@ -654,9 +660,10 @@
     async function postApi(sheetName, action, item) {
       if (gasUrl) {
         try {
-          // Fixed CORS preflight by using Content-Type: text/plain;charset=utf-8
+          // Added mode: 'no-cors' to guarantee cross-domain Apps Script POST execution
           await fetch(gasUrl, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ sheet: sheetName, action, data: item })
           });
@@ -826,7 +833,7 @@
             <span class="px-2 py-0.5 rounded font-bold ${getIqaBadgeClass(item["IQA"])}">${item["IQA"] || "-"}</span>
           </td>
           <td class="py-2.5 px-4 text-center font-medium text-slate-700">${item["เกณฑ์"] || "-"}</td>
-          <td class="py-2.5 px-4 font-mono text-slate-500">${item["ISCED"] || "-"}</td>
+          <td class="py-2.5 px-4 font-medium text-slate-700">${item["ISCED"] || "-"}</td>
           <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-4 text-center">
             <div class="flex justify-center gap-1">
@@ -981,7 +988,7 @@
         document.getElementById('p2026-year').value = item["ปี"] || "หลักสูตรปรับปรุง พ.ศ. 2565";
         document.getElementById('p2026-iqa').value = item["IQA"] || "สป.อว.";
         document.getElementById('p2026-std').value = item["เกณฑ์"] || "พ.ศ. 2565";
-        document.getElementById('p2026-isced').value = item["ISCED"] || "";
+        document.getElementById('p2026-isced').value = item["ISCED"] || "มนุษยศาสตร์และสังคมศาสตร์";
         document.getElementById('p2026-note').value = item["หมายเหตุ"] || "";
       } else {
         idInp.readOnly = false;
@@ -989,6 +996,7 @@
         document.getElementById('p2026-year').value = "หลักสูตรปรับปรุง พ.ศ. 2565";
         document.getElementById('p2026-iqa').value = "สป.อว.";
         document.getElementById('p2026-std').value = "พ.ศ. 2565";
+        document.getElementById('p2026-isced').value = "มนุษยศาสตร์และสังคมศาสตร์";
       }
       document.getElementById('modal-p2026').classList.remove('hidden');
     }
@@ -1007,7 +1015,7 @@
           "ปี": document.getElementById('p2026-year').value.trim(),
           "IQA": document.getElementById('p2026-iqa').value,
           "เกณฑ์": document.getElementById('p2026-std').value,
-          "ISCED": document.getElementById('p2026-isced').value.trim(),
+          "ISCED": document.getElementById('p2026-isced').value,
           "หมายเหตุ": document.getElementById('p2026-note').value.trim()
         };
 

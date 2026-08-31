@@ -24,7 +24,8 @@
   <header class="bg-gradient-to-r from-slate-800 via-slate-700 to-indigo-900/90 text-white shadow-md sticky top-0 z-30 border-b border-indigo-200/20">
     <div class="max-w-7xl mx-auto px-4 py-3.5 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur border border-white/20 text-amber-200 font-bold text-lg flex items-center justify-center shadow-inner">
+        <!-- Logo RMUTP in Soft Pastel Purple -->
+        <div class="w-10 h-10 rounded-xl bg-purple-500/20 backdrop-blur border border-purple-300/30 text-[#d8b4fe] font-bold text-lg flex items-center justify-center shadow-inner">
           RMUTP
         </div>
         <div>
@@ -662,6 +663,19 @@
       "วิทยาลัยนานาชาติ"
     ];
 
+    // Function to get Faculty Sorting Index
+    function getFacultyOrder(fac) {
+      if (!fac) return 999;
+      const clean = fac.replace(/^คณะ|^วิทยาลัย/, '').trim();
+      for (let i = 0; i < facultiesList.length; i++) {
+        const listClean = facultiesList[i].replace(/^คณะ|^วิทยาลัย/, '').trim();
+        if (clean === listClean || fac === facultiesList[i] || fac === ("คณะ" + facultiesList[i]) || fac === ("วิทยาลัย" + facultiesList[i])) {
+          return i;
+        }
+      }
+      return 999;
+    }
+
     // Password Protection & State
     let adminPass = localStorage.getItem('RMUTP_ADMIN_PASS') || 'rmutp2569';
     let isAdminUnlocked = localStorage.getItem('RMUTP_IS_ADMIN') === 'true';
@@ -946,8 +960,8 @@
 
     function isFacMatch(itemFac, targetFac) {
       if (!itemFac || !targetFac) return false;
-      const cleanItem = itemFac.replace(/^คณะ/, '').trim();
-      const cleanTarget = targetFac.replace(/^คณะ/, '').trim();
+      const cleanItem = itemFac.replace(/^คณะ|^วิทยาลัย/, '').trim();
+      const cleanTarget = targetFac.replace(/^คณะ|^วิทยาลัย/, '').trim();
       return cleanItem === cleanTarget;
     }
 
@@ -1073,7 +1087,7 @@
       });
     }
 
-    // CRUD Filters & Clean Table Rendering
+    // CRUD Filters & Clean Table Rendering (Sorted by Faculty Order)
     function filterP2026() {
       const search = (document.getElementById('search-p2026')?.value || '').toLowerCase().trim();
       const fac = document.getElementById('filter-p2026-fac')?.value || '';
@@ -1088,6 +1102,9 @@
         const matchIqa = !iqa || d["IQA"] === iqa;
         return matchSearch && matchFac && matchLevel && matchIqa;
       });
+
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
 
       renderP2026(filtered);
     }
@@ -1147,6 +1164,9 @@
         const matchCat = !cat || d["ประเภทวิชา"] === cat;
         return matchSearch && matchFac && matchCat;
       });
+
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
 
       renderPV2026(filtered);
     }
@@ -1212,6 +1232,9 @@
 
         return matchSearch && matchFac && matchLevel;
       });
+
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
 
       renderPlan(filtered);
     }

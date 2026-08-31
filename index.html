@@ -654,9 +654,10 @@
     async function postApi(sheetName, action, item) {
       if (gasUrl) {
         try {
+          // Fixed CORS preflight by using Content-Type: text/plain;charset=utf-8
           await fetch(gasUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ sheet: sheetName, action, data: item })
           });
         } catch (e) {

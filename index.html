@@ -10,7 +10,7 @@
     body { font-family: 'Sarabun', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-100 text-slate-800 min-h-screen">
 
   <!-- Toast Notification -->
   <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
@@ -20,62 +20,62 @@
     </div>
   </div>
 
-  <!-- Top Header -->
-  <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30 border-b border-slate-800">
+  <!-- Top Header (RMUTP Official Navy & Gold Theme) -->
+  <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-xl sticky top-0 z-30 border-b border-amber-500/30">
     <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-lg text-slate-200">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-extrabold text-xl flex items-center justify-center shadow-lg border border-amber-200/50">
           RMUTP
         </div>
         <div>
-          <h1 class="text-lg md:text-xl font-bold tracking-tight">
-            ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
+          <h1 class="text-lg md:text-xl font-bold tracking-tight flex items-center gap-2 text-white">
+            💻 ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
           </h1>
-          <p class="text-xs text-slate-400">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+          <p class="text-xs text-sky-200/90 font-medium">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร (Rajamangala University of Technology Phra Nakhon)</p>
         </div>
       </div>
 
       <!-- Mode Indicator Button -->
       <div class="flex items-center gap-2 text-xs">
-        <button type="button" onclick="toggleApiSettings()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg flex items-center gap-2 transition">
+        <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-3.5 py-2 rounded-xl flex items-center gap-2 transition shadow-sm backdrop-blur">
           <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
           <span id="api-status-text" class="font-medium">โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อ Google Sheets)</span>
-          <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-semibold">⚙️ ตั้งค่า API</span>
+          <span class="text-[11px] bg-amber-500/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-md font-semibold">⚙️ ตั้งค่า API</span>
         </button>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800 mt-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/10 mt-1">
       <nav class="flex space-x-6 text-sm font-medium pt-2 overflow-x-auto">
-        <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2.5 px-2 text-white border-b-2 border-white font-semibold flex items-center gap-1.5">
-          สรุปภาพรวม
+        <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2.5 px-2 text-amber-300 border-b-2 border-amber-400 font-semibold flex items-center gap-1.5">
+          📊 สรุปภาพรวม
         </button>
-        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2.5 px-2 text-slate-400 hover:text-white flex items-center gap-1.5 font-normal">
-          หลักสูตรอุดมศึกษา
+        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
+          🎓 หลักสูตรอุดมศึกษา
         </button>
-        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2.5 px-2 text-slate-400 hover:text-white flex items-center gap-1.5 font-normal">
-          หลักสูตร ปวช.
+        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
+          🛠️ หลักสูตร ปวช.
         </button>
-        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2.5 px-2 text-slate-400 hover:text-white flex items-center gap-1.5 font-normal">
-          แผนการพัฒนาหลักสูตร
+        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal">
+          🗓️ แผนการพัฒนาหลักสูตร
         </button>
       </nav>
     </div>
   </header>
 
   <!-- API Drawer -->
-  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all">
+  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all shadow-inner">
     <div class="max-w-7xl mx-auto space-y-3 text-xs">
       <div class="flex justify-between items-center">
-        <h3 class="font-bold text-slate-200 text-sm">⚙️ ตั้งค่าการเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
+        <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">⚙️ ตั้งค่าการเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
         <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
       </div>
-      <p class="text-slate-300">นำ Web App URL ของไฟล์ Google Sheets <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">curr_by_year_2026</code> ในบัญชี <code class="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">wilas.w@rmutp.ac.th</code> มาวางเพื่อบันทึกข้อมูลสดลงไฟล์ Google Sheets โดยตรง</p>
+      <p class="text-slate-300">นำ Web App URL ของไฟล์ Google Sheets <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">curr_by_year_2026</code> ในบัญชี <code class="bg-slate-800 px-1.5 py-0.5 rounded text-sky-300">wilas.w@rmutp.ac.th</code> มาวางเพื่อบันทึกข้อมูลสดลงไฟล์ Google Sheets โดยตรง</p>
       <div class="flex flex-col sm:flex-row gap-2">
-        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-slate-500 font-mono text-xs">
-        <button type="button" onclick="saveGasUrl()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-4 py-2 rounded-lg transition">บันทึก & เชื่อมต่อ Google Sheets สด</button>
-        <button type="button" onclick="resetToLocalData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-2 rounded-lg transition">ยกเลิกการเชื่อมต่อ</button>
+        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-sky-500 font-mono text-xs">
+        <button type="button" onclick="saveGasUrl()" class="bg-sky-600 hover:bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg transition">บันทึก & เชื่อมต่อ Google Sheets สด</button>
+        <button type="button" onclick="resetToLocalData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold px-4 py-2 rounded-lg transition">ยกเลิกการเชื่อมต่อ</button>
       </div>
     </div>
   </div>
@@ -88,42 +88,45 @@
       
       <!-- 1. Top Metric Cards -->
       <div>
-        <h2 class="text-base font-bold text-slate-800 mb-3">📊 1. สรุปจำนวนหลักสูตรตามระดับการศึกษา</h2>
+        <h2 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-700"></span>
+          1. สรุปจำนวนหลักสูตรตามระดับการศึกษา (ปีการศึกษา 2569)
+        </h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-500">รวมทั้งหมด</p>
-            <h3 class="text-2xl font-bold text-slate-900 mt-1" id="dash-total-all">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-slate-800">
+            <p class="text-xs font-semibold text-slate-500">รวมทุกระดับ</p>
+            <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="dash-total-all">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-600">ปริญญาตรี</p>
-            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="dash-total-bachelor">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-blue-700">
+            <p class="text-xs font-semibold text-blue-900">ปริญญาตรี</p>
+            <h3 class="text-2xl font-extrabold text-blue-950 mt-1" id="dash-total-bachelor">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-600">ปริญญาโท</p>
-            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="dash-total-master">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-indigo-700">
+            <p class="text-xs font-semibold text-indigo-900">ปริญญาโท</p>
+            <h3 class="text-2xl font-extrabold text-indigo-950 mt-1" id="dash-total-master">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-600">ปริญญาเอก</p>
-            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="dash-total-doctor">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-purple-700">
+            <p class="text-xs font-semibold text-purple-900">ปริญญาเอก</p>
+            <h3 class="text-2xl font-extrabold text-purple-950 mt-1" id="dash-total-doctor">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-600">ป.บัณฑิต</p>
-            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="dash-total-gradcert">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-teal-700">
+            <p class="text-xs font-semibold text-teal-900">ป.บัณฑิต</p>
+            <h3 class="text-2xl font-extrabold text-teal-950 mt-1" id="dash-total-gradcert">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center">
-            <p class="text-xs font-medium text-slate-600">ปวช.</p>
-            <h3 class="text-2xl font-bold text-slate-800 mt-1" id="dash-total-voc">0</h3>
+          <div class="bg-white p-4 rounded-xl border border-slate-200/90 shadow-sm text-center border-t-4 border-t-amber-600">
+            <p class="text-xs font-semibold text-amber-900">ปวช.</p>
+            <h3 class="text-2xl font-extrabold text-amber-950 mt-1" id="dash-total-voc">0</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">หลักสูตร</p>
           </div>
 
@@ -132,19 +135,26 @@
 
       <!-- 2. Faculty Breakdown Table by Level -->
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-        <h2 class="text-base font-bold text-slate-800">🏛️ 2. จำนวนหลักสูตรของแต่ละคณะ แยกตามระดับการศึกษา</h2>
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-700"></span>
+            2. จำนวนหลักสูตรของแต่ละคณะ แยกตามระดับการศึกษา (11 คณะ/วิทยาลัย)
+          </h2>
+          <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md">จัดเรียงตามประกาศมหาวิทยาลัย</span>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
-              <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                <th class="py-2.5 px-3">ลำดับ</th>
-                <th class="py-2.5 px-4">คณะ / วิทยาลัย</th>
-                <th class="py-2.5 px-3 text-center">ปริญญาตรี</th>
-                <th class="py-2.5 px-3 text-center">ปริญญาโท</th>
-                <th class="py-2.5 px-3 text-center">ปริญญาเอก</th>
-                <th class="py-2.5 px-3 text-center">ป.บัณฑิต</th>
-                <th class="py-2.5 px-3 text-center">ปวช.</th>
-                <th class="py-2.5 px-4 text-center font-bold">รวมทั้งหมด</th>
+              <tr class="bg-slate-900 text-white font-semibold text-xs">
+                <th class="py-3 px-3 w-12 text-center">ลำดับ</th>
+                <th class="py-3 px-4">คณะ / วิทยาลัย</th>
+                <th class="py-3 px-3 text-center bg-blue-900">ปริญญาตรี</th>
+                <th class="py-3 px-3 text-center bg-indigo-900">ปริญญาโท</th>
+                <th class="py-3 px-3 text-center bg-purple-900">ปริญญาเอก</th>
+                <th class="py-3 px-3 text-center bg-teal-900">ป.บัณฑิต</th>
+                <th class="py-3 px-3 text-center bg-amber-800">ปวช.</th>
+                <th class="py-3 px-4 text-center font-bold bg-slate-800">รวมทั้งหมด</th>
               </tr>
             </thead>
             <tbody id="dash-tbody-fac-level" class="divide-y divide-slate-100">
@@ -159,7 +169,10 @@
         
         <!-- 3. จำนวนหลักสูตรแยกตาม IQA -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold text-slate-800 border-b pb-2">📋 3. จำนวนหลักสูตรแยกตาม IQA</h3>
+          <h3 class="text-xs font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            3. จำนวนหลักสูตรแยกตาม IQA
+          </h3>
           <div id="dash-breakdown-iqa" class="space-y-2 text-xs">
             <!-- Rendered by JS -->
           </div>
@@ -167,7 +180,10 @@
 
         <!-- 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold text-slate-800 border-b pb-2">📐 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน</h3>
+          <h3 class="text-xs font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+            4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน
+          </h3>
           <div id="dash-breakdown-std" class="space-y-2 text-xs">
             <!-- Rendered by JS -->
           </div>
@@ -175,7 +191,10 @@
 
         <!-- 5. จำนวนหลักสูตรแยกตาม ISCED -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-          <h3 class="text-sm font-bold text-slate-800 border-b pb-2">🌐 5. จำนวนหลักสูตรแยกตาม ISCED</h3>
+          <h3 class="text-xs font-bold text-slate-900 border-b border-slate-100 pb-2.5 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+            5. จำนวนหลักสูตรแยกตาม ISCED
+          </h3>
           <div id="dash-breakdown-isced" class="space-y-2 text-xs">
             <!-- Rendered by JS -->
           </div>
@@ -191,7 +210,7 @@
       
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขา, ปี..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none">
+          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขา, ปี..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-800 focus:outline-none">
           
           <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-300 text-xs rounded-lg px-3 py-2 bg-white focus:outline-none">
             <option value="">ทุกคณะ/วิทยาลัย</option>
@@ -214,9 +233,9 @@
         </div>
 
         <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-          <span class="text-xs text-slate-500" id="p2026-count-label">แสดง 0 รายการ</span>
-          <button type="button" onclick="openModalP2026('create')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-1.5">
-            + เพิ่มหลักสูตรอุดมศึกษา
+          <span class="text-xs font-semibold text-slate-600" id="p2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalP2026('create')" class="bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มหลักสูตรอุดมศึกษา
           </button>
         </div>
       </div>
@@ -224,7 +243,7 @@
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-700">
-            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+            <thead class="bg-slate-900 text-white font-semibold text-xs">
               <tr>
                 <th class="py-3 px-4">รหัสหลักสูตร</th>
                 <th class="py-3 px-4">คณะ/วิทยาลัย</th>
@@ -253,7 +272,7 @@
       
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหาสาขา, ประเภทวิชา, กลุ่มอาชีพ..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none">
+          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหาสาขา, ประเภทวิชา, กลุ่มอาชีพ..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-amber-700 focus:outline-none">
           
           <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-300 text-xs rounded-lg px-3 py-2 bg-white focus:outline-none">
             <option value="">ทุกคณะ/วิทยาลัย</option>
@@ -265,9 +284,9 @@
         </div>
 
         <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-          <span class="text-xs text-slate-500" id="pV2026-count-label">แสดง 0 รายการ</span>
-          <button type="button" onclick="openModalPV2026('create')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-1.5">
-            + เพิ่มหลักสูตร ปวช.
+          <span class="text-xs font-semibold text-slate-600" id="pV2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalPV2026('create')" class="bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มหลักสูตร ปวช.
           </button>
         </div>
       </div>
@@ -275,7 +294,7 @@
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-700">
-            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+            <thead class="bg-amber-950 text-white font-semibold text-xs">
               <tr>
                 <th class="py-3 px-4">คณะ/วิทยาลัย</th>
                 <th class="py-3 px-4">ประเภทวิชา</th>
@@ -302,7 +321,7 @@
       
       <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 justify-between items-center">
         <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none">
+          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-300 text-xs rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-700 focus:outline-none">
           
           <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-300 text-xs rounded-lg px-3 py-2 bg-white focus:outline-none">
             <option value="">ทุกคณะ/วิทยาลัย</option>
@@ -319,9 +338,9 @@
         </div>
 
         <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-          <span class="text-xs text-slate-500" id="plan-count-label">แสดง 0 รายการ</span>
-          <button type="button" onclick="openModalPlan('create')" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-1.5">
-            + เพิ่มแผนการพัฒนาหลักสูตร
+          <span class="text-xs font-semibold text-slate-600" id="plan-count-label">แสดง 0 รายการ</span>
+          <button type="button" onclick="openModalPlan('create')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-1.5">
+            <span>+</span> เพิ่มแผนการพัฒนาหลักสูตร
           </button>
         </div>
       </div>
@@ -329,17 +348,17 @@
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-700">
-            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+            <thead class="bg-slate-900 text-white font-semibold text-xs">
               <tr>
                 <th class="py-3 px-4">คณะ/วิทยาลัย</th>
                 <th class="py-3 px-4">หลักสูตร</th>
                 <th class="py-3 px-4">สาขาวิชา</th>
                 <th class="py-3 px-4 text-center">ปี พ.ศ.</th>
                 <th class="py-3 px-4 text-center">ระดับ</th>
-                <th class="py-3 px-3 text-center">วิพากษ์</th>
-                <th class="py-3 px-3 text-center">ขับเคลื่อนฯ</th>
-                <th class="py-3 px-3 text-center">สภาวิชาการ</th>
-                <th class="py-3 px-3 text-center">สภามหาวิทยาลัย</th>
+                <th class="py-3 px-3 text-center bg-slate-800">1. วิพากษ์หลักสูตร</th>
+                <th class="py-3 px-3 text-center bg-slate-800">2. ขับเคลื่อนฯ</th>
+                <th class="py-3 px-3 text-center bg-slate-800">3. สภาวิชาการ</th>
+                <th class="py-3 px-3 text-center bg-slate-800">4. สภามหาวิทยาลัย</th>
                 <th class="py-3 px-4">หมายเหตุ</th>
                 <th class="py-3 px-4 text-center">จัดการ</th>
               </tr>
@@ -355,10 +374,10 @@
   </main>
 
   <!-- MODAL: PROGRAM 2026 (อุดมศึกษา) -->
-  <div id="modal-p2026" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+  <div id="modal-p2026" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-bold text-slate-800 text-base" id="p2026-form-title">เพิ่มหลักสูตรอุดมศึกษา</h3>
+        <h3 class="font-bold text-blue-950 text-base flex items-center gap-2">🎓 <span id="p2026-form-title">เพิ่มหลักสูตรอุดมศึกษา</span></h3>
         <button type="button" onclick="closeModalP2026()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
@@ -392,7 +411,7 @@
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block font-semibold mb-1">IQA *</label>
-            <select id="p2026-iqa" required class="w-full border rounded-lg p-2.5 bg-white">
+            <select id="p2026-iqa" required class="w-full border rounded-lg p-2.5 bg-white font-medium">
               <option value="สป.อว.">สป.อว.</option>
               <option value="AUNQA">AUNQA</option>
               <option value="ABET">ABET</option>
@@ -401,7 +420,7 @@
 
           <div>
             <label class="block font-semibold mb-1">เกณฑ์มาตรฐาน *</label>
-            <select id="p2026-std" required class="w-full border rounded-lg p-2.5 bg-white">
+            <select id="p2026-std" required class="w-full border rounded-lg p-2.5 bg-white font-medium">
               <option value="พ.ศ. 2558">พ.ศ. 2558</option>
               <option value="พ.ศ. 2565">พ.ศ. 2565</option>
             </select>
@@ -409,7 +428,7 @@
 
           <div>
             <label class="block font-semibold mb-1">ISCED *</label>
-            <select id="p2026-isced" required class="w-full border rounded-lg p-2.5 bg-white">
+            <select id="p2026-isced" required class="w-full border rounded-lg p-2.5 bg-white font-medium">
               <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
               <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
             </select>
@@ -419,17 +438,17 @@
 
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button type="button" onclick="closeModalP2026()" class="px-4 py-2 bg-slate-100 rounded-lg font-semibold">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-semibold">บันทึกข้อมูล</button>
+          <button type="submit" class="px-5 py-2 bg-blue-900 text-white rounded-lg font-semibold shadow">บันทึกข้อมูล</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: PROGRAM V2026 (ปวช.) -->
-  <div id="modal-pV2026" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+  <div id="modal-pV2026" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-bold text-slate-800 text-base" id="pV2026-form-title">เพิ่มหลักสูตร ปวช.</h3>
+        <h3 class="font-bold text-amber-950 text-base flex items-center gap-2">🛠️ <span id="pV2026-form-title">เพิ่มหลักสูตร ปวช.</span></h3>
         <button type="button" onclick="closeModalPV2026()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
@@ -453,21 +472,21 @@
 
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button type="button" onclick="closeModalPV2026()" class="px-4 py-2 bg-slate-100 rounded-lg font-semibold">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-semibold">บันทึกข้อมูล ปวช.</button>
+          <button type="submit" class="px-5 py-2 bg-amber-800 text-white rounded-lg font-semibold shadow">บันทึกข้อมูล ปวช.</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: PLAN (แผนการพัฒนาหลักสูตร) -->
-  <div id="modal-plan" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
-    <div class="bg-white rounded-xl shadow-xl max-w-xl w-full p-6 space-y-4 border border-slate-200">
+  <!-- MODAL: PLAN (แผนการพัฒนาหลักสูตร - ปรับปรุงการเลือกสถานะการเสนอที่ประชุม + เดือน/วันที่) -->
+  <div id="modal-plan" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4 border border-slate-200">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-bold text-slate-800 text-base" id="plan-form-title">เพิ่มแผนการพัฒนาหลักสูตร</h3>
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">🗓️ <span id="plan-form-title">เพิ่มแผนการพัฒนาหลักสูตร</span></h3>
         <button type="button" onclick="closeModalPlan()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
       </div>
 
-      <form onsubmit="submitFormPlan(event)" class="space-y-3 text-xs">
+      <form onsubmit="submitFormPlan(event)" class="space-y-4 text-xs">
         <div class="grid grid-cols-2 gap-3">
           <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="plan-fac" required class="w-full border rounded-lg p-2.5 bg-white"></select></div>
           <div>
@@ -479,19 +498,77 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="plan-name" required placeholder="เช่น บริหารธุรกิจบัณฑิต" class="w-full border rounded-lg p-2.5"></div>
-          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="plan-major" required placeholder="เช่น การจัดการนวัตกรรม" class="w-full border rounded-lg p-2.5"></div>
+          <div><label class="block font-semibold mb-1">ชื่อหลักสูตร *</label><input type="text" id="plan-name" required placeholder="เช่น ศิลปศาสตรบัณฑิต" class="w-full border rounded-lg p-2.5"></div>
+          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="plan-major" required placeholder="เช่น การท่องเที่ยวและการบริการ" class="w-full border rounded-lg p-2.5"></div>
         </div>
 
-        <div><label class="block font-semibold mb-1">ปี พ.ศ. เสนอเปิด/ปรับปรุง *</label><input type="text" id="plan-year" value="2569" required class="w-full border rounded-lg p-2.5"></div>
+        <div><label class="block font-semibold mb-1">ปี พ.ศ. เสนอเปิด/ปรับปรุง *</label><input type="text" id="plan-year" value="หลักสูตรปรับปรุง พ.ศ. 2571" required class="w-full border rounded-lg p-2.5"></div>
 
-        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-          <label class="block font-bold text-slate-800 text-xs">สถานะขั้นตอนการพิจารณาหลักสูตร</label>
-          <div class="grid grid-cols-2 gap-2">
-            <div><label class="block font-medium mb-1 text-slate-700">1. ขั้นตอนวิพากษ์</label><input type="text" id="plan-step1" placeholder="เช่น ผ่านแล้ว / ม.ค. 69" class="w-full border rounded-md p-2 bg-white"></div>
-            <div><label class="block font-medium mb-1 text-slate-700">2. ขั้นตอนขับเคลื่อนฯ</label><input type="text" id="plan-step2" placeholder="เช่น ก.พ. 69" class="w-full border rounded-md p-2 bg-white"></div>
-            <div><label class="block font-medium mb-1 text-slate-700">3. ขั้นตอนสภาวิชาการ</label><input type="text" id="plan-step3" placeholder="เช่น มี.ค. 69" class="w-full border rounded-md p-2 bg-white"></div>
-            <div><label class="block font-medium mb-1 text-slate-700">4. ขั้นตอนสภามหาวิทยาลัย</label><input type="text" id="plan-step4" placeholder="เช่น เม.ย. 69" class="w-full border rounded-md p-2 bg-white"></div>
+        <!-- 4 Step Status Matrix Design (บันทึกสถานะเสนอที่ประชุม + เดือน/วันที่) -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <label class="block font-bold text-slate-900 text-xs">📌 สถานะขั้นตอนการพิจารณาเสนอเข้าที่ประชุมต่าง ๆ</label>
+            <span class="text-[11px] text-slate-500 font-medium">ระบุสถานะ และ เดือน/วันที่เสนอ</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Step 1: วิพากษ์ -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1.5 shadow-sm">
+              <label class="block font-bold text-slate-800 text-xs">1. ขั้นตอนวิพากษ์หลักสูตร</label>
+              <div class="space-y-1.5">
+                <select id="plan-step1-status" class="w-full border rounded-md p-2 text-xs bg-white font-medium">
+                  <option value="ผ่านแล้ว">✅ เสนอแล้ว / ผ่านแล้ว</option>
+                  <option value="กำลังดำเนินการ">⏳ อยู่ระหว่างเสนอที่ประชุม</option>
+                  <option value="แผนงาน">📅 ยังไม่ถึงกำหนด (แผนงาน)</option>
+                  <option value="ปรับปรุง">❌ ส่งกลับแก้ไข</option>
+                </select>
+                <input type="text" id="plan-step1-date" placeholder="เช่น เม.ย. 2569" class="w-full border rounded-md p-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Step 2: ขับเคลื่อนฯ -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1.5 shadow-sm">
+              <label class="block font-bold text-slate-800 text-xs">2. ขั้นตอนขับเคลื่อนฯ</label>
+              <div class="space-y-1.5">
+                <select id="plan-step2-status" class="w-full border rounded-md p-2 text-xs bg-white font-medium">
+                  <option value="ผ่านแล้ว">✅ เสนอแล้ว / ผ่านแล้ว</option>
+                  <option value="กำลังดำเนินการ">⏳ อยู่ระหว่างเสนอที่ประชุม</option>
+                  <option value="แผนงาน">📅 ยังไม่ถึงกำหนด (แผนงาน)</option>
+                  <option value="ปรับปรุง">❌ ส่งกลับแก้ไข</option>
+                </select>
+                <input type="text" id="plan-step2-date" placeholder="เช่น 4-2569 / 18 เม.ย. 2569" class="w-full border rounded-md p-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Step 3: สภาวิชาการ -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1.5 shadow-sm">
+              <label class="block font-bold text-slate-800 text-xs">3. ขั้นตอนสภาวิชาการ</label>
+              <div class="space-y-1.5">
+                <select id="plan-step3-status" class="w-full border rounded-md p-2 text-xs bg-white font-medium">
+                  <option value="แผนงาน">📅 ยังไม่ถึงกำหนด (แผนงาน)</option>
+                  <option value="ผ่านแล้ว">✅ เสนอแล้ว / ผ่านแล้ว</option>
+                  <option value="กำลังดำเนินการ">⏳ อยู่ระหว่างเสนอที่ประชุม</option>
+                  <option value="ปรับปรุง">❌ ส่งกลับแก้ไข</option>
+                </select>
+                <input type="text" id="plan-step3-date" placeholder="เช่น พ.ย. 2569" class="w-full border rounded-md p-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Step 4: สภามหาวิทยาลัย -->
+            <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1.5 shadow-sm">
+              <label class="block font-bold text-slate-800 text-xs">4. ขั้นตอนสภามหาวิทยาลัย</label>
+              <div class="space-y-1.5">
+                <select id="plan-step4-status" class="w-full border rounded-md p-2 text-xs bg-white font-medium">
+                  <option value="แผนงาน">📅 ยังไม่ถึงกำหนด (แผนงาน)</option>
+                  <option value="ผ่านแล้ว">✅ เสนอแล้ว / ผ่านแล้ว</option>
+                  <option value="กำลังดำเนินการ">⏳ อยู่ระหว่างเสนอที่ประชุม</option>
+                  <option value="ปรับปรุง">❌ ส่งกลับแก้ไข</option>
+                </select>
+                <input type="text" id="plan-step4-date" placeholder="เช่น ธ.ค. 2569" class="w-full border rounded-md p-2 text-xs">
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -499,15 +576,15 @@
 
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button type="button" onclick="closeModalPlan()" class="px-4 py-2 bg-slate-100 rounded-lg font-semibold">ยกเลิก</button>
-          <button type="submit" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-semibold">บันทึกแผนพัฒนาหลักสูตร</button>
+          <button type="submit" class="px-5 py-2 bg-slate-900 text-white rounded-lg font-semibold shadow">บันทึกแผนพัฒนาหลักสูตร</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL DELETE -->
-  <div id="modal-del" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-200">
+  <div id="modal-del" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-200">
       <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-xl mx-auto font-bold">⚠️</div>
       <div>
         <h3 class="font-bold text-slate-900 text-sm">ยืนยันการลบหลักสูตร</h3>
@@ -515,7 +592,7 @@
       </div>
       <div class="flex justify-center gap-2 pt-2">
         <button type="button" onclick="closeModalDel()" class="px-4 py-2 bg-slate-100 rounded-lg text-xs font-semibold">ยกเลิก</button>
-        <button type="button" onclick="confirmDel()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold">ยืนยันลบข้อมูล</button>
+        <button type="button" onclick="confirmDel()" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold shadow">ยืนยันลบข้อมูล</button>
       </div>
     </div>
   </div>
@@ -588,7 +665,7 @@
       const dot = document.getElementById('api-status-dot');
       const text = document.getElementById('api-status-text');
       if (isConnected) {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
         text.innerText = "🟢 เชื่อมต่อ Google Sheets สดแล้ว (curr_by_year_2026)";
       } else {
         dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400";
@@ -597,6 +674,7 @@
     }
 
     function formatFacName(fac) {
+      if (!fac) return "คณะศิลปศาสตร์";
       if (fac.startsWith("คณะ") || fac.startsWith("วิทยาลัย")) return fac;
       return "คณะ" + fac;
     }
@@ -631,12 +709,12 @@
       ['dashboard', 'p2026', 'pV2026', 'plan'].forEach(tab => {
         document.getElementById(`sec-${tab}`).classList.add('hidden');
         const btn = document.getElementById(`tab-btn-${tab}`);
-        if (btn) btn.className = "pb-2.5 px-2 text-slate-400 hover:text-white flex items-center gap-1.5 font-normal";
+        if (btn) btn.className = "pb-2.5 px-2 text-sky-200 hover:text-white flex items-center gap-1.5 font-normal";
       });
 
       document.getElementById(`sec-${t}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`tab-btn-${t}`);
-      if (activeBtn) activeBtn.className = "pb-2.5 px-2 text-white border-b-2 border-white font-semibold flex items-center gap-1.5";
+      if (activeBtn) activeBtn.className = "pb-2.5 px-2 text-amber-300 border-b-2 border-amber-400 font-semibold flex items-center gap-1.5";
     }
 
     function toggleApiSettings() { document.getElementById('api-drawer').classList.toggle('hidden'); }
@@ -704,7 +782,6 @@
       filterPlan();
     }
 
-    // Helper for matching Faculty names flexibly
     function isFacMatch(itemFac, targetFac) {
       if (!itemFac || !targetFac) return false;
       const cleanItem = itemFac.replace(/^คณะ/, '').trim();
@@ -733,7 +810,7 @@
       document.getElementById('dash-total-gradcert').innerText = gcCount;
       document.getElementById('dash-total-voc').innerText = vCount;
 
-      // 2. Faculty Breakdown Table by Level (Ordered strictly by facultiesList)
+      // 2. Faculty Breakdown Table by Level
       const tbodyFac = document.getElementById('dash-tbody-fac-level');
       tbodyFac.innerHTML = '';
 
@@ -760,16 +837,16 @@
         const fTotal = fb + fm + fd + fgc + fv;
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50 border-b border-slate-100";
+        tr.className = "hover:bg-slate-50 border-b border-slate-100 text-xs";
         tr.innerHTML = `
-          <td class="py-2.5 px-3 font-mono text-slate-400">${idx + 1}</td>
-          <td class="py-2.5 px-4 font-medium text-slate-800">${fullFac}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${fb || '-'}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${fm || '-'}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${fd || '-'}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${fgc || '-'}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${fv || '-'}</td>
-          <td class="py-2.5 px-4 text-center font-bold text-slate-900 bg-slate-50">${fTotal || 0}</td>
+          <td class="py-2.5 px-3 font-mono text-slate-400 text-center">${idx + 1}</td>
+          <td class="py-2.5 px-4 font-bold text-slate-900">${fullFac}</td>
+          <td class="py-2.5 px-3 text-center text-slate-700 font-medium">${fb || '-'}</td>
+          <td class="py-2.5 px-3 text-center text-slate-700 font-medium">${fm || '-'}</td>
+          <td class="py-2.5 px-3 text-center text-slate-700 font-medium">${fd || '-'}</td>
+          <td class="py-2.5 px-3 text-center text-slate-700 font-medium">${fgc || '-'}</td>
+          <td class="py-2.5 px-3 text-center text-slate-700 font-medium">${fv || '-'}</td>
+          <td class="py-2.5 px-4 text-center font-extrabold text-slate-900 bg-slate-50">${fTotal || 0}</td>
         `;
         tbodyFac.appendChild(tr);
       });
@@ -825,10 +902,10 @@
         const count = dataMap[key];
         const pct = total > 0 ? Math.round((count / total) * 100) : 0;
         const div = document.createElement('div');
-        div.className = "flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0";
+        div.className = "flex justify-between items-center py-2 border-b border-slate-100 last:border-0";
         div.innerHTML = `
-          <span class="text-slate-700 font-medium">${key}</span>
-          <span class="text-slate-900 font-bold">${count} <span class="text-slate-400 font-normal">(${pct}%)</span></span>
+          <span class="text-slate-800 font-semibold">${key}</span>
+          <span class="text-slate-900 font-extrabold">${count} <span class="text-slate-400 font-normal text-[11px]">(${pct}%)</span></span>
         `;
         container.appendChild(div);
       });
@@ -867,22 +944,22 @@
         const globalIdx = dataP2026.indexOf(item);
         const displayName = encodeURIComponent(item["สาขาวิชา"] || item["หลักสูตร"]);
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+        tr.className = "hover:bg-blue-50/40 transition border-b border-slate-100";
         tr.innerHTML = `
-          <td class="py-2.5 px-4 font-mono font-semibold text-slate-800">${item["รหัสหลักสูตร"]}</td>
-          <td class="py-2.5 px-4 font-medium">${item["คณะ"]}</td>
-          <td class="py-2.5 px-4">${item["ระดับ"]}</td>
-          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-4 font-mono font-bold text-blue-900">${item["รหัสหลักสูตร"]}</td>
+          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded font-bold text-[11px] bg-blue-50 text-blue-900 border border-blue-200">${item["ระดับ"]}</span></td>
+          <td class="py-2.5 px-4 font-bold text-slate-950">${item["หลักสูตร"]}</td>
           <td class="py-2.5 px-4">${item["สาขาวิชา"]}</td>
-          <td class="py-2.5 px-4 text-slate-700">${item["ปี"] || "-"}</td>
-          <td class="py-2.5 px-4 text-center font-medium">${item["IQA"] || "-"}</td>
-          <td class="py-2.5 px-4 text-center text-slate-700">${item["เกณฑ์"] || "-"}</td>
+          <td class="py-2.5 px-4 font-medium text-slate-700">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center font-bold">${item["IQA"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center font-medium text-slate-700">${item["เกณฑ์"] || "-"}</td>
           <td class="py-2.5 px-4 text-slate-700">${item["ISCED"] || "-"}</td>
           <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-4 text-center">
             <div class="flex justify-center gap-1">
-              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" class="p-1 hover:bg-slate-100 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-slate-100 rounded text-rose-600">🗑️</button>
+              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" class="p-1 hover:bg-blue-100 text-blue-900 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
             </div>
           </td>
         `;
@@ -920,20 +997,20 @@
         const globalIdx = dataPV2026.indexOf(item);
         const displayName = encodeURIComponent(item["สาขาวิชา"]);
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+        tr.className = "hover:bg-amber-50/40 transition border-b border-slate-100";
         tr.innerHTML = `
-          <td class="py-2.5 px-4 font-medium">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["คณะ"]}</td>
           <td class="py-2.5 px-4 text-slate-700">${item["ประเภทวิชา"]}</td>
           <td class="py-2.5 px-4 text-slate-600">${item["กลุ่มอาชีพ"]}</td>
-          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-4 font-bold text-amber-950">${item["สาขาวิชา"]}</td>
           <td class="py-2.5 px-4 text-center font-medium">${item["ปี"] || 2569}</td>
-          <td class="py-2.5 px-4 text-center font-medium">${item["ระดับ"] || "ปวช."}</td>
+          <td class="py-2.5 px-4 text-center"><span class="px-2 py-0.5 rounded font-bold text-[11px] bg-amber-100 text-amber-900 border border-amber-200">${item["ระดับ"] || "ปวช."}</span></td>
           <td class="py-2.5 px-4 text-center text-slate-600">${item["ประเภท"] || "ปกติ"}</td>
           <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-4 text-center">
             <div class="flex justify-center gap-1">
-              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" class="p-1 hover:bg-slate-100 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-slate-100 rounded text-rose-600">🗑️</button>
+              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" class="p-1 hover:bg-amber-100 text-amber-900 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
             </div>
           </td>
         `;
@@ -965,6 +1042,21 @@
       renderPlan(filtered);
     }
 
+    // Helper for rendering Plan step badges
+    function formatPlanStepCell(val) {
+      if (!val) return '<span class="text-slate-400">-</span>';
+      if (val.includes("ผ่าน")) {
+        return `<span class="px-2 py-0.5 rounded-full font-bold text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200">✓ ${val}</span>`;
+      }
+      if (val.includes("กำลังดำเนินการ") || val.includes("อยู่ระหว่างเสนอ")) {
+        return `<span class="px-2 py-0.5 rounded-full font-semibold text-[11px] bg-sky-50 text-sky-800 border border-sky-200">⏳ ${val}</span>`;
+      }
+      if (val.includes("ส่งกลับ") || val.includes("แก้ไข")) {
+        return `<span class="px-2 py-0.5 rounded-full font-semibold text-[11px] bg-rose-50 text-rose-800 border border-rose-200">❌ ${val}</span>`;
+      }
+      return `<span class="px-2 py-0.5 rounded-full font-medium text-[11px] bg-slate-100 text-slate-700 border border-slate-200">📅 ${val}</span>`;
+    }
+
     function renderPlan(data) {
       const tbody = document.getElementById('tbody-plan');
       document.getElementById('plan-count-label').innerText = `แสดง ${data.length} รายการ`;
@@ -981,20 +1073,20 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
         tr.innerHTML = `
-          <td class="py-2.5 px-4 font-medium text-slate-900">${item["คณะ"]}</td>
-          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-4 font-semibold text-slate-900">${item["คณะ"]}</td>
+          <td class="py-2.5 px-4 font-bold text-slate-950">${item["หลักสูตร"]}</td>
           <td class="py-2.5 px-4">${item["สาขาวิชา"]}</td>
-          <td class="py-2.5 px-4 text-center font-mono font-medium">${item["ปี"] || "2569"}</td>
-          <td class="py-2.5 px-4 text-center">${item["ระดับ"]}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${item["วิพากษ์"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${item["ขับเคลื่อนฯ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${item["สภาวิชาการ"] || "-"}</td>
-          <td class="py-2.5 px-3 text-center text-slate-700">${item["สภามหาวิทยาลัย"] || "-"}</td>
+          <td class="py-2.5 px-4 text-center font-medium text-slate-700">${item["ปี"] || "2569"}</td>
+          <td class="py-2.5 px-4 text-center font-semibold">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-3 text-center">${formatPlanStepCell(item["วิพากษ์"])}</td>
+          <td class="py-2.5 px-3 text-center">${formatPlanStepCell(item["ขับเคลื่อนฯ"])}</td>
+          <td class="py-2.5 px-3 text-center">${formatPlanStepCell(item["สภาวิชาการ"])}</td>
+          <td class="py-2.5 px-3 text-center">${formatPlanStepCell(item["สภามหาวิทยาลัย"])}</td>
           <td class="py-2.5 px-4 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-4 text-center">
             <div class="flex justify-center gap-1">
               <button type="button" onclick="openModalPlan('edit', ${globalIdx})" class="p-1 hover:bg-slate-100 rounded">✏️</button>
-              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-slate-100 rounded text-rose-600">🗑️</button>
+              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" class="p-1 hover:bg-rose-100 text-rose-700 rounded">🗑️</button>
             </div>
           </td>
         `;
@@ -1118,6 +1210,34 @@
       }
     }
 
+    // Helper to parse Step Status & Date
+    function parseStepData(rawVal) {
+      if (!rawVal) return { status: 'แผนงาน', date: '' };
+      const str = String(rawVal).trim();
+      if (str.includes("ผ่านแล้ว")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'ผ่านแล้ว', date: match ? match[1] : str.replace('ผ่านแล้ว', '').trim() };
+      }
+      if (str.includes("กำลังดำเนินการ") || str.includes("อยู่ระหว่างเสนอ")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'กำลังดำเนินการ', date: match ? match[1] : str.replace('กำลังดำเนินการ', '').trim() };
+      }
+      if (str.includes("ส่งกลับ") || str.includes("แก้ไข")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'ปรับปรุง', date: match ? match[1] : str.replace('ส่งกลับแก้ไข', '').trim() };
+      }
+      return { status: 'แผนงาน', date: str };
+    }
+
+    function buildStepValue(status, dateStr) {
+      const date = (dateStr || '').trim();
+      if (!date && status === 'แผนงาน') return '';
+      if (status === 'ผ่านแล้ว') return date ? `ผ่านแล้ว (${date})` : 'ผ่านแล้ว';
+      if (status === 'กำลังดำเนินการ') return date ? `อยู่ระหว่างเสนอที่ประชุม (${date})` : 'อยู่ระหว่างเสนอที่ประชุม';
+      if (status === 'ปรับปรุง') return date ? `ส่งกลับแก้ไข (${date})` : 'ส่งกลับแก้ไข';
+      return date;
+    }
+
     // Modal Plan
     function openModalPlan(mode, globalIdx = -1) {
       editContext = { sheet: 'Plan', index: mode === 'edit' ? globalIdx : -1 };
@@ -1128,23 +1248,45 @@
         document.getElementById('plan-fac').value = item["คณะ"] || formatFacName(facultiesList[0]);
         document.getElementById('plan-name').value = item["หลักสูตร"] || "";
         document.getElementById('plan-major').value = item["สาขาวิชา"] || "";
-        document.getElementById('plan-year').value = item["ปี"] || "2569";
+        document.getElementById('plan-year').value = item["ปี"] || "หลักสูตรปรับปรุง พ.ศ. 2571";
         document.getElementById('plan-level').value = item["ระดับ"] || "ปริญญาตรี";
-        document.getElementById('plan-step1').value = item["วิพากษ์"] || "";
-        document.getElementById('plan-step2').value = item["ขับเคลื่อนฯ"] || "";
-        document.getElementById('plan-step3').value = item["สภาวิชาการ"] || "";
-        document.getElementById('plan-step4').value = item["สภามหาวิทยาลัย"] || "";
+
+        const s1 = parseStepData(item["วิพากษ์"]);
+        document.getElementById('plan-step1-status').value = s1.status;
+        document.getElementById('plan-step1-date').value = s1.date;
+
+        const s2 = parseStepData(item["ขับเคลื่อนฯ"]);
+        document.getElementById('plan-step2-status').value = s2.status;
+        document.getElementById('plan-step2-date').value = s2.date;
+
+        const s3 = parseStepData(item["สภาวิชาการ"]);
+        document.getElementById('plan-step3-status').value = s3.status;
+        document.getElementById('plan-step3-date').value = s3.date;
+
+        const s4 = parseStepData(item["สภามหาวิทยาลัย"]);
+        document.getElementById('plan-step4-status').value = s4.status;
+        document.getElementById('plan-step4-date').value = s4.date;
+
         document.getElementById('plan-note').value = item["หมายเหตุ"] || "";
       } else {
         document.getElementById('plan-fac').selectedIndex = 0;
         document.getElementById('plan-level').selectedIndex = 0;
         document.getElementById('plan-name').value = "";
         document.getElementById('plan-major').value = "";
-        document.getElementById('plan-year').value = "2569";
-        document.getElementById('plan-step1').value = "";
-        document.getElementById('plan-step2').value = "";
-        document.getElementById('plan-step3').value = "";
-        document.getElementById('plan-step4').value = "";
+        document.getElementById('plan-year').value = "หลักสูตรปรับปรุง พ.ศ. 2571";
+
+        document.getElementById('plan-step1-status').value = "ผ่านแล้ว";
+        document.getElementById('plan-step1-date').value = "เม.ย. 2569";
+
+        document.getElementById('plan-step2-status').value = "ผ่านแล้ว";
+        document.getElementById('plan-step2-date').value = "4-2569 / 18 เม.ย. 2569";
+
+        document.getElementById('plan-step3-status').value = "แผนงาน";
+        document.getElementById('plan-step3-date').value = "พ.ย. 2569";
+
+        document.getElementById('plan-step4-status').value = "แผนงาน";
+        document.getElementById('plan-step4-date').value = "ธ.ค. 2569";
+
         document.getElementById('plan-note').value = "";
       }
       document.getElementById('modal-plan').classList.remove('hidden');
@@ -1155,16 +1297,21 @@
     async function submitFormPlan(e) {
       e.preventDefault();
       try {
+        const val1 = buildStepValue(document.getElementById('plan-step1-status').value, document.getElementById('plan-step1-date').value);
+        const val2 = buildStepValue(document.getElementById('plan-step2-status').value, document.getElementById('plan-step2-date').value);
+        const val3 = buildStepValue(document.getElementById('plan-step3-status').value, document.getElementById('plan-step3-date').value);
+        const val4 = buildStepValue(document.getElementById('plan-step4-status').value, document.getElementById('plan-step4-date').value);
+
         const item = {
           "คณะ": document.getElementById('plan-fac').value,
           "หลักสูตร": document.getElementById('plan-name').value.trim(),
           "สาขาวิชา": document.getElementById('plan-major').value.trim(),
-          "ปี": document.getElementById('plan-year').value.trim() || "2569",
+          "ปี": document.getElementById('plan-year').value.trim() || "หลักสูตรปรับปรุง พ.ศ. 2571",
           "ระดับ": document.getElementById('plan-level').value,
-          "วิพากษ์": document.getElementById('plan-step1').value.trim(),
-          "ขับเคลื่อนฯ": document.getElementById('plan-step2').value.trim(),
-          "สภาวิชาการ": document.getElementById('plan-step3').value.trim(),
-          "สภามหาวิทยาลัย": document.getElementById('plan-step4').value.trim(),
+          "วิพากษ์": val1,
+          "ขับเคลื่อนฯ": val2,
+          "สภาวิชาการ": val3,
+          "สภามหาวิทยาลัย": val4,
           "หมายเหตุ": document.getElementById('plan-note').value.trim()
         };
 

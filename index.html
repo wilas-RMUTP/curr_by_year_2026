@@ -203,34 +203,43 @@
         </div>
       </div>
 
-      <!-- 3, 4, 5. Breakdown Cards (IQA, เกณฑ์มาตรฐาน, ISCED) -->
+      <!-- 3, 4, 5. Breakdown Cards (เฉพาะหลักสูตรอุดมศึกษา) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         
-        <!-- 3. จำนวนหลักสูตรแยกตาม IQA -->
+        <!-- 3. จำนวนหลักสูตรแยกตาม IQA (เฉพาะอุดมศึกษา) -->
         <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
-          <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
-            <span>📋</span> 3. จำนวนหลักสูตรแยกตาม IQA
-          </h3>
+          <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span>📋</span> 3. จำนวนหลักสูตรแยกตาม IQA
+            </h3>
+            <span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">เฉพาะอุดมศึกษา</span>
+          </div>
           <div id="dash-breakdown-iqa" class="space-y-1.5 text-xs">
             <!-- Rendered by JS -->
           </div>
         </div>
 
-        <!-- 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน -->
+        <!-- 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน (เฉพาะอุดมศึกษา) -->
         <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
-          <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
-            <span>📐</span> 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน
-          </h3>
+          <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span>📐</span> 4. จำนวนหลักสูตรแยกตาม เกณฑ์มาตรฐาน
+            </h3>
+            <span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">เฉพาะอุดมศึกษา</span>
+          </div>
           <div id="dash-breakdown-std" class="space-y-1.5 text-xs">
             <!-- Rendered by JS -->
           </div>
         </div>
 
-        <!-- 5. จำนวนหลักสูตรแยกตาม ISCED -->
+        <!-- 5. จำนวนหลักสูตรแยกตาม ISCED (เฉพาะอุดมศึกษา) -->
         <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
-          <h3 class="text-xs font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-1.5">
-            <span>🌐</span> 5. จำนวนหลักสูตรแยกตาม ISCED
-          </h3>
+          <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span>🌐</span> 5. จำนวนหลักสูตรแยกตาม ISCED
+            </h3>
+            <span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">เฉพาะอุดมศึกษา</span>
+          </div>
           <div id="dash-breakdown-isced" class="space-y-1.5 text-xs">
             <!-- Rendered by JS -->
           </div>
@@ -305,7 +314,7 @@
     </section>
 
 
-    <!-- ==================== TAB 3: PROGRAM V2026 (หลักสูตร ปวช. - Full Responsive) ==================== -->
+    <!-- ==================== TAB 3: PROGRAM V2026 (หลักสูตร ปวช. - Full Responsive, เอาคอลัมน์ประเภทออก) ==================== -->
     <section id="sec-pV2026" class="hidden space-y-3">
       
       <!-- Filter Bar -->
@@ -330,7 +339,7 @@
         </div>
       </div>
 
-      <!-- Full Responsive Table Container -->
+      <!-- Full Responsive Table Container (ไม่มีคอลัมน์ประเภท) -->
       <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
         <div class="overflow-x-auto w-full">
           <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
@@ -340,10 +349,9 @@
                 <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">ประเภทวิชา</th>
                 <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">กลุ่มอาชีพ</th>
                 <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ปี</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ระดับ</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ประเภท</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[100px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ปี</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[120px]">หมายเหตุ</th>
                 <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
@@ -530,7 +538,7 @@
     </div>
   </div>
 
-  <!-- MODAL: PROGRAM V2026 (ปวช.) -->
+  <!-- MODAL: PROGRAM V2026 (ปวช. - ไม่มีช่องกรอกประเภท) -->
   <div id="modal-pV2026" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto">
     <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-4 sm:p-5 space-y-3.5 border border-slate-200 my-auto">
       <div class="flex justify-between items-center border-b pb-2.5">
@@ -541,18 +549,17 @@
       <form id="form-pV2026" onsubmit="submitFormPV2026(event)" class="space-y-3 text-xs">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div><label class="block font-semibold mb-1">คณะ/วิทยาลัย *</label><select id="pV2026-fac" required class="w-full border border-slate-200 rounded-lg p-2 bg-white"></select></div>
-          <div><label class="block font-semibold mb-1">ประเภทวิชา *</label><input type="text" id="pV2026-cat" required placeholder="เช่น ช่างอุตสาหกรรม" class="w-full border border-slate-200 rounded-lg p-2"></div>
+          <div><label class="block font-semibold mb-1">ประเภทวิชา *</label><input type="text" id="pV2026-cat" required placeholder="เช่น ช่างอุตสาหกรรม, พาณิชยกรรม" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div><label class="block font-semibold mb-1">กลุ่มอาชีพ *</label><input type="text" id="pV2026-career" required placeholder="เช่น ช่างไฟฟ้า" class="w-full border border-slate-200 rounded-lg p-2"></div>
-          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="pV2026-major" required placeholder="เช่น สาขาวิชาช่างไฟฟ้ากำลัง" class="w-full border border-slate-200 rounded-lg p-2"></div>
+          <div><label class="block font-semibold mb-1">กลุ่มอาชีพ *</label><input type="text" id="pV2026-career" required placeholder="เช่น ช่างไฟฟ้า, บัญชี" class="w-full border border-slate-200 rounded-lg p-2"></div>
+          <div><label class="block font-semibold mb-1">สาขาวิชา *</label><input type="text" id="pV2026-major" required placeholder="เช่น สาขาวิชาการบัญชี, สาขาวิชาช่างไฟฟ้ากำลัง" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div><label class="block font-semibold mb-1">ปี *</label><input type="text" id="pV2026-year" required placeholder="เช่น 2569" class="w-full border border-slate-200 rounded-lg p-2"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div><label class="block font-semibold mb-1">ปี *</label><input type="text" id="pV2026-year" required placeholder="เช่น 2567 หรือ 2569" class="w-full border border-slate-200 rounded-lg p-2"></div>
           <div><label class="block font-semibold mb-1">ระดับ</label><input type="text" id="pV2026-level" value="ปวช." readonly class="w-full border border-slate-200 rounded-lg p-2 bg-slate-50"></div>
-          <div><label class="block font-semibold mb-1">ประเภท</label><input type="text" id="pV2026-type" value="ปกติ" class="w-full border border-slate-200 rounded-lg p-2"></div>
         </div>
         <div><label class="block font-semibold mb-1">หมายเหตุ</label><input type="text" id="pV2026-note" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)..." class="w-full border border-slate-200 rounded-lg p-2"></div>
 
@@ -1067,41 +1074,32 @@
         tbodyFac.appendChild(tr);
       });
 
-      // 3. IQA Breakdown
+      // 3, 4, 5. คิดเฉพาะหลักสูตรระดับอุดมศึกษา (ไม่รวม ปวช.)
+      const higherEdTotal = dataP2026.length;
+
+      // 3. IQA Breakdown (เฉพาะอุดมศึกษา)
       const iqaMap = {};
       dataP2026.forEach(d => {
         const val = (d["IQA"] || "ไม่ระบุ").trim();
         iqaMap[val] = (iqaMap[val] || 0) + 1;
       });
-      if (vCount > 0) {
-        iqaMap["ปวช. (ไม่อยู่ในระบบอุดมศึกษา)"] = vCount;
-      }
+      renderBreakdownCard('dash-breakdown-iqa', iqaMap, higherEdTotal);
 
-      renderBreakdownCard('dash-breakdown-iqa', iqaMap, totalAll);
-
-      // 4. เกณฑ์มาตรฐาน Breakdown
+      // 4. เกณฑ์มาตรฐาน Breakdown (เฉพาะอุดมศึกษา)
       const stdMap = {};
       dataP2026.forEach(d => {
         const val = (d["เกณฑ์"] || "ไม่ระบุ").trim();
         stdMap[val] = (stdMap[val] || 0) + 1;
       });
-      if (vCount > 0) {
-        stdMap["ปวช. (ไม่อยู่ในระบบอุดมศึกษา)"] = vCount;
-      }
+      renderBreakdownCard('dash-breakdown-std', stdMap, higherEdTotal);
 
-      renderBreakdownCard('dash-breakdown-std', stdMap, totalAll);
-
-      // 5. ISCED Breakdown
+      // 5. ISCED Breakdown (เฉพาะอุดมศึกษา)
       const iscedMap = {};
       dataP2026.forEach(d => {
         const val = (d["ISCED"] || "ไม่ระบุ").trim();
         iscedMap[val] = (iscedMap[val] || 0) + 1;
       });
-      if (vCount > 0) {
-        iscedMap["ปวช. (ไม่อยู่ในระบบอุดมศึกษา)"] = vCount;
-      }
-
-      renderBreakdownCard('dash-breakdown-isced', iscedMap, totalAll);
+      renderBreakdownCard('dash-breakdown-isced', iscedMap, higherEdTotal);
     }
 
     function renderBreakdownCard(elementId, dataMap, total) {
@@ -1217,7 +1215,7 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตร ปวช.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตร ปวช.</td></tr>`;
         return;
       }
 
@@ -1244,7 +1242,6 @@
           <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["สาขาวิชา"]}</td>
           <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["ปี"] || "-"}</td>
           <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"] || "ปวช."}</td>
-          <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ประเภท"] || "ปกติ"}</td>
           <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
@@ -1392,7 +1389,7 @@
       }
     }
 
-    // Modal ProgramV2026 (Clear all text fields on create)
+    // Modal ProgramV2026 (Clear all text fields on create, ไม่มีประเภท)
     function openModalPV2026(mode, globalIdx = -1) {
       editContext = { sheet: 'ProgramV2026', index: mode === 'edit' ? globalIdx : -1 };
       document.getElementById('pV2026-form-title').innerText = mode === 'edit' ? `แก้ไขหลักสูตร ปวช.` : "เพิ่มหลักสูตร ปวช.";
@@ -1404,7 +1401,6 @@
         document.getElementById('pV2026-career').value = item["กลุ่มอาชีพ"] || "";
         document.getElementById('pV2026-major').value = item["สาขาวิชา"] || "";
         document.getElementById('pV2026-year').value = item["ปี"] || "";
-        document.getElementById('pV2026-type').value = item["ประเภท"] || "ปกติ";
         document.getElementById('pV2026-note').value = item["หมายเหตุ"] || "";
       } else {
         document.getElementById('pV2026-fac').selectedIndex = 0;
@@ -1412,7 +1408,6 @@
         document.getElementById('pV2026-career').value = "";
         document.getElementById('pV2026-major').value = "";
         document.getElementById('pV2026-year').value = "";
-        document.getElementById('pV2026-type').value = "ปกติ";
         document.getElementById('pV2026-note').value = "";
       }
       document.getElementById('modal-pV2026').classList.remove('hidden');
@@ -1430,7 +1425,6 @@
           "สาขาวิชา": document.getElementById('pV2026-major').value.trim(),
           "ปี": document.getElementById('pV2026-year').value.trim(),
           "ระดับ": "ปวช.",
-          "ประเภท": document.getElementById('pV2026-type').value.trim() || "ปกติ",
           "หมายเหตุ": document.getElementById('pV2026-note').value.trim()
         };
 

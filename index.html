@@ -630,7 +630,7 @@
                   <option value="กำลังดำเนินการ">⏳ กำลังดำเนินการ</option>
                   <option value="เกินระยะเวลาตามแผน">⚠️ เกินระยะเวลาตามแผน</option>
                 </select>
-                <input type="text" id="plan-step2-date" placeholder="เช่น 4-2569 / 18 เม.ย. 2569" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs">
+                <input type="text" id="plan-step2-date" placeholder="เช่น ต.ค. 2569 หรือ 4-2569" class="w-full border border-slate-200 rounded-lg p-1.5 text-xs">
               </div>
             </div>
 
@@ -1302,16 +1302,21 @@
           `;
         }
 
+        const valStep1 = item["วิพากษ์"] || "-";
+        const valStep2 = item["ขับเคลื่อน"] || item["ขับเคลื่อนฯ"] || "-";
+        const valStep3 = item["สภาวิชาการ"] || "-";
+        const valStep4 = item["สภามหาวิทยาลัย"] || "-";
+
         tr.innerHTML = `
           <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
           <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
           <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
           <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ปี"] || "-"}</td>
           <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
-          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["วิพากษ์"] || "-"}</td>
-          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["ขับเคลื่อนฯ"] || "-"}</td>
-          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["สภาวิชาการ"] || "-"}</td>
-          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${item["สภามหาวิทยาลัย"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep1}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep2}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep3}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep4}</td>
           <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
           <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
@@ -1494,7 +1499,7 @@
         document.getElementById('plan-step1-status').value = s1.status;
         document.getElementById('plan-step1-date').value = s1.date;
 
-        const s2 = parseStepData(item["ขับเคลื่อนฯ"]);
+        const s2 = parseStepData(item["ขับเคลื่อน"] || item["ขับเคลื่อนฯ"]);
         document.getElementById('plan-step2-status').value = s2.status;
         document.getElementById('plan-step2-date').value = s2.date;
 
@@ -1548,6 +1553,7 @@
           "ปี": document.getElementById('plan-year').value.trim(),
           "ระดับ": document.getElementById('plan-level').value,
           "วิพากษ์": val1,
+          "ขับเคลื่อน": val2,
           "ขับเคลื่อนฯ": val2,
           "สภาวิชาการ": val3,
           "สภามหาวิทยาลัย": val4,

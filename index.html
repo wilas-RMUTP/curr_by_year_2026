@@ -3,62 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบบริหารจัดการข้อมูลหลักสูตร มทร.พระนคร (พ.ศ. 2569)</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Prompt -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
+  <title>ระบบบริหารจัดการหลักสูตร 2569 - มทร.พระนคร</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
-    body {
-      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Sarabun', sans-serif; }
+    
+    /* Custom Sleek Scrollbar */
+    ::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
     }
-    .modal-active {
-      overflow: hidden;
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
     }
-    /* Hide scrollbar for clean UI in tabs */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-[#f8fafc] text-slate-700 min-h-screen flex flex-col">
 
-  <!-- ==================== HEADER (Full Responsive Width) ==================== -->
-  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white sticky top-0 z-40 shadow-md">
-    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex justify-between items-center">
-      
-      <!-- Brand & Title -->
-      <div class="flex items-center space-x-2.5">
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400/20 border border-amber-300/30 flex items-center justify-center text-amber-300 font-bold text-base sm:text-lg shadow-inner">
-          🎓
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
+    <div id="toast-content" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold text-slate-800 bg-white border border-slate-200">
+      <span id="toast-icon">✨</span>
+      <span id="toast-message">แจ้งเตือน</span>
+    </div>
+  </div>
+
+  <!-- Top Header (Pastel Slate & Soft Navy Theme - Full Responsive Width) -->
+  <header class="bg-gradient-to-r from-slate-800 via-slate-700 to-indigo-900/90 text-white shadow-md sticky top-0 z-30 border-b border-indigo-200/20 w-full">
+    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3">
+          <!-- Logo RMUTP in Soft Pastel Purple -->
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 backdrop-blur border border-purple-300/30 text-[#d8b4fe] font-bold text-lg flex items-center justify-center shadow-inner flex-shrink-0">
+            RMUTP
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
+            </h1>
+            <p class="text-xs text-slate-300 font-normal">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+          </div>
         </div>
-        <div>
-          <h1 class="font-bold text-xs sm:text-sm md:text-base tracking-wide flex items-center gap-1.5 flex-wrap">
-            <span>ฐานข้อมูลหลักสูตร มทร.พระนคร</span>
-            <span class="bg-amber-400/90 text-slate-950 text-[10px] sm:text-xs font-extrabold px-2 py-0.5 rounded-full shadow-sm">ปี 2569</span>
-          </h1>
-          <p class="text-[10px] sm:text-[11px] text-slate-300 hidden sm:block">ระบบติดตาม ตรวจสอบ และบริหารจัดการข้อมูลหลักสูตร มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+
+        <!-- Mobile-only Admin Controls -->
+        <div class="md:hidden flex items-center gap-1.5">
+          <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg text-xs">⚙️</button>
         </div>
       </div>
 
-      <!-- Header Action Controls -->
-      <div class="flex items-center space-x-2">
-        <!-- Live Admin Status / Login Toggle -->
-        <div id="admin-mode-container" class="hidden md:flex items-center"></div>
-
-        <!-- Refresh Data Button -->
-        <button type="button" onclick="refreshCurrentData()" title="รีเฟรชข้อมูลจากคลาวด์" class="bg-white/10 hover:bg-white/20 border border-white/15 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 text-xs transition">
-          <span id="refresh-spinner" class="inline-block">🔄</span>
-          <span class="hidden sm:inline text-[11px]">รีเฟรช</span>
-        </button>
+      <!-- Right Controls: Admin Password Mode & API Settings -->
+      <div class="hidden md:flex items-center gap-2 text-xs flex-wrap justify-end">
+        
+        <!-- Admin Mode Toggle Button -->
+        <div id="admin-mode-container">
+          <!-- Rendered by JS: Locked / Unlocked Status -->
+        </div>
 
         <!-- API Settings Button -->
         <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/15 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
@@ -241,18 +249,32 @@
       <!-- Filter Bar -->
       <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, ชื่อหลักสูตร, สาขาวิชา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, คณะ, หลักสูตร, สาขา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
           <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
           </select>
 
           <select id="filter-p2026-level" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
-            <option value="">ทุกระดับการศึกษา</option>
+            <option value="">ทุกระดับ</option>
             <option value="ปริญญาตรี">ปริญญาตรี</option>
             <option value="ปริญญาโท">ปริญญาโท</option>
             <option value="ปริญญาเอก">ปริญญาเอก</option>
             <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+          </select>
+
+          <select id="filter-p2026-iqa" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุก IQA</option>
+            <option value="สป.อว.">สป.อว.</option>
+            <option value="AUNQA">AUNQA</option>
+            <option value="ABET">ABET</option>
+          </select>
+
+          <select id="filter-p2026-isced" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกกลุ่ม ISCED</option>
+            <option value="ยังไม่ระบุ">ยังไม่ระบุ</option>
+            <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
+            <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
           </select>
         </div>
 
@@ -270,15 +292,16 @@
           <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">คณะ</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[90px]">ระดับ</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[170px]">หลักสูตร</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[180px]">สาขาวิชา</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ปี</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[75px]">IQA</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[95px]">เกณฑ์มาตรฐาน</th>
-                <th class="py-2.5 px-2.5 sm:px-3 text-center min-w-[130px]">ISCED</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">ปี (ประเภท & พ.ศ.)</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">IQA</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">เกณฑ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">ISCED</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[100px]">หมายเหตุ</th>
                 <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
@@ -297,10 +320,18 @@
       <!-- Filter Bar -->
       <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหารหัส, ประเภทวิชา, สาขาวิชา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหารหัส, คณะ, สาขาวิชา, อาชีพ..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
           <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-pV2026-cat" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกประเภทวิชา</option>
+            <option value="ช่างอุตสาหกรรม">ช่างอุตสาหกรรม</option>
+            <option value="พาณิชยกรรม">พาณิชยกรรม</option>
+            <option value="ศิลปกรรม">ศิลปกรรม</option>
+            <option value="คหกรรมศาสตร์">คหกรรมศาสตร์</option>
           </select>
         </div>
 
@@ -318,13 +349,14 @@
           <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">คณะ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
                 <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">ประเภทวิชา</th>
                 <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">กลุ่มอาชีพ</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[180px]">สาขาวิชา</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ปี</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ปี</th>
                 <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[120px]">หมายเหตุ</th>
                 <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
@@ -343,7 +375,7 @@
       <!-- Filter Bar -->
       <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
         <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
           
           <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
             <option value="">ทุกคณะ/วิทยาลัย</option>
@@ -362,7 +394,7 @@
         <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
           <span class="text-xs text-slate-500" id="plan-count-label">แสดง 0 รายการ</span>
           <button type="button" id="btn-add-plan" onclick="checkAuthAndRun(() => openModalPlan('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
-            <span>+</span> เพิ่มแผนพัฒนาหลักสูตร
+            <span>+</span> เพิ่มแผนการพัฒนาหลักสูตร
           </button>
         </div>
       </div>
@@ -373,15 +405,16 @@
           <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
             <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">หลักสูตร</th>
-                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[170px]">สาขาวิชา</th>
-                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ปี</th>
-                <th class="py-2.5 px-2 text-center min-w-[125px]">1.วิพากษ์</th>
-                <th class="py-2.5 px-2 text-center min-w-[125px]">2.ขับเคลื่อน</th>
-                <th class="py-2.5 px-2 text-center min-w-[125px]">3.สภาวิชาการ</th>
-                <th class="py-2.5 px-2 text-center min-w-[125px]">4.สภามหาฯ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[110px]">ปี พ.ศ.</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">1. วิพากษ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">2. ขับเคลื่อนฯ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">3. สภาวิชาการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">4. สภามหาวิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[90px]">หมายเหตุ</th>
                 <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
               </tr>
             </thead>
@@ -789,1129 +822,1103 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs shadow-2xl flex items-center space-x-2 transition transform translate-y-20 opacity-0 z-50">
-    <span id="toast-icon">ℹ️</span>
-    <span id="toast-msg">ข้อความ</span>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 text-center py-4 text-xs mt-auto">
-    <div class="max-w-[1700px] mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-      <p>© 2569 มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร (RMUTP) - ฝ่ายวิชาการและวิจัย</p>
-      <div class="flex items-center gap-4 text-[11px] text-slate-400">
-        <span>รองรับการใช้งานผ่านมือถือ แท็บเล็ต และคอมพิวเตอร์ทุกขนาดหน้าจอ</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ==================== JAVASCRIPT APP LOGIC ==================== -->
   <script>
-    // --- APP CONSTANTS & STORAGE KEYS ---
-    const STORAGE_KEY_AUTH = "rmutp_curr_is_admin_v2569";
-    const STORAGE_KEY_PASS = "rmutp_curr_custom_pass_v2569";
-    const STORAGE_KEY_GAS = "rmutp_curr_gas_url_v2569";
-    const DEFAULT_PASS = "admin1234";
-    
-    // Official Default GAS Web App URL
+    // URL Google Apps Script ที่เชื่อมต่อ Google Sheet จริงโดยตรง
     const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwtWApv4ELTYw9ufX0UyjuNjZq9ZKuURh8Ya21X2YFt_DNpxCwb7namOxAKDWZIXPH4/exec";
 
-    // 11 Faculties strictly ordered
-    const FACULTIES = [
-      "คณะครุศาสตร์อุตสาหกรรม",
-      "คณะเทคโนโลยีคหกรรมศาสตร์",
-      "คณะเทคโนโลยีสื่อสารมวลชน",
-      "คณะบริหารธุรกิจ",
-      "คณะวิทยาศาสตร์และเทคโนโลยี",
-      "คณะวิศวกรรมศาสตร์",
-      "คณะศิลปศาสตร์",
-      "คณะอุตสาหกรรมสิ่งทอและออกแบบแฟชั่น",
-      "คณะสถาปัตยกรรมศาสตร์และการออกแบบ",
-      "วิทยาลัยเทคโนโลยีอุตสาหกรรมเกษตร",
-      "วิทยาลัยการบริหารและจัดการ"
+    // 11 Faculties ordered strictly
+    const facultiesList = [
+      "ศิลปศาสตร์",
+      "วิทยาศาสตร์และเทคโนโลยี",
+      "บริหารธุรกิจ",
+      "วิศวกรรมศาสตร์",
+      "ครุศาสตร์อุตสาหกรรม",
+      "อุตสาหกรรมสิ่งทอและออกแบบแฟชั่น",
+      "เทคโนโลยีคหกรรมศาสตร์",
+      "เทคโนโลยีสื่อสารมวลชน",
+      "สถาปัตยกรรมศาสตร์และการออกแบบ",
+      "วิทยาลัยการบริหารแห่งรัฐ",
+      "วิทยาลัยนานาชาติ"
     ];
 
-    // Global in-memory dataset
-    let dataP2026 = [];
-    let dataPV2026 = [];
-    let dataPlan = [];
-    let dataCisa = [];
+    // Function to get Faculty Sorting Index
+    function getFacultyOrder(fac) {
+      if (!fac) return 999;
+      const clean = fac.replace(/^คณะ|^วิทยาลัย/, '').trim();
+      for (let i = 0; i < facultiesList.length; i++) {
+        const listClean = facultiesList[i].replace(/^คณะ|^วิทยาลัย/, '').trim();
+        if (clean === listClean || fac === facultiesList[i] || fac === ("คณะ" + facultiesList[i]) || fac === ("วิทยาลัย" + facultiesList[i])) {
+          return i;
+        }
+      }
+      return 999;
+    }
 
-    // App State
-    let currentTab = "dashboard";
-    let isAdmin = false;
-    let gasUrl = localStorage.getItem(STORAGE_KEY_GAS) || DEFAULT_GAS_URL;
-    let isCloudMode = true;
+    // Password Protection & State
+    let adminPass = localStorage.getItem('RMUTP_ADMIN_PASS') || 'rmutp2569';
+    let isAdminUnlocked = localStorage.getItem('RMUTP_IS_ADMIN') === 'true';
 
-    // Delete state
-    let pendingDelete = { type: null, id: null };
+    let gasUrl = localStorage.getItem('RMUTP_GAS_URL_FULL') || DEFAULT_GAS_URL;
 
-    // --- INITIALIZATION ---
-    window.addEventListener("DOMContentLoaded", () => {
-      initAuth();
-      initFacultyDropdowns();
-      initGasConfig();
-      fetchFullDataFromGas();
+    // Data State Initialization
+    let rawP2026 = localStorage.getItem('RMUTP_LOCAL_P2026');
+    let dataP2026 = (gasUrl ? [] : (rawP2026 !== null ? JSON.parse(rawP2026) : []));
+    if (!Array.isArray(dataP2026)) dataP2026 = [];
+
+    let rawPV2026 = localStorage.getItem('RMUTP_LOCAL_PV2026');
+    let dataPV2026 = (gasUrl ? [] : (rawPV2026 !== null ? JSON.parse(rawPV2026) : []));
+    if (!Array.isArray(dataPV2026)) dataPV2026 = [];
+
+    let rawPlan = localStorage.getItem('RMUTP_LOCAL_PLAN');
+    let dataPlan = (gasUrl ? [] : (rawPlan !== null ? JSON.parse(rawPlan) : []));
+    if (!Array.isArray(dataPlan)) dataPlan = [];
+
+    let rawCisa = localStorage.getItem('RMUTP_LOCAL_CISA');
+    let dataCisa = (gasUrl ? [] : (rawCisa !== null ? JSON.parse(rawCisa) : []));
+    if (!Array.isArray(dataCisa)) dataCisa = [];
+
+    let delContext = { sheet: '', index: -1, displayName: '' };
+    let editContext = { sheet: '', index: -1 };
+    let pendingAuthCallback = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      populateFaculties();
+      renderAdminUI();
+      document.getElementById('gas-url-input').value = gasUrl;
+      updateApiStatusUI(!!gasUrl);
+      
+      if (gasUrl) {
+        fetchData();
+      } else {
+        renderAll();
+      }
     });
 
-    function initAuth() {
-      isAdmin = localStorage.getItem(STORAGE_KEY_AUTH) === "true";
-      renderAuthBar();
-      updateManageColumnsVisibility();
-    }
+    // Password Protection Handling
+    function renderAdminUI() {
+      const container = document.getElementById('admin-mode-container');
+      const containerMobile = document.getElementById('admin-mode-container-mobile');
+      
+      const adminHtml = isAdminUnlocked ? `
+        <div class="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 px-2.5 py-1 rounded-lg">
+          <span class="text-[11px] font-semibold">🔓 โหมดแก้ไข (Admin)</span>
+          <button type="button" onclick="openModalChangePass()" title="เปลี่ยนรหัสผ่าน" class="hover:text-white px-1 font-mono text-[11px]">⚙️</button>
+          <button type="button" onclick="lockAdmin()" class="bg-black/20 hover:bg-black/40 text-slate-200 hover:text-white px-1.5 py-0.5 rounded text-[10px] ml-1">ออกจากโหมดแก้ไข</button>
+        </div>
+      ` : `
+        <button type="button" onclick="openModalAuth()" class="bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/30 text-amber-200 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <span>🔐</span>
+          <span class="text-[11px] font-semibold">เข้าสู่ระบบแก้ไข</span>
+        </button>
+      `;
 
-    function initGasConfig() {
-      const input = document.getElementById("gas-url-input");
-      if (input) input.value = gasUrl;
-      updateApiStatusIndicator();
-    }
+      if (container) container.innerHTML = adminHtml;
+      if (containerMobile) containerMobile.innerHTML = adminHtml;
 
-    function initFacultyDropdowns() {
-      const selectIds = [
-        "filter-p2026-fac", "p2026-fac",
-        "filter-pV2026-fac", "pV2026-fac",
-        "filter-plan-fac", "plan-fac",
-        "filter-cisa-fac", "cisa-fac"
-      ];
-      selectIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const isFilter = id.startsWith("filter-");
-        
-        let html = isFilter ? '<option value="">ทุกคณะ/วิทยาลัย</option>' : '';
-        FACULTIES.forEach(fac => {
-          html += `<option value="${escapeHtml(fac)}">${escapeHtml(fac)}</option>`;
-        });
-        el.innerHTML = html;
-      });
-    }
-
-    function toggleApiSettings() {
-      const drawer = document.getElementById("api-drawer");
-      drawer.classList.toggle("hidden");
-    }
-
-    function updateApiStatusIndicator() {
-      const dot = document.getElementById("api-status-dot");
-      const txt = document.getElementById("api-status-text");
-      if (isCloudMode && gasUrl) {
-        dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-        txt.textContent = "Google Sheets สด";
-      } else {
-        dot.className = "w-2 h-2 rounded-full bg-amber-400";
-        txt.textContent = "โหมดในเครื่อง";
-      }
-    }
-
-    function saveGasUrl() {
-      const val = document.getElementById("gas-url-input").value.trim();
-      if (!val) {
-        showToast("กรุณาระบุ URL ของ Google Apps Script", "⚠️");
-        return;
-      }
-      gasUrl = val;
-      localStorage.setItem(STORAGE_KEY_GAS, gasUrl);
-      isCloudMode = true;
-      updateApiStatusIndicator();
-      showToast("บันทึกการเชื่อมต่อเรียบร้อย กำลังดึงข้อมูล...", "🔄");
-      toggleApiSettings();
-      fetchFullDataFromGas();
-    }
-
-    function resetToLocalData() {
-      isCloudMode = false;
-      updateApiStatusIndicator();
-      toggleApiSettings();
-      showToast("เปลี่ยนเป็นโหมดใช้งานในเครื่อง", "💾");
-      renderAllViews();
-    }
-
-    // --- AUTHENTICATION LOGIC ---
-    function renderAuthBar() {
-      const desktop = document.getElementById("admin-mode-container");
-      const mobile = document.getElementById("admin-mode-container-mobile");
-
-      let html = "";
-      if (isAdmin) {
-        html = `
-          <div class="flex items-center space-x-2 bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 rounded-lg text-emerald-300 text-xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span class="font-medium">โหมดแก้ไข (Admin)</span>
-            <button type="button" onclick="openModalChangePass()" class="text-[11px] underline hover:text-white ml-1">เปลี่ยนรหัส</button>
-            <button type="button" onclick="logoutAdmin()" class="text-[11px] bg-white/10 hover:bg-white/20 px-2 py-0.5 rounded text-white ml-1">ออก</button>
-          </div>
-        `;
-      } else {
-        html = `
-          <button type="button" onclick="openModalAuth()" class="bg-white/10 hover:bg-white/20 border border-white/15 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition text-xs">
-            <span>🔐</span> เข้าสู่ระบบจัดการ
-          </button>
-        `;
-      }
-
-      if (desktop) desktop.innerHTML = html;
-      if (mobile) mobile.innerHTML = html;
-      updateManageColumnsVisibility();
-    }
-
-    function updateManageColumnsVisibility() {
-      const cols = document.querySelectorAll(".col-manage");
-      cols.forEach(el => {
-        if (isAdmin) {
-          el.classList.remove("hidden");
-        } else {
-          el.classList.add("hidden");
+      // Toggle visibility or state of Add buttons
+      ['btn-add-p2026', 'btn-add-pV2026', 'btn-add-plan', 'btn-add-cisa'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          if (isAdminUnlocked) {
+            btn.className = "bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap";
+          } else {
+            btn.className = "bg-slate-200 text-slate-500 hover:bg-slate-300 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition flex items-center gap-1 whitespace-nowrap";
+          }
         }
       });
-
-      const addBtnP2026 = document.getElementById("btn-add-p2026");
-      const addBtnPV2026 = document.getElementById("btn-add-pV2026");
-      const addBtnPlan = document.getElementById("btn-add-plan");
-      const addBtnCisa = document.getElementById("btn-add-cisa");
-
-      [addBtnP2026, addBtnPV2026, addBtnPlan, addBtnCisa].forEach(btn => {
-        if (!btn) return;
-        if (isAdmin) {
-          btn.classList.remove("hidden");
-        } else {
-          btn.classList.add("hidden");
-        }
-      });
-    }
-
-    function openModalAuth() {
-      document.getElementById("auth-pass-input").value = "";
-      document.getElementById("modal-auth").classList.remove("hidden");
-    }
-    function closeModalAuth() {
-      document.getElementById("modal-auth").classList.add("hidden");
-    }
-
-    function handleAuthSubmit(e) {
-      e.preventDefault();
-      const entered = document.getElementById("auth-pass-input").value;
-      const valid = localStorage.getItem(STORAGE_KEY_PASS) || DEFAULT_PASS;
-      if (entered === valid) {
-        isAdmin = true;
-        localStorage.setItem(STORAGE_KEY_AUTH, "true");
-        closeModalAuth();
-        renderAuthBar();
-        renderAllViews();
-        showToast("เข้าสู่ระบบเรียบร้อยแล้ว", "✅");
-      } else {
-        showToast("รหัสผ่านไม่ถูกต้อง", "❌");
-      }
-    }
-
-    function logoutAdmin() {
-      isAdmin = false;
-      localStorage.setItem(STORAGE_KEY_AUTH, "false");
-      renderAuthBar();
-      renderAllViews();
-      showToast("ออกจากระบบจัดการแล้ว", "ℹ️");
     }
 
     function checkAuthAndRun(callback) {
-      if (isAdmin) {
+      if (isAdminUnlocked) {
         callback();
       } else {
+        pendingAuthCallback = callback;
         openModalAuth();
       }
     }
 
-    function openModalChangePass() {
-      document.getElementById("old-pass-input").value = "";
-      document.getElementById("new-pass-input").value = "";
-      document.getElementById("modal-change-pass").classList.remove("hidden");
+    function openModalAuth() {
+      document.getElementById('auth-pass-input').value = '';
+      document.getElementById('modal-auth').classList.remove('hidden');
+      document.getElementById('auth-pass-input').focus();
     }
+
+    function closeModalAuth() {
+      document.getElementById('modal-auth').classList.add('hidden');
+      pendingAuthCallback = null;
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const entered = document.getElementById('auth-pass-input').value;
+      if (entered === adminPass) {
+        isAdminUnlocked = true;
+        localStorage.setItem('RMUTP_IS_ADMIN', 'true');
+        renderAdminUI();
+        closeModalAuth();
+        showToast("🔓 เข้าสู่โหมดบันทึก/แก้ไขข้อมูลแล้ว", "success");
+        if (pendingAuthCallback) {
+          const cb = pendingAuthCallback;
+          pendingAuthCallback = null;
+          cb();
+        }
+        renderAll();
+      } else {
+        showToast("❌ รหัสผ่านไม่ถูกต้อง", "error");
+      }
+    }
+
+    function lockAdmin() {
+      isAdminUnlocked = false;
+      localStorage.setItem('RMUTP_IS_ADMIN', 'false');
+      renderAdminUI();
+      renderAll();
+      showToast("🔒 ล็อกเป็นโหมดดูข้อมูลอย่างเดียวแล้ว", "info");
+    }
+
+    function openModalChangePass() {
+      document.getElementById('old-pass-input').value = '';
+      document.getElementById('new-pass-input').value = '';
+      document.getElementById('modal-change-pass').classList.remove('hidden');
+    }
+
     function closeModalChangePass() {
-      document.getElementById("modal-change-pass").classList.add("hidden");
+      document.getElementById('modal-change-pass').classList.add('hidden');
     }
 
     function handleChangePassword(e) {
       e.preventDefault();
-      const oldP = document.getElementById("old-pass-input").value;
-      const newP = document.getElementById("new-pass-input").value;
-      const curP = localStorage.getItem(STORAGE_KEY_PASS) || DEFAULT_PASS;
-
-      if (oldP !== curP) {
-        showToast("รหัสผ่านเดิมไม่ถูกต้อง", "❌");
+      const oldP = document.getElementById('old-pass-input').value;
+      const newP = document.getElementById('new-pass-input').value.trim();
+      if (oldP !== adminPass) {
+        showToast("❌ รหัสผ่านเดิมไม่ถูกต้อง", "error");
         return;
       }
-      if (newP.length < 4) {
-        showToast("รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร", "⚠️");
+      if (!newP) {
+        showToast("❌ กรุณาตั้งรหัสผ่านใหม่", "error");
         return;
       }
-
-      localStorage.setItem(STORAGE_KEY_PASS, newP);
+      adminPass = newP;
+      localStorage.setItem('RMUTP_ADMIN_PASS', adminPass);
       closeModalChangePass();
-      showToast("เปลี่ยนรหัสผ่านใหม่เรียบร้อยแล้ว", "✅");
+      showToast("✅ เปลี่ยนรหัสผ่านใหม่เรียบร้อยแล้ว", "success");
     }
 
-    // --- TAB SWITCHING ---
-    function switchTab(tab) {
-      currentTab = tab;
-      const tabs = ["dashboard", "p2026", "pV2026", "plan", "cisa"];
-      tabs.forEach(t => {
-        const sec = document.getElementById(`sec-${t}`);
-        const btn = document.getElementById(`tab-btn-${t}`);
-        if (!sec || !btn) return;
-        
-        if (t === tab) {
-          sec.classList.remove("hidden");
-          btn.className = "pb-2 px-1 text-amber-200 border-b-2 border-amber-300 font-semibold flex items-center gap-1.5 whitespace-nowrap";
-        } else {
-          sec.classList.add("hidden");
-          btn.className = "pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap";
-        }
+    function saveLocalStorage() {
+      localStorage.setItem('RMUTP_LOCAL_P2026', JSON.stringify(dataP2026));
+      localStorage.setItem('RMUTP_LOCAL_PV2026', JSON.stringify(dataPV2026));
+      localStorage.setItem('RMUTP_LOCAL_PLAN', JSON.stringify(dataPlan));
+      localStorage.setItem('RMUTP_LOCAL_CISA', JSON.stringify(dataCisa));
+    }
+
+    function resetToLocalData() {
+      localStorage.removeItem('RMUTP_GAS_URL_FULL');
+      gasUrl = '';
+      document.getElementById('gas-url-input').value = '';
+      updateApiStatusUI(false);
+      renderAll();
+      toggleApiSettings();
+      showToast("ℹ️ สลับเป็นโหมดในเครื่องแล้ว", "info");
+    }
+
+    function updateApiStatusUI(isConnected) {
+      const dot = document.getElementById('api-status-dot');
+      const text = document.getElementById('api-status-text');
+      if (isConnected) {
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+        if (text) text.innerText = "Google Sheets สด";
+      } else {
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-amber-400";
+        if (text) text.innerText = "ในเครื่อง";
+      }
+    }
+
+    function formatFacName(fac) {
+      if (!fac) return "คณะศิลปศาสตร์";
+      if (fac.startsWith("คณะ") || fac.startsWith("วิทยาลัย")) return fac;
+      return "คณะ" + fac;
+    }
+
+    function populateFaculties() {
+      const f1 = document.getElementById('filter-p2026-fac');
+      const f2 = document.getElementById('filter-pV2026-fac');
+      const f3 = document.getElementById('filter-plan-fac');
+      const f4 = document.getElementById('filter-cisa-fac');
+      const m1 = document.getElementById('p2026-fac');
+      const m2 = document.getElementById('pV2026-fac');
+      const m3 = document.getElementById('plan-fac');
+      const m4 = document.getElementById('cisa-fac');
+
+      if (f1) f1.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      if (f2) f2.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      if (f3) f3.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      if (f4) f4.innerHTML = '<option value="">ทุกคณะ/วิทยาลัย</option>';
+      if (m1) m1.innerHTML = '';
+      if (m2) m2.innerHTML = '';
+      if (m3) m3.innerHTML = '';
+      if (m4) m4.innerHTML = '';
+
+      facultiesList.forEach(fac => {
+        const fullFac = formatFacName(fac);
+        if (f1) f1.add(new Option(fullFac, fullFac));
+        if (f2) f2.add(new Option(fullFac, fullFac));
+        if (f3) f3.add(new Option(fullFac, fullFac));
+        if (f4) f4.add(new Option(fullFac, fullFac));
+        if (m1) m1.add(new Option(fullFac, fullFac));
+        if (m2) m2.add(new Option(fullFac, fullFac));
+        if (m3) m3.add(new Option(fullFac, fullFac));
+        if (m4) m4.add(new Option(fullFac, fullFac));
       });
-      renderCurrentTab();
     }
 
-    function renderCurrentTab() {
-      if (currentTab === "dashboard") renderDashboard();
-      else if (currentTab === "p2026") filterP2026();
-      else if (currentTab === "pV2026") filterPV2026();
-      else if (currentTab === "plan") filterPlan();
-      else if (currentTab === "cisa") filterCisa();
+    function switchTab(t) {
+      ['dashboard', 'p2026', 'pV2026', 'plan', 'cisa'].forEach(tab => {
+        const sec = document.getElementById(`sec-${tab}`);
+        if (sec) sec.classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${tab}`);
+        if (btn) btn.className = "pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap";
+      });
+
+      const activeSec = document.getElementById(`sec-${t}`);
+      if (activeSec) activeSec.classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${t}`);
+      if (activeBtn) activeBtn.className = "pb-2 px-1 text-amber-200 border-b-2 border-amber-300 font-semibold flex items-center gap-1.5 whitespace-nowrap";
     }
 
-    function renderAllViews() {
+    function toggleApiSettings() { document.getElementById('api-drawer').classList.toggle('hidden'); }
+
+    function saveGasUrl() {
+      const u = document.getElementById('gas-url-input').value.trim();
+      if (!u) {
+        resetToLocalData();
+        return;
+      }
+      gasUrl = u;
+      localStorage.setItem('RMUTP_GAS_URL_FULL', gasUrl);
+      updateApiStatusUI(true);
+      fetchData();
+      toggleApiSettings();
+    }
+
+    async function fetchData() {
+      if (!gasUrl) {
+        renderAll();
+        return;
+      }
+      showToast("⏳ กำลังเชื่อมต่อ Google Sheets...", "info");
+      try {
+        const [res1, res2, res3, res4] = await Promise.all([
+          fetch(`${gasUrl}?sheet=Program2026`).then(r => r.json()).catch(() => []),
+          fetch(`${gasUrl}?sheet=ProgramV2026`).then(r => r.json()).catch(() => []),
+          fetch(`${gasUrl}?sheet=Plan`).then(r => r.json()).catch(() => []),
+          fetch(`${gasUrl}?sheet=CISA`).then(r => r.json()).catch(() => [])
+        ]);
+        dataP2026 = Array.isArray(res1) ? res1 : [];
+        dataPV2026 = Array.isArray(res2) ? res2 : [];
+        dataPlan = Array.isArray(res3) ? res3 : [];
+        dataCisa = Array.isArray(res4) ? res4 : [];
+        saveLocalStorage();
+        renderAll();
+        showToast("✅ ดึงข้อมูลสดจาก Google Sheets สำเร็จ", "success");
+      } catch (err) {
+        console.warn("GAS Fetch warning:", err);
+        showToast("⚠️ ไม่สามารถดึงข้อมูลสดได้: " + err.message, "error");
+        renderAll();
+      }
+    }
+
+    async function postApi(sheetName, action, item) {
+      if (gasUrl) {
+        try {
+          await fetch(gasUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ sheet: sheetName, action, data: item })
+          });
+        } catch (e) {
+          console.warn("GAS Post warning:", e);
+        }
+      }
+      saveLocalStorage();
+      renderAll();
+      return true;
+    }
+
+    function renderAll() {
       renderDashboard();
       filterP2026();
       filterPV2026();
       filterPlan();
       filterCisa();
-      updateManageColumnsVisibility();
     }
 
-    function refreshCurrentData() {
-      const spinner = document.getElementById("refresh-spinner");
-      if (spinner) spinner.classList.add("animate-spin");
-      fetchFullDataFromGas(() => {
-        if (spinner) spinner.classList.remove("animate-spin");
-      });
+    function isFacMatch(itemFac, targetFac) {
+      if (!itemFac || !targetFac) return false;
+      const cleanItem = itemFac.replace(/^คณะ|^วิทยาลัย/, '').trim();
+      const cleanTarget = targetFac.replace(/^คณะ|^วิทยาลัย/, '').trim();
+      return cleanItem === cleanTarget;
     }
 
-    // --- CLOUD SYNC LOGIC (GAS) ---
-    async function fetchFullDataFromGas(callback) {
-      if (!isCloudMode || !gasUrl) {
-        renderAllViews();
-        if (callback) callback();
-        return;
-      }
-
-      try {
-        const res = await fetch(`${gasUrl}?action=getAllData`, {
-          method: "GET",
-          mode: "cors"
-        });
-        if (!res.ok) throw new Error("Network response was not ok");
-        const json = await res.json();
-        
-        if (json.status === "success" && json.data) {
-          dataP2026 = (json.data.p2026 || []).map(normalizeP2026);
-          dataPV2026 = (json.data.pV2026 || []).map(normalizePV2026);
-          dataPlan = (json.data.plan || []).map(normalizePlan);
-          dataCisa = (json.data.cisa || []).map(normalizeCisa);
-          renderAllViews();
-          showToast("เชื่อมต่อข้อมูลล่าสุดจาก Google Sheets สำเร็จ", "✅");
-        } else {
-          throw new Error(json.message || "Invalid JSON format");
-        }
-      } catch (err) {
-        console.warn("GAS fetch error:", err);
-        showToast("ไม่สามารถดึงข้อมูลสดได้ กำลังแสดงข้อมูลในระบบ", "⚠️");
-        renderAllViews();
-      } finally {
-        if (callback) callback();
-      }
-    }
-
-    async function sendDataActionToGas(action, payload) {
-      if (!isCloudMode || !gasUrl) return true;
-      try {
-        await fetch(gasUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ action, ...payload })
-        });
-        return true;
-      } catch (e) {
-        console.error("Cloud action error:", e);
-        return false;
-      }
-    }
-
-    // --- DATA NORMALIZERS ---
-    function normalizeP2026(item) {
-      return {
-        id: String(item.id || item["รหัสหลักสูตร"] || "").trim(),
-        faculty: String(item.faculty || item["คณะ"] || "").trim(),
-        level: String(item.level || item["ระดับ"] || "ปริญญาตรี").trim(),
-        name: String(item.name || item["หลักสูตร"] || "").trim(),
-        major: String(item.major || item["สาขาวิชา"] || "").trim(),
-        year: String(item.year || item["ปี"] || "2569").trim(),
-        iqa: String(item.iqa || item["IQA"] || "สป.อว.").trim(),
-        standard: String(item.standard || item["เกณฑ์มาตรฐาน"] || "พ.ศ. 2565").trim(),
-        isced: String(item.isced || item["ISCED"] || "ยังไม่ระบุ").trim(),
-        note: String(item.note || item["หมายเหตุ"] || "").trim()
-      };
-    }
-
-    function normalizePV2026(item) {
-      return {
-        id: String(item.id || item["รหัสหลักสูตร"] || "").trim(),
-        faculty: String(item.faculty || item["คณะ"] || "").trim(),
-        category: String(item.category || item["ประเภทวิชา"] || "").trim(),
-        career: String(item.career || item["กลุ่มอาชีพ"] || "").trim(),
-        major: String(item.major || item["สาขาวิชา"] || "").trim(),
-        year: String(item.year || item["ปี"] || "2569").trim(),
-        level: "ปวช.",
-        note: String(item.note || item["หมายเหตุ"] || "").trim()
-      };
-    }
-
-    function normalizePlan(item) {
-      return {
-        id: String(item.id || `${item.faculty || item["คณะ"]}_${item.major || item["สาขาวิชา"]}_${Date.now()}`),
-        faculty: String(item.faculty || item["คณะ"] || "").trim(),
-        level: String(item.level || item["ระดับ"] || "ปริญญาตรี").trim(),
-        name: String(item.name || item["หลักสูตร"] || "").trim(),
-        major: String(item.major || item["สาขาวิชา"] || "").trim(),
-        year: String(item.year || item["ปี"] || "2569").trim(),
-        
-        step1_status: String(item.step1_status || item["1.วิพากษ์_สถานะ"] || "แผนที่ตั้งไว้").trim(),
-        step1_date: String(item.step1_date || item["1.วิพากษ์_กำหนด"] || "").trim(),
-        
-        step2_status: String(item.step2_status || item["2.ขับเคลื่อน_สถานะ"] || "แผนที่ตั้งไว้").trim(),
-        step2_date: String(item.step2_date || item["2.ขับเคลื่อน_กำหนด"] || "").trim(),
-        
-        step3_status: String(item.step3_status || item["3.สภาวิชาการ_สถานะ"] || "แผนที่ตั้งไว้").trim(),
-        step3_date: String(item.step3_date || item["3.สภาวิชาการ_กำหนด"] || "").trim(),
-        
-        step4_status: String(item.step4_status || item["4.สภามหาวิทยาลัย_สถานะ"] || "แผนที่ตั้งไว้").trim(),
-        step4_date: String(item.step4_date || item["4.สภามหาวิทยาลัย_กำหนด"] || "").trim(),
-        
-        note: String(item.note || item["หมายเหตุ"] || "").trim()
-      };
-    }
-
-    function normalizeCisa(item) {
-      return {
-        id: String(item.id || `${item.faculty || item["คณะ"]}_${item.major || item["สาขาวิชา"]}_${Date.now()}`),
-        faculty: String(item.faculty || item["คณะ"] || "").trim(),
-        level: String(item.level || item["ระดับ"] || "ปริญญาตรี").trim(),
-        name: String(item.name || item["หลักสูตร"] || "").trim(),
-        major: String(item.major || item["สาขาวิชา"] || "").trim(),
-        year: String(item.year || item["ปี"] || "2569").trim(),
-        status: String(item.status || item["CISA status"] || "ส่งเข้า CISA แล้ว").trim(),
-        note: String(item.note || item["หมายเหตุ"] || "").trim()
-      };
-    }
-
-    // --- TAB 1: DASHBOARD RENDERING ---
+    // DASHBOARD SUMMARY RENDER
     function renderDashboard() {
-      let bCount = 0, mCount = 0, dCount = 0, gCount = 0;
-      dataP2026.forEach(item => {
-        if (item.level === "ปริญญาตรี") bCount++;
-        else if (item.level === "ปริญญาโท") mCount++;
-        else if (item.level === "ปริญญาเอก") dCount++;
-        else if (item.level === "ประกาศนียบัตรบัณฑิต") gCount++;
+      let bCount = 0, mCount = 0, dCount = 0, gcCount = 0, vCount = dataPV2026.length;
+
+      dataP2026.forEach(d => {
+        const lvl = (d["ระดับ"] || "").trim();
+        if (lvl.includes("ตรี")) bCount++;
+        else if (lvl.includes("โท")) mCount++;
+        else if (lvl.includes("เอก")) dCount++;
+        else if (lvl.includes("ประกาศนียบัตร") || lvl.includes("ป.บัณฑิต")) gcCount++;
       });
-      const vCount = dataPV2026.length;
-      const totalAll = bCount + mCount + dCount + gCount + vCount;
 
-      document.getElementById("dash-total-all").textContent = totalAll;
-      document.getElementById("dash-total-bachelor").textContent = bCount;
-      document.getElementById("dash-total-master").textContent = mCount;
-      document.getElementById("dash-total-doctor").textContent = dCount;
-      document.getElementById("dash-total-gradcert").textContent = gCount;
-      document.getElementById("dash-total-voc").textContent = vCount;
+      const totalAll = dataP2026.length + vCount;
 
-      // Faculty Summary Table (11 faculties)
-      const tbody = document.getElementById("dash-tbody-fac-level");
-      let facHtml = "";
+      document.getElementById('dash-total-all').innerText = totalAll;
+      document.getElementById('dash-total-bachelor').innerText = bCount;
+      document.getElementById('dash-total-master').innerText = mCount;
+      document.getElementById('dash-total-doctor').innerText = dCount;
+      document.getElementById('dash-total-gradcert').innerText = gcCount;
+      document.getElementById('dash-total-voc').innerText = vCount;
 
-      let sumB = 0, sumM = 0, sumD = 0, sumG = 0, sumV = 0, grandSum = 0;
+      // 2. Faculty Breakdown Table by Level
+      const tbodyFac = document.getElementById('dash-tbody-fac-level');
+      tbodyFac.innerHTML = '';
 
-      FACULTIES.forEach((fac, idx) => {
-        let fb = 0, fm = 0, fd = 0, fg = 0, fv = 0;
+      facultiesList.forEach((facName, idx) => {
+        const fullFac = formatFacName(facName);
+        let fb = 0, fm = 0, fd = 0, fgc = 0, fv = 0;
 
         dataP2026.forEach(item => {
-          if (item.faculty === fac) {
-            if (item.level === "ปริญญาตรี") fb++;
-            else if (item.level === "ปริญญาโท") fm++;
-            else if (item.level === "ปริญญาเอก") fd++;
-            else if (item.level === "ประกาศนียบัตรบัณฑิต") fg++;
+          if (isFacMatch(item["คณะ"], facName)) {
+            const lvl = (item["ระดับ"] || "").trim();
+            if (lvl.includes("ตรี")) fb++;
+            else if (lvl.includes("โท")) fm++;
+            else if (lvl.includes("เอก")) fd++;
+            else if (lvl.includes("ประกาศนียบัตร") || lvl.includes("ป.บัณฑิต")) fgc++;
           }
         });
 
         dataPV2026.forEach(item => {
-          if (item.faculty === fac) {
+          if (isFacMatch(item["คณะ"], facName)) {
             fv++;
           }
         });
 
-        const rowTotal = fb + fm + fd + fg + fv;
-        sumB += fb; sumM += fm; sumD += fd; sumG += fg; sumV += fv;
-        grandSum += rowTotal;
+        const fTotal = fb + fm + fd + fgc + fv;
 
-        facHtml += `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2 px-3 text-center text-slate-400 font-mono">${idx + 1}</td>
-            <td class="py-2 px-4 font-medium text-slate-800">${escapeHtml(fac)}</td>
-            <td class="py-2 px-3 text-center font-mono ${fb > 0 ? 'text-blue-600 font-semibold' : 'text-slate-300'}">${fb}</td>
-            <td class="py-2 px-3 text-center font-mono ${fm > 0 ? 'text-indigo-600 font-semibold' : 'text-slate-300'}">${fm}</td>
-            <td class="py-2 px-3 text-center font-mono ${fd > 0 ? 'text-purple-600 font-semibold' : 'text-slate-300'}">${fd}</td>
-            <td class="py-2 px-3 text-center font-mono ${fg > 0 ? 'text-fuchsia-600 font-semibold' : 'text-slate-300'}">${fg}</td>
-            <td class="py-2 px-3 text-center font-mono ${fv > 0 ? 'text-emerald-600 font-semibold' : 'text-slate-300'}">${fv}</td>
-            <td class="py-2 px-4 text-center font-mono font-bold bg-slate-50 text-slate-900">${rowTotal}</td>
-          </tr>
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 border-b border-slate-100 text-xs";
+        tr.innerHTML = `
+          <td class="py-2 px-3 font-mono text-slate-400 text-center">${idx + 1}</td>
+          <td class="py-2 px-4 font-semibold text-slate-800">${fullFac}</td>
+          <td class="py-2 px-3 text-center text-slate-600 font-medium">${fb || '-'}</td>
+          <td class="py-2 px-3 text-center text-slate-600 font-medium">${fm || '-'}</td>
+          <td class="py-2 px-3 text-center text-slate-600 font-medium">${fd || '-'}</td>
+          <td class="py-2 px-3 text-center text-slate-600 font-medium">${fgc || '-'}</td>
+          <td class="py-2 px-3 text-center text-slate-600 font-medium">${fv || '-'}</td>
+          <td class="py-2 px-4 text-center font-bold text-slate-900 bg-slate-50/60">${fTotal || 0}</td>
         `;
+        tbodyFac.appendChild(tr);
       });
 
-      // Total Row
-      facHtml += `
-        <tr class="bg-slate-100 font-bold border-t-2 border-slate-300 text-slate-900">
-          <td colspan="2" class="py-2.5 px-4 text-right">รวมทั้งหมด</td>
-          <td class="py-2.5 px-3 text-center font-mono text-blue-700">${sumB}</td>
-          <td class="py-2.5 px-3 text-center font-mono text-indigo-700">${sumM}</td>
-          <td class="py-2.5 px-3 text-center font-mono text-purple-700">${sumD}</td>
-          <td class="py-2.5 px-3 text-center font-mono text-fuchsia-700">${sumG}</td>
-          <td class="py-2.5 px-3 text-center font-mono text-emerald-700">${sumV}</td>
-          <td class="py-2.5 px-4 text-center font-mono text-slate-950 bg-slate-200/80">${grandSum}</td>
-        </tr>
-      `;
-      tbody.innerHTML = facHtml;
+      // 3, 4, 5. คิดเฉพาะหลักสูตรระดับอุดมศึกษา (ไม่รวม ปวช.)
+      const higherEdTotal = dataP2026.length;
 
       // 3. IQA Breakdown (เฉพาะอุดมศึกษา)
       const iqaMap = {};
-      dataP2026.forEach(it => {
-        const k = it.iqa || "สป.อว.";
-        iqaMap[k] = (iqaMap[k] || 0) + 1;
+      dataP2026.forEach(d => {
+        const val = (d["IQA"] || "ไม่ระบุ").trim();
+        iqaMap[val] = (iqaMap[val] || 0) + 1;
       });
-      renderBreakdownCard("dash-breakdown-iqa", iqaMap, dataP2026.length, "text-blue-700 bg-blue-50 border-blue-200");
+      renderBreakdownCard('dash-breakdown-iqa', iqaMap, higherEdTotal);
 
-      // 4. Standard Breakdown (เฉพาะอุดมศึกษา)
+      // 4. เกณฑ์มาตรฐาน Breakdown (เฉพาะอุดมศึกษา)
       const stdMap = {};
-      dataP2026.forEach(it => {
-        const k = it.standard || "พ.ศ. 2565";
-        stdMap[k] = (stdMap[k] || 0) + 1;
+      dataP2026.forEach(d => {
+        const val = (d["เกณฑ์"] || "ไม่ระบุ").trim();
+        stdMap[val] = (stdMap[val] || 0) + 1;
       });
-      renderBreakdownCard("dash-breakdown-std", stdMap, dataP2026.length, "text-indigo-700 bg-indigo-50 border-indigo-200");
+      renderBreakdownCard('dash-breakdown-std', stdMap, higherEdTotal);
 
       // 5. ISCED Breakdown (เฉพาะอุดมศึกษา)
       const iscedMap = {};
-      dataP2026.forEach(it => {
-        const k = it.isced || "ยังไม่ระบุ";
-        iscedMap[k] = (iscedMap[k] || 0) + 1;
+      dataP2026.forEach(d => {
+        let val = (d["ISCED"] || "ยังไม่ระบุ").trim();
+        if (!val || val === "-" || val === "ไม่ระบุ") val = "ยังไม่ระบุ";
+        iscedMap[val] = (iscedMap[val] || 0) + 1;
       });
-      renderBreakdownCard("dash-breakdown-isced", iscedMap, dataP2026.length, "text-purple-700 bg-purple-50 border-purple-200");
+      renderBreakdownCard('dash-breakdown-isced', iscedMap, higherEdTotal);
     }
 
-    function renderBreakdownCard(containerId, countMap, totalHigherEd, badgeClass) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      let html = "";
-      const keys = Object.keys(countMap);
+    function renderBreakdownCard(elementId, dataMap, total) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+
+      const keys = Object.keys(dataMap);
       if (keys.length === 0) {
-        container.innerHTML = `<p class="text-slate-400 text-center py-2 text-xs">ไม่มีข้อมูล</p>`;
+        container.innerHTML = `<p class="text-slate-400 text-center py-2">ไม่มีข้อมูล</p>`;
         return;
       }
-      keys.forEach(k => {
-        const c = countMap[k];
-        const pct = totalHigherEd > 0 ? Math.round((c / totalHigherEd) * 100) : 0;
-        html += `
-          <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 hover:bg-slate-100 transition border border-slate-100">
-            <span class="font-medium text-slate-700 truncate">${escapeHtml(k)}</span>
-            <div class="flex items-center gap-1.5 font-mono text-xs">
-              <span class="px-2 py-0.5 rounded font-bold ${badgeClass}">${c}</span>
-              <span class="text-[10px] text-slate-400">(${pct}%)</span>
-            </div>
-          </div>
+
+      keys.forEach(key => {
+        const count = dataMap[key];
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        const div = document.createElement('div');
+        div.className = "flex justify-between items-center py-1.5 border-b border-slate-50 last:border-0";
+        div.innerHTML = `
+          <span class="text-slate-700 font-medium text-xs">${key}</span>
+          <span class="text-slate-800 font-bold text-xs">${count} <span class="text-slate-400 font-normal text-[11px]">(${pct}%)</span></span>
         `;
+        container.appendChild(div);
       });
-      container.innerHTML = html;
     }
 
-    // --- TAB 2: PROGRAM 2026 (อุดมศึกษา) ---
+    // CRUD Filters & Clean Table Rendering (Sorted by Faculty Order)
     function filterP2026() {
-      const q = (document.getElementById("search-p2026").value || "").toLowerCase().trim();
-      const fFac = document.getElementById("filter-p2026-fac").value;
-      const fLevel = document.getElementById("filter-p2026-level").value;
+      const search = (document.getElementById('search-p2026')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-p2026-fac')?.value || '';
+      const level = document.getElementById('filter-p2026-level')?.value || '';
+      const iqa = document.getElementById('filter-p2026-iqa')?.value || '';
+      const isced = document.getElementById('filter-p2026-isced')?.value || '';
 
-      const filtered = dataP2026.filter(item => {
-        const matchQ = !q || (
-          item.id.toLowerCase().includes(q) ||
-          item.name.toLowerCase().includes(q) ||
-          item.major.toLowerCase().includes(q) ||
-          item.faculty.toLowerCase().includes(q) ||
-          item.year.toLowerCase().includes(q)
-        );
-        const matchFac = !fFac || item.faculty === fFac;
-        const matchLevel = !fLevel || item.level === fLevel;
-        return matchQ && matchFac && matchLevel;
+      const filtered = dataP2026.filter(d => {
+        const text = `${d["รหัสหลักสูตร"]} ${d["คณะ"]} ${d["หลักสูตร"]} ${d["สาขาวิชา"]} ${d["ปี"]}`.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || isFacMatch(d["คณะ"], fac);
+        const matchLevel = !level || d["ระดับ"] === level;
+        const matchIqa = !iqa || d["IQA"] === iqa;
+        const rawIsced = (d["ISCED"] || "").trim();
+        const itemIsced = (!rawIsced || rawIsced === "-" || rawIsced === "ไม่ระบุ") ? "ยังไม่ระบุ" : rawIsced;
+        const matchIsced = !isced || itemIsced === isced;
+        return matchSearch && matchFac && matchLevel && matchIqa && matchIsced;
       });
 
-      document.getElementById("p2026-count-label").textContent = `แสดง ${filtered.length} จาก ${dataP2026.length} รายการ`;
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
 
-      const tbody = document.getElementById("tbody-p2026");
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400">ไม่พบข้อมูลหลักสูตรอุดมศึกษา</td></tr>`;
+      renderP2026(filtered);
+    }
+
+    function renderP2026(data) {
+      const tbody = document.getElementById('tbody-p2026');
+      if (!tbody) return;
+      document.getElementById('p2026-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตรอุดมศึกษา</td></tr>`;
         return;
       }
 
-      let html = "";
-      filtered.forEach(item => {
-        html += `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2.5 px-2.5 sm:px-3 text-center font-mono font-bold text-slate-900">${escapeHtml(item.id)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-800">${escapeHtml(item.faculty)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-100">${escapeHtml(item.level)}</span></td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${escapeHtml(item.name)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-900">${escapeHtml(item.major)}</td>
-            <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${escapeHtml(item.year)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[11px] font-mono">${escapeHtml(item.iqa)}</span></td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap text-[11px] text-slate-600">${escapeHtml(item.standard)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3 text-center text-[11px] text-slate-600">${escapeHtml(item.isced)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage ${isAdmin ? '' : 'hidden'}">
-              <div class="flex justify-center items-center gap-1">
-                <button type="button" onclick="openModalP2026('edit', '${escapeHtml(item.id)}')" title="แก้ไข" class="p-1 text-indigo-600 hover:bg-indigo-50 rounded">✏️</button>
-                <button type="button" onclick="askDelete('p2026', '${escapeHtml(item.id)}', '${escapeHtml(item.major)}')" title="ลบ" class="p-1 text-rose-600 hover:bg-rose-50 rounded">🗑️</button>
-              </div>
-            </td>
-          </tr>
+      data.forEach(item => {
+        const globalIdx = dataP2026.indexOf(item);
+        const displayName = encodeURIComponent(item["สาขาวิชา"] || item["หลักสูตร"]);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100 text-xs";
+        
+        let manageButtons = '-';
+        if (isAdminUnlocked) {
+          manageButtons = `
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalP2026('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Program2026', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+            </div>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">${item["รหัสหลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-600">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["IQA"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["เกณฑ์"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["ISCED"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
         `;
+        tbody.appendChild(tr);
       });
-      tbody.innerHTML = html;
-      updateManageColumnsVisibility();
     }
 
-    // Modal P2026 Open/Close & Submit
-    let p2026EditMode = "create";
-    let p2026EditingId = null;
+    function filterPV2026() {
+      const search = (document.getElementById('search-pV2026')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-pV2026-fac')?.value || '';
+      const cat = document.getElementById('filter-pV2026-cat')?.value || '';
 
-    function openModalP2026(mode, id = null) {
-      p2026EditMode = mode;
-      p2026EditingId = id;
-      const title = document.getElementById("p2026-form-title");
-      const idInput = document.getElementById("p2026-id");
+      const filtered = dataPV2026.filter(d => {
+        const text = `${d["รหัสหลักสูตร"] || ""} ${d["คณะ"]} ${d["ประเภทวิชา"]} ${d["กลุ่มอาชีพ"]} ${d["สาขาวิชา"]}`.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || isFacMatch(d["คณะ"], fac);
+        const matchCat = !cat || d["ประเภทวิชา"] === cat;
+        return matchSearch && matchFac && matchCat;
+      });
 
-      if (mode === "edit") {
-        title.textContent = "แก้ไขหลักสูตรอุดมศึกษา";
-        idInput.readOnly = true;
-        idInput.classList.add("bg-slate-100");
-        const it = dataP2026.find(x => x.id === id);
-        if (it) {
-          document.getElementById("p2026-id").value = it.id;
-          document.getElementById("p2026-fac").value = it.faculty;
-          document.getElementById("p2026-level").value = it.level;
-          document.getElementById("p2026-year").value = it.year;
-          document.getElementById("p2026-name").value = it.name;
-          document.getElementById("p2026-major").value = it.major;
-          document.getElementById("p2026-iqa").value = it.iqa;
-          document.getElementById("p2026-std").value = it.standard;
-          document.getElementById("p2026-isced").value = it.isced || "ยังไม่ระบุ";
-          document.getElementById("p2026-note").value = it.note;
-        }
-      } else {
-        title.textContent = "เพิ่มหลักสูตรอุดมศึกษา";
-        idInput.readOnly = false;
-        idInput.classList.remove("bg-slate-100");
-        document.getElementById("form-p2026").reset();
-        document.getElementById("p2026-year").value = "หลักสูตรปรับปรุง พ.ศ. 2569";
-        document.getElementById("p2026-isced").value = "ยังไม่ระบุ";
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
+
+      renderPV2026(filtered);
+    }
+
+    function renderPV2026(data) {
+      const tbody = document.getElementById('tbody-pV2026');
+      if (!tbody) return;
+      document.getElementById('pV2026-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลหลักสูตร ปวช.</td></tr>`;
+        return;
       }
 
-      document.getElementById("modal-p2026").classList.remove("hidden");
+      data.forEach(item => {
+        const globalIdx = dataPV2026.indexOf(item);
+        const displayName = encodeURIComponent(item["สาขาวิชา"] || item["รหัสหลักสูตร"] || "หลักสูตร ปวช.");
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100 text-xs";
+        
+        let manageButtons = '-';
+        if (isAdminUnlocked) {
+          manageButtons = `
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalPV2026('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('ProgramV2026', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+            </div>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">${item["รหัสหลักสูตร"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["ประเภทวิชา"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-600">${item["กลุ่มอาชีพ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-700 whitespace-nowrap">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"] || "ปวช."}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    function closeModalP2026() {
-      document.getElementById("modal-p2026").classList.add("hidden");
+    function filterPlan() {
+      const search = (document.getElementById('search-plan')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-plan-fac')?.value || '';
+      const level = document.getElementById('filter-plan-level')?.value || '';
+
+      const filtered = dataPlan.filter(d => {
+        if (!d) return false;
+        const facName = d["คณะ"] || "";
+        const progName = d["หลักสูตร"] || "";
+        const majName = d["สาขาวิชา"] || "";
+        const itemLevel = d["ระดับ"] || "";
+
+        const text = `${facName} ${progName} ${majName}`.toLowerCase();
+        
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || isFacMatch(facName, fac);
+        const matchLevel = !level || level === "ทุกระดับการศึกษา" || itemLevel.includes(level) || level.includes(itemLevel);
+
+        return matchSearch && matchFac && matchLevel;
+      });
+
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
+
+      renderPlan(filtered);
     }
+
+    function renderPlan(data) {
+      const tbody = document.getElementById('tbody-plan');
+      if (!tbody) return;
+      document.getElementById('plan-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center py-6 text-slate-400">ยังไม่มีรายการแผนการพัฒนาหลักสูตร</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const globalIdx = dataPlan.indexOf(item);
+        const displayName = encodeURIComponent(`${item["หลักสูตร"]} (${item["สาขาวิชา"]})`);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100 text-xs";
+        
+        let manageButtons = '-';
+        if (isAdminUnlocked) {
+          manageButtons = `
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalPlan('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('Plan', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+            </div>
+          `;
+        }
+
+        const valStep1 = item["วิพากษ์"] || "-";
+        const valStep2 = item["ขับเคลื่อน"] || item["ขับเคลื่อนฯ"] || "-";
+        const valStep3 = item["สภาวิชาการ"] || "-";
+        const valStep4 = item["สภามหาวิทยาลัย"] || "-";
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep1}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep2}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep3}</td>
+          <td class="py-2.5 px-2.5 sm:px-3 text-slate-700">${valStep4}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-500">${item["หมายเหตุ"] || "-"}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // CISA TAB FUNCTIONS
+    function filterCisa() {
+      const search = (document.getElementById('search-cisa')?.value || '').toLowerCase().trim();
+      const fac = document.getElementById('filter-cisa-fac')?.value || '';
+      const level = document.getElementById('filter-cisa-level')?.value || '';
+      const status = document.getElementById('filter-cisa-status')?.value || '';
+
+      const filtered = dataCisa.filter(d => {
+        if (!d) return false;
+        const facName = d["คณะ"] || "";
+        const progName = d["หลักสูตร"] || "";
+        const majName = d["สาขาวิชา"] || "";
+        const itemLevel = d["ระดับ"] || "";
+        const itemStatus = (d["CISA status"] || d["สถานะ"] || "").trim();
+
+        const text = `${facName} ${progName} ${majName} ${itemStatus} ${d["ปี"] || ""}`.toLowerCase();
+        
+        const matchSearch = !search || text.includes(search);
+        const matchFac = !fac || isFacMatch(facName, fac);
+        const matchLevel = !level || level === "ทุกระดับการศึกษา" || itemLevel.includes(level) || level.includes(itemLevel);
+        const matchStatus = !status || itemStatus === status;
+
+        return matchSearch && matchFac && matchLevel && matchStatus;
+      });
+
+      // Sort by Faculty Order
+      filtered.sort((a, b) => getFacultyOrder(a["คณะ"]) - getFacultyOrder(b["คณะ"]));
+
+      renderCisa(filtered);
+    }
+
+    function renderCisa(data) {
+      const tbody = document.getElementById('tbody-cisa');
+      if (!tbody) return;
+      document.getElementById('cisa-count-label').innerText = `แสดง ${data.length} รายการ`;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">ยังไม่มีรายการข้อมูล CISA</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const globalIdx = dataCisa.indexOf(item);
+        const displayName = encodeURIComponent(`${item["หลักสูตร"]} (${item["สาขาวิชา"]})`);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50/80 transition border-b border-slate-100 text-xs";
+        
+        let manageButtons = '-';
+        if (isAdminUnlocked) {
+          manageButtons = `
+            <div class="flex justify-center gap-1">
+              <button type="button" onclick="openModalCisa('edit', ${globalIdx})" title="แก้ไข" class="p-1 hover:bg-slate-200/70 text-slate-700 rounded">✏️</button>
+              <button type="button" onclick="openModalDel('CISA', ${globalIdx}, '${displayName}')" title="ลบ" class="p-1 hover:bg-rose-100 text-rose-600 rounded">🗑️</button>
+            </div>
+          `;
+        }
+
+        const rawStatus = (item["CISA status"] || item["สถานะ"] || "").trim();
+        let statusBadge = `<span class="bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-full font-medium text-[11px] whitespace-nowrap">${rawStatus || "ไม่ระบุ"}</span>`;
+        if (rawStatus === "ผ่านแล้ว") {
+          statusBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full font-semibold text-[11px] whitespace-nowrap flex items-center justify-center gap-1"><span>✅</span> ผ่านแล้ว</span>`;
+        } else if (rawStatus === "ส่งเข้า CISA แล้ว") {
+          statusBadge = `<span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full font-semibold text-[11px] whitespace-nowrap flex items-center justify-center gap-1"><span>🚀</span> ส่งเข้า CISA แล้ว</span>`;
+        } else if (rawStatus === "CISA ส่งกลับมาแก้ไข") {
+          statusBadge = `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-1 rounded-full font-semibold text-[11px] whitespace-nowrap flex items-center justify-center gap-1"><span>⚠️</span> CISA ส่งกลับมาแก้ไข</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${item["คณะ"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-800 whitespace-nowrap">${item["ระดับ"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 font-semibold text-slate-900">${item["หลักสูตร"]}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${item["สาขาวิชา"]}</td>
+          <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap">${item["ปี"] || "-"}</td>
+          <td class="py-2.5 px-2.5 sm:px-3.5 text-center">${statusBadge}</td>
+          <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage">${manageButtons}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Modal Program2026 (Clear all text fields on create)
+    function openModalP2026(mode, globalIdx = -1) {
+      editContext = { sheet: 'Program2026', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('p2026-form-title').innerText = mode === 'edit' ? `แก้ไขหลักสูตร` : "เพิ่มหลักสูตรอุดมศึกษา";
+      
+      const idInp = document.getElementById('p2026-id');
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataP2026.length) {
+        idInp.readOnly = true;
+        const item = dataP2026[globalIdx];
+        idInp.value = item["รหัสหลักสูตร"] || "";
+        document.getElementById('p2026-fac').value = item["คณะ"] || "";
+        document.getElementById('p2026-level').value = item["ระดับ"] || "ปริญญาตรี";
+        document.getElementById('p2026-name').value = item["หลักสูตร"] || "";
+        document.getElementById('p2026-major').value = item["สาขาวิชา"] || "";
+        document.getElementById('p2026-year').value = item["ปี"] || "";
+        document.getElementById('p2026-iqa').value = item["IQA"] || "สป.อว.";
+        document.getElementById('p2026-std').value = item["เกณฑ์"] || "พ.ศ. 2565";
+        const iscedVal = (item["ISCED"] || "ยังไม่ระบุ").trim();
+        document.getElementById('p2026-isced').value = (!iscedVal || iscedVal === "-" || iscedVal === "ไม่ระบุ") ? "ยังไม่ระบุ" : iscedVal;
+        document.getElementById('p2026-note').value = item["หมายเหตุ"] || "";
+      } else {
+        idInp.readOnly = false;
+        idInp.value = "";
+        document.getElementById('p2026-fac').selectedIndex = 0;
+        document.getElementById('p2026-level').selectedIndex = 0;
+        document.getElementById('p2026-name').value = "";
+        document.getElementById('p2026-major').value = "";
+        document.getElementById('p2026-year').value = "";
+        document.getElementById('p2026-iqa').selectedIndex = 0;
+        document.getElementById('p2026-std').selectedIndex = 0;
+        document.getElementById('p2026-isced').value = "ยังไม่ระบุ";
+        document.getElementById('p2026-note').value = "";
+      }
+      document.getElementById('modal-p2026').classList.remove('hidden');
+    }
+
+    function closeModalP2026() { document.getElementById('modal-p2026').classList.add('hidden'); }
 
     async function submitFormP2026(e) {
       e.preventDefault();
-      const item = {
-        id: document.getElementById("p2026-id").value.trim(),
-        faculty: document.getElementById("p2026-fac").value.trim(),
-        level: document.getElementById("p2026-level").value.trim(),
-        year: document.getElementById("p2026-year").value.trim(),
-        name: document.getElementById("p2026-name").value.trim(),
-        major: document.getElementById("p2026-major").value.trim(),
-        iqa: document.getElementById("p2026-iqa").value.trim(),
-        standard: document.getElementById("p2026-std").value.trim(),
-        isced: document.getElementById("p2026-isced").value.trim(),
-        note: document.getElementById("p2026-note").value.trim()
-      };
+      try {
+        const item = {
+          "รหัสหลักสูตร": document.getElementById('p2026-id').value.trim(),
+          "คณะ": document.getElementById('p2026-fac').value,
+          "ระดับ": document.getElementById('p2026-level').value,
+          "หลักสูตร": document.getElementById('p2026-name').value.trim(),
+          "สาขาวิชา": document.getElementById('p2026-major').value.trim(),
+          "ปี": document.getElementById('p2026-year').value.trim(),
+          "IQA": document.getElementById('p2026-iqa').value,
+          "เกณฑ์": document.getElementById('p2026-std').value,
+          "ISCED": document.getElementById('p2026-isced').value,
+          "หมายเหตุ": document.getElementById('p2026-note').value.trim()
+        };
 
-      if (p2026EditMode === "create") {
-        if (dataP2026.some(x => x.id === item.id)) {
-          showToast("รหัสหลักสูตรนี้มีอยู่ในระบบแล้ว", "⚠️");
-          return;
+        if (editContext.index >= 0 && editContext.index < dataP2026.length) {
+          dataP2026[editContext.index] = item;
+          await postApi('Program2026', 'update', item);
+          showToast("✅ แก้ไขหลักสูตรเรียบร้อยแล้ว", "success");
+        } else {
+          dataP2026.unshift(item);
+          await postApi('Program2026', 'create', item);
+          showToast("✅ บันทึกหลักสูตรใหม่เรียบร้อยแล้ว", "success");
         }
-        dataP2026.push(item);
-        sendDataActionToGas("addP2026", { item });
-        showToast("เพิ่มหลักสูตรเรียบร้อย", "✅");
+
+        closeModalP2026();
+        renderAll();
+      } catch (err) {
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
+      }
+    }
+
+    // Modal ProgramV2026 (Clear all text fields on create)
+    function openModalPV2026(mode, globalIdx = -1) {
+      editContext = { sheet: 'ProgramV2026', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('pV2026-form-title').innerText = mode === 'edit' ? `แก้ไขหลักสูตร ปวช.` : "เพิ่มหลักสูตร ปวช.";
+
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataPV2026.length) {
+        const item = dataPV2026[globalIdx];
+        document.getElementById('pV2026-id').value = item["รหัสหลักสูตร"] || "";
+        document.getElementById('pV2026-fac').value = item["คณะ"] || "";
+        document.getElementById('pV2026-cat').value = item["ประเภทวิชา"] || "";
+        document.getElementById('pV2026-career').value = item["กลุ่มอาชีพ"] || "";
+        document.getElementById('pV2026-major').value = item["สาขาวิชา"] || "";
+        document.getElementById('pV2026-year').value = item["ปี"] || "";
+        document.getElementById('pV2026-note').value = item["หมายเหตุ"] || "";
       } else {
-        const idx = dataP2026.findIndex(x => x.id === p2026EditingId);
-        if (idx !== -1) {
-          dataP2026[idx] = item;
-          sendDataActionToGas("updateP2026", { item });
-          showToast("แก้ไขข้อมูลหลักสูตรเรียบร้อย", "✅");
-        }
+        document.getElementById('pV2026-id').value = "";
+        document.getElementById('pV2026-fac').selectedIndex = 0;
+        document.getElementById('pV2026-cat').value = "";
+        document.getElementById('pV2026-career').value = "";
+        document.getElementById('pV2026-major').value = "";
+        document.getElementById('pV2026-year').value = "";
+        document.getElementById('pV2026-note').value = "";
       }
-
-      closeModalP2026();
-      renderAllViews();
+      document.getElementById('modal-pV2026').classList.remove('hidden');
     }
 
-    // --- TAB 3: PROGRAM V2026 (ปวช.) ---
-    function filterPV2026() {
-      const q = (document.getElementById("search-pV2026").value || "").toLowerCase().trim();
-      const fFac = document.getElementById("filter-pV2026-fac").value;
-
-      const filtered = dataPV2026.filter(item => {
-        const matchQ = !q || (
-          item.id.toLowerCase().includes(q) ||
-          item.category.toLowerCase().includes(q) ||
-          item.career.toLowerCase().includes(q) ||
-          item.major.toLowerCase().includes(q) ||
-          item.faculty.toLowerCase().includes(q)
-        );
-        const matchFac = !fFac || item.faculty === fFac;
-        return matchQ && matchFac;
-      });
-
-      document.getElementById("pV2026-count-label").textContent = `แสดง ${filtered.length} จาก ${dataPV2026.length} รายการ`;
-
-      const tbody = document.getElementById("tbody-pV2026");
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">ไม่พบข้อมูลหลักสูตร ปวช.</td></tr>`;
-        return;
-      }
-
-      let html = "";
-      filtered.forEach((item, index) => {
-        const displayCode = item.id || "-";
-        html += `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2.5 px-2.5 sm:px-3 text-center font-mono font-bold text-slate-900">${escapeHtml(displayCode)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-800">${escapeHtml(item.faculty)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${escapeHtml(item.category)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-700">${escapeHtml(item.career)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-900">${escapeHtml(item.major)}</td>
-            <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap font-mono">${escapeHtml(item.year)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">ปวช.</span></td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage ${isAdmin ? '' : 'hidden'}">
-              <div class="flex justify-center items-center gap-1">
-                <button type="button" onclick="openModalPV2026('edit', ${index})" title="แก้ไข" class="p-1 text-indigo-600 hover:bg-indigo-50 rounded">✏️</button>
-                <button type="button" onclick="askDelete('pV2026', ${index}, '${escapeHtml(item.major)}')" title="ลบ" class="p-1 text-rose-600 hover:bg-rose-50 rounded">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-      updateManageColumnsVisibility();
-    }
-
-    let pV2026EditMode = "create";
-    let pV2026EditingIndex = null;
-
-    function openModalPV2026(mode, index = null) {
-      pV2026EditMode = mode;
-      pV2026EditingIndex = index;
-      const title = document.getElementById("pV2026-form-title");
-
-      if (mode === "edit") {
-        title.textContent = "แก้ไขหลักสูตร ปวช.";
-        const it = dataPV2026[index];
-        if (it) {
-          document.getElementById("pV2026-id").value = it.id || "";
-          document.getElementById("pV2026-fac").value = it.faculty;
-          document.getElementById("pV2026-cat").value = it.category;
-          document.getElementById("pV2026-career").value = it.career;
-          document.getElementById("pV2026-major").value = it.major;
-          document.getElementById("pV2026-year").value = it.year;
-          document.getElementById("pV2026-note").value = it.note;
-        }
-      } else {
-        title.textContent = "เพิ่มหลักสูตร ปวช.";
-        document.getElementById("form-pV2026").reset();
-        document.getElementById("pV2026-year").value = "2569";
-      }
-
-      document.getElementById("modal-pV2026").classList.remove("hidden");
-    }
-
-    function closeModalPV2026() {
-      document.getElementById("modal-pV2026").classList.add("hidden");
-    }
+    function closeModalPV2026() { document.getElementById('modal-pV2026').classList.add('hidden'); }
 
     async function submitFormPV2026(e) {
       e.preventDefault();
-      const item = {
-        id: document.getElementById("pV2026-id").value.trim(),
-        faculty: document.getElementById("pV2026-fac").value.trim(),
-        category: document.getElementById("pV2026-cat").value.trim(),
-        career: document.getElementById("pV2026-career").value.trim(),
-        major: document.getElementById("pV2026-major").value.trim(),
-        year: document.getElementById("pV2026-year").value.trim(),
-        level: "ปวช.",
-        note: document.getElementById("pV2026-note").value.trim()
-      };
+      try {
+        const item = {
+          "รหัสหลักสูตร": document.getElementById('pV2026-id').value.trim(),
+          "คณะ": document.getElementById('pV2026-fac').value,
+          "ประเภทวิชา": document.getElementById('pV2026-cat').value.trim(),
+          "กลุ่มอาชีพ": document.getElementById('pV2026-career').value.trim(),
+          "สาขาวิชา": document.getElementById('pV2026-major').value.trim(),
+          "ปี": document.getElementById('pV2026-year').value.trim(),
+          "ระดับ": "ปวช.",
+          "หมายเหตุ": document.getElementById('pV2026-note').value.trim()
+        };
 
-      if (pV2026EditMode === "create") {
-        dataPV2026.push(item);
-        sendDataActionToGas("addPV2026", { item });
-        showToast("เพิ่มหลักสูตร ปวช. เรียบร้อย", "✅");
-      } else {
-        dataPV2026[pV2026EditingIndex] = item;
-        sendDataActionToGas("updatePV2026", { item, index: pV2026EditingIndex });
-        showToast("แก้ไขข้อมูลหลักสูตร ปวช. เรียบร้อย", "✅");
-      }
-
-      closeModalPV2026();
-      renderAllViews();
-    }
-
-    // --- TAB 4: PLAN (แผนการพัฒนาหลักสูตร) ---
-    function filterPlan() {
-      const q = (document.getElementById("search-plan").value || "").toLowerCase().trim();
-      const fFac = document.getElementById("filter-plan-fac").value;
-      const fLevel = document.getElementById("filter-plan-level").value;
-
-      const filtered = dataPlan.filter(item => {
-        const matchQ = !q || (
-          item.faculty.toLowerCase().includes(q) ||
-          item.name.toLowerCase().includes(q) ||
-          item.major.toLowerCase().includes(q)
-        );
-        const matchFac = !fFac || item.faculty === fFac;
-        const matchLevel = !fLevel || item.level === fLevel;
-        return matchQ && matchFac && matchLevel;
-      });
-
-      document.getElementById("plan-count-label").textContent = `แสดง ${filtered.length} จาก ${dataPlan.length} รายการ`;
-
-      const tbody = document.getElementById("tbody-plan");
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400">ไม่พบข้อมูลแผนการพัฒนาหลักสูตร</td></tr>`;
-        return;
-      }
-
-      let html = "";
-      filtered.forEach((item, index) => {
-        html += `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-800">${escapeHtml(item.faculty)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">${escapeHtml(item.level)}</span></td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${escapeHtml(item.name)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-900">${escapeHtml(item.major)}</td>
-            <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap font-mono">${escapeHtml(item.year)}</td>
-            <td class="py-2.5 px-2 text-center">${renderStepBadge(item.step1_status, item.step1_date)}</td>
-            <td class="py-2.5 px-2 text-center">${renderStepBadge(item.step2_status, item.step2_date)}</td>
-            <td class="py-2.5 px-2 text-center">${renderStepBadge(item.step3_status, item.step3_date)}</td>
-            <td class="py-2.5 px-2 text-center">${renderStepBadge(item.step4_status, item.step4_date)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage ${isAdmin ? '' : 'hidden'}">
-              <div class="flex justify-center items-center gap-1">
-                <button type="button" onclick="openModalPlan('edit', ${index})" title="แก้ไข" class="p-1 text-indigo-600 hover:bg-indigo-50 rounded">✏️</button>
-                <button type="button" onclick="askDelete('plan', ${index}, '${escapeHtml(item.major)}')" title="ลบ" class="p-1 text-rose-600 hover:bg-rose-50 rounded">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-      updateManageColumnsVisibility();
-    }
-
-    function renderStepBadge(status, date) {
-      status = status || "แผนที่ตั้งไว้";
-      let badgeClass = "bg-slate-100 text-slate-600 border-slate-200";
-      let icon = "📅";
-
-      if (status.includes("ผ่านแล้ว")) {
-        badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold";
-        icon = "✅";
-      } else if (status.includes("กำลังดำเนินการ")) {
-        badgeClass = "bg-amber-50 text-amber-700 border-amber-200 font-semibold";
-        icon = "⏳";
-      } else if (status.includes("เกินระยะเวลา")) {
-        badgeClass = "bg-rose-50 text-rose-700 border-rose-200 font-semibold";
-        icon = "⚠️";
-      }
-
-      return `
-        <div class="inline-flex flex-col items-center">
-          <span class="px-2 py-0.5 rounded text-[10px] border ${badgeClass} whitespace-nowrap">${icon} ${escapeHtml(status)}</span>
-          ${date ? `<span class="text-[10px] text-slate-500 mt-0.5 font-mono">${escapeHtml(date)}</span>` : ''}
-        </div>
-      `;
-    }
-
-    let planEditMode = "create";
-    let planEditingIndex = null;
-
-    function openModalPlan(mode, index = null) {
-      planEditMode = mode;
-      planEditingIndex = index;
-      const title = document.getElementById("plan-form-title");
-
-      if (mode === "edit") {
-        title.textContent = "แก้ไขแผนการพัฒนาหลักสูตร";
-        const it = dataPlan[index];
-        if (it) {
-          document.getElementById("plan-fac").value = it.faculty;
-          document.getElementById("plan-level").value = it.level;
-          document.getElementById("plan-name").value = it.name;
-          document.getElementById("plan-major").value = it.major;
-          document.getElementById("plan-year").value = it.year;
-          
-          document.getElementById("plan-step1-status").value = it.step1_status || "แผนที่ตั้งไว้";
-          document.getElementById("plan-step1-date").value = it.step1_date || "";
-          
-          document.getElementById("plan-step2-status").value = it.step2_status || "แผนที่ตั้งไว้";
-          document.getElementById("plan-step2-date").value = it.step2_date || "";
-          
-          document.getElementById("plan-step3-status").value = it.step3_status || "แผนที่ตั้งไว้";
-          document.getElementById("plan-step3-date").value = it.step3_date || "";
-          
-          document.getElementById("plan-step4-status").value = it.step4_status || "แผนที่ตั้งไว้";
-          document.getElementById("plan-step4-date").value = it.step4_date || "";
-          
-          document.getElementById("plan-note").value = it.note || "";
+        if (editContext.index >= 0 && editContext.index < dataPV2026.length) {
+          dataPV2026[editContext.index] = item;
+          await postApi('ProgramV2026', 'update', item);
+          showToast("✅ แก้ไขหลักสูตร ปวช. เรียบร้อยแล้ว", "success");
+        } else {
+          dataPV2026.unshift(item);
+          await postApi('ProgramV2026', 'create', item);
+          showToast("✅ บันทึกหลักสูตร ปวช. เรียบร้อยแล้ว", "success");
         }
-      } else {
-        title.textContent = "เพิ่มแผนการพัฒนาหลักสูตร";
-        document.getElementById("form-plan").reset();
-        document.getElementById("plan-year").value = "ปรับปรุง พ.ศ. 2569";
+
+        closeModalPV2026();
+        renderAll();
+      } catch (err) {
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
       }
-
-      document.getElementById("modal-plan").classList.remove("hidden");
     }
 
-    function closeModalPlan() {
-      document.getElementById("modal-plan").classList.add("hidden");
+    // Helper to parse Step Status & Date
+    function parseStepData(rawVal) {
+      if (!rawVal) return { status: 'แผนที่ตั้งไว้', date: '' };
+      const str = String(rawVal).trim();
+      if (str.includes("ผ่านแล้ว")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'ผ่านแล้ว', date: match ? match[1] : str.replace('ผ่านแล้ว', '').trim() };
+      }
+      if (str.includes("กำลังดำเนินการ") || str.includes("อยู่ระหว่างเสนอ")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'กำลังดำเนินการ', date: match ? match[1] : str.replace(/กำลังดำเนินการ|อยู่ระหว่างเสนอที่ประชุม|อยู่ระหว่างเสนอ/g, '').trim() };
+      }
+      if (str.includes("เกินระยะเวลา") || str.includes("ส่งกลับ") || str.includes("แก้ไข")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'เกินระยะเวลาตามแผน', date: match ? match[1] : str.replace(/เกินระยะเวลาตามแผน|เกินระยะเวลา|ส่งกลับแก้ไข/g, '').trim() };
+      }
+      if (str.includes("แผนที่ตั้งไว้") || str.includes("แผนงาน")) {
+        const match = str.match(/\((.*?)\)/);
+        return { status: 'แผนที่ตั้งไว้', date: match ? match[1] : str.replace(/แผนที่ตั้งไว้|แผนงาน/g, '').trim() };
+      }
+      return { status: 'แผนที่ตั้งไว้', date: str };
     }
+
+    function buildStepValue(status, dateStr) {
+      const date = (dateStr || '').trim();
+      if (!date) return '';
+      if (status === 'ผ่านแล้ว') return `ผ่านแล้ว (${date})`;
+      if (status === 'กำลังดำเนินการ') return `กำลังดำเนินการ (${date})`;
+      if (status === 'เกินระยะเวลาตามแผน') return `เกินระยะเวลาตามแผน (${date})`;
+      return date;
+    }
+
+    // Modal Plan (Clear all text fields on create)
+    function openModalPlan(mode, globalIdx = -1) {
+      editContext = { sheet: 'Plan', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('plan-form-title').innerText = mode === 'edit' ? `แก้ไขแผนการพัฒนาหลักสูตร` : "เพิ่มแผนการพัฒนาหลักสูตร";
+
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataPlan.length) {
+        const item = dataPlan[globalIdx];
+        document.getElementById('plan-fac').value = item["คณะ"] || formatFacName(facultiesList[0]);
+        document.getElementById('plan-name').value = item["หลักสูตร"] || "";
+        document.getElementById('plan-major').value = item["สาขาวิชา"] || "";
+        document.getElementById('plan-year').value = item["ปี"] || "";
+        document.getElementById('plan-level').value = item["ระดับ"] || "ปริญญาตรี";
+
+        const s1 = parseStepData(item["วิพากษ์"]);
+        document.getElementById('plan-step1-status').value = s1.status;
+        document.getElementById('plan-step1-date').value = s1.date;
+
+        const s2 = parseStepData(item["ขับเคลื่อน"] || item["ขับเคลื่อนฯ"]);
+        document.getElementById('plan-step2-status').value = s2.status;
+        document.getElementById('plan-step2-date').value = s2.date;
+
+        const s3 = parseStepData(item["สภาวิชาการ"]);
+        document.getElementById('plan-step3-status').value = s3.status;
+        document.getElementById('plan-step3-date').value = s3.date;
+
+        const s4 = parseStepData(item["สภามหาวิทยาลัย"]);
+        document.getElementById('plan-step4-status').value = s4.status;
+        document.getElementById('plan-step4-date').value = s4.date;
+
+        document.getElementById('plan-note').value = item["หมายเหตุ"] || "";
+      } else {
+        document.getElementById('plan-fac').selectedIndex = 0;
+        document.getElementById('plan-level').selectedIndex = 0;
+        document.getElementById('plan-name').value = "";
+        document.getElementById('plan-major').value = "";
+        document.getElementById('plan-year').value = "";
+
+        document.getElementById('plan-step1-status').selectedIndex = 0;
+        document.getElementById('plan-step1-date').value = "";
+
+        document.getElementById('plan-step2-status').selectedIndex = 0;
+        document.getElementById('plan-step2-date').value = "";
+
+        document.getElementById('plan-step3-status').selectedIndex = 0;
+        document.getElementById('plan-step3-date').value = "";
+
+        document.getElementById('plan-step4-status').selectedIndex = 0;
+        document.getElementById('plan-step4-date').value = "";
+
+        document.getElementById('plan-note').value = "";
+      }
+      document.getElementById('modal-plan').classList.remove('hidden');
+    }
+
+    function closeModalPlan() { document.getElementById('modal-plan').classList.add('hidden'); }
 
     async function submitFormPlan(e) {
       e.preventDefault();
-      const item = {
-        id: (planEditMode === "edit" && dataPlan[planEditingIndex]) ? dataPlan[planEditingIndex].id : `plan_${Date.now()}`,
-        faculty: document.getElementById("plan-fac").value.trim(),
-        level: document.getElementById("plan-level").value.trim(),
-        name: document.getElementById("plan-name").value.trim(),
-        major: document.getElementById("plan-major").value.trim(),
-        year: document.getElementById("plan-year").value.trim(),
-        
-        step1_status: document.getElementById("plan-step1-status").value.trim(),
-        step1_date: document.getElementById("plan-step1-date").value.trim(),
-        
-        step2_status: document.getElementById("plan-step2-status").value.trim(),
-        step2_date: document.getElementById("plan-step2-date").value.trim(),
-        
-        step3_status: document.getElementById("plan-step3-status").value.trim(),
-        step3_date: document.getElementById("plan-step3-date").value.trim(),
-        
-        step4_status: document.getElementById("plan-step4-status").value.trim(),
-        step4_date: document.getElementById("plan-step4-date").value.trim(),
-        
-        note: document.getElementById("plan-note").value.trim()
-      };
+      try {
+        const val1 = buildStepValue(document.getElementById('plan-step1-status').value, document.getElementById('plan-step1-date').value);
+        const val2 = buildStepValue(document.getElementById('plan-step2-status').value, document.getElementById('plan-step2-date').value);
+        const val3 = buildStepValue(document.getElementById('plan-step3-status').value, document.getElementById('plan-step3-date').value);
+        const val4 = buildStepValue(document.getElementById('plan-step4-status').value, document.getElementById('plan-step4-date').value);
 
-      if (planEditMode === "create") {
-        dataPlan.push(item);
-        sendDataActionToGas("addPlan", { item });
-        showToast("เพิ่มแผนการพัฒนาหลักสูตรเรียบร้อย", "✅");
-      } else {
-        dataPlan[planEditingIndex] = item;
-        sendDataActionToGas("updatePlan", { item, index: planEditingIndex });
-        showToast("แก้ไขแผนการพัฒนาหลักสูตรเรียบร้อย", "✅");
-      }
+        const item = {
+          "คณะ": document.getElementById('plan-fac').value,
+          "หลักสูตร": document.getElementById('plan-name').value.trim(),
+          "สาขาวิชา": document.getElementById('plan-major').value.trim(),
+          "ปี": document.getElementById('plan-year').value.trim(),
+          "ระดับ": document.getElementById('plan-level').value,
+          "วิพากษ์": val1,
+          "ขับเคลื่อน": val2,
+          "ขับเคลื่อนฯ": val2,
+          "สภาวิชาการ": val3,
+          "สภามหาวิทยาลัย": val4,
+          "หมายเหตุ": document.getElementById('plan-note').value.trim()
+        };
 
-      closeModalPlan();
-      renderAllViews();
-    }
-
-    // --- TAB 5: CISA (ระบบ CISA) ---
-    function filterCisa() {
-      const q = (document.getElementById("search-cisa").value || "").toLowerCase().trim();
-      const fFac = document.getElementById("filter-cisa-fac").value;
-      const fLevel = document.getElementById("filter-cisa-level").value;
-      const fStatus = document.getElementById("filter-cisa-status").value;
-
-      const filtered = dataCisa.filter(item => {
-        const matchQ = !q || (
-          item.faculty.toLowerCase().includes(q) ||
-          item.name.toLowerCase().includes(q) ||
-          item.major.toLowerCase().includes(q) ||
-          item.status.toLowerCase().includes(q)
-        );
-        const matchFac = !fFac || item.faculty === fFac;
-        const matchLevel = !fLevel || item.level === fLevel;
-        const matchStatus = !fStatus || item.status === fStatus;
-        return matchQ && matchFac && matchLevel && matchStatus;
-      });
-
-      document.getElementById("cisa-count-label").textContent = `แสดง ${filtered.length} จาก ${dataCisa.length} รายการ`;
-
-      const tbody = document.getElementById("tbody-cisa");
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบข้อมูลระบบ CISA</td></tr>`;
-        return;
-      }
-
-      let html = "";
-      filtered.forEach((item, index) => {
-        let statusBadge = "bg-slate-100 text-slate-700 border-slate-200";
-        if (item.status === "ผ่านแล้ว") statusBadge = "bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold";
-        else if (item.status === "ส่งเข้า CISA แล้ว") statusBadge = "bg-blue-50 text-blue-700 border-blue-200 font-semibold";
-        else if (item.status === "CISA ส่งกลับมาแก้ไข") statusBadge = "bg-rose-50 text-rose-700 border-rose-200 font-semibold";
-
-        html += `
-          <tr class="hover:bg-slate-50 transition">
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-800">${escapeHtml(item.faculty)}</td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">${escapeHtml(item.level)}</span></td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-slate-800">${escapeHtml(item.name)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 font-medium text-slate-900">${escapeHtml(item.major)}</td>
-            <td class="py-2.5 px-2 text-center text-slate-600 whitespace-nowrap font-mono">${escapeHtml(item.year)}</td>
-            <td class="py-2.5 px-2.5 sm:px-3.5 text-center whitespace-nowrap"><span class="px-2.5 py-1 rounded-full text-xs border ${statusBadge}">${escapeHtml(item.status)}</span></td>
-            <td class="py-2.5 px-2 text-center whitespace-nowrap col-manage ${isAdmin ? '' : 'hidden'}">
-              <div class="flex justify-center items-center gap-1">
-                <button type="button" onclick="openModalCisa('edit', ${index})" title="แก้ไข" class="p-1 text-indigo-600 hover:bg-indigo-50 rounded">✏️</button>
-                <button type="button" onclick="askDelete('cisa', ${index}, '${escapeHtml(item.major)}')" title="ลบ" class="p-1 text-rose-600 hover:bg-rose-50 rounded">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-      updateManageColumnsVisibility();
-    }
-
-    let cisaEditMode = "create";
-    let cisaEditingIndex = null;
-
-    function openModalCisa(mode, index = null) {
-      cisaEditMode = mode;
-      cisaEditingIndex = index;
-      const title = document.getElementById("cisa-form-title");
-
-      if (mode === "edit") {
-        title.textContent = "แก้ไขข้อมูล CISA";
-        const it = dataCisa[index];
-        if (it) {
-          document.getElementById("cisa-fac").value = it.faculty;
-          document.getElementById("cisa-level").value = it.level;
-          document.getElementById("cisa-name").value = it.name;
-          document.getElementById("cisa-major").value = it.major;
-          document.getElementById("cisa-year").value = it.year;
-          document.getElementById("cisa-status").value = it.status;
+        if (editContext.index >= 0 && editContext.index < dataPlan.length) {
+          dataPlan[editContext.index] = item;
+          await postApi('Plan', 'update', item);
+          showToast("✅ แก้ไขแผนการพัฒนาหลักสูตรเรียบร้อยแล้ว", "success");
+        } else {
+          dataPlan.unshift(item);
+          await postApi('Plan', 'create', item);
+          showToast("✅ บันทึกแผนการพัฒนาหลักสูตรเรียบร้อยแล้ว", "success");
         }
-      } else {
-        title.textContent = "เพิ่มข้อมูล CISA";
-        document.getElementById("form-cisa").reset();
-        document.getElementById("cisa-year").value = "หลักสูตรปรับปรุง พ.ศ. 2569";
-        document.getElementById("cisa-status").value = "ส่งเข้า CISA แล้ว";
+
+        closeModalPlan();
+        renderAll();
+      } catch (err) {
+        console.error("Submit plan error:", err);
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
       }
-
-      document.getElementById("modal-cisa").classList.remove("hidden");
     }
 
-    function closeModalCisa() {
-      document.getElementById("modal-cisa").classList.add("hidden");
+    // Modal CISA (Clear all text fields on create)
+    function openModalCisa(mode, globalIdx = -1) {
+      editContext = { sheet: 'CISA', index: mode === 'edit' ? globalIdx : -1 };
+      document.getElementById('cisa-form-title').innerText = mode === 'edit' ? `แก้ไขข้อมูล CISA` : "เพิ่มข้อมูล CISA";
+
+      if (mode === 'edit' && globalIdx >= 0 && globalIdx < dataCisa.length) {
+        const item = dataCisa[globalIdx];
+        document.getElementById('cisa-fac').value = item["คณะ"] || formatFacName(facultiesList[0]);
+        document.getElementById('cisa-level').value = item["ระดับ"] || "ปริญญาตรี";
+        document.getElementById('cisa-name').value = item["หลักสูตร"] || "";
+        document.getElementById('cisa-major').value = item["สาขาวิชา"] || "";
+        document.getElementById('cisa-year').value = item["ปี"] || "";
+        document.getElementById('cisa-status').value = item["CISA status"] || item["สถานะ"] || "ส่งเข้า CISA แล้ว";
+      } else {
+        document.getElementById('cisa-fac').selectedIndex = 0;
+        document.getElementById('cisa-level').selectedIndex = 0;
+        document.getElementById('cisa-name').value = "";
+        document.getElementById('cisa-major').value = "";
+        document.getElementById('cisa-year').value = "";
+        document.getElementById('cisa-status').value = "ส่งเข้า CISA แล้ว";
+      }
+      document.getElementById('modal-cisa').classList.remove('hidden');
     }
+
+    function closeModalCisa() { document.getElementById('modal-cisa').classList.add('hidden'); }
 
     async function submitFormCisa(e) {
       e.preventDefault();
-      const item = {
-        id: (cisaEditMode === "edit" && dataCisa[cisaEditingIndex]) ? dataCisa[cisaEditingIndex].id : `cisa_${Date.now()}`,
-        faculty: document.getElementById("cisa-fac").value.trim(),
-        level: document.getElementById("cisa-level").value.trim(),
-        name: document.getElementById("cisa-name").value.trim(),
-        major: document.getElementById("cisa-major").value.trim(),
-        year: document.getElementById("cisa-year").value.trim(),
-        status: document.getElementById("cisa-status").value.trim(),
-        note: ""
-      };
+      try {
+        const item = {
+          "คณะ": document.getElementById('cisa-fac').value,
+          "ระดับ": document.getElementById('cisa-level').value,
+          "หลักสูตร": document.getElementById('cisa-name').value.trim(),
+          "สาขาวิชา": document.getElementById('cisa-major').value.trim(),
+          "ปี": document.getElementById('cisa-year').value.trim(),
+          "CISA status": document.getElementById('cisa-status').value
+        };
 
-      if (cisaEditMode === "create") {
-        dataCisa.push(item);
-        sendDataActionToGas("addCisa", { item });
-        showToast("เพิ่มข้อมูล CISA เรียบร้อย", "✅");
-      } else {
-        dataCisa[cisaEditingIndex] = item;
-        sendDataActionToGas("updateCisa", { item, index: cisaEditingIndex });
-        showToast("แก้ไขข้อมูล CISA เรียบร้อย", "✅");
+        if (editContext.index >= 0 && editContext.index < dataCisa.length) {
+          dataCisa[editContext.index] = item;
+          await postApi('CISA', 'update', item);
+          showToast("✅ แก้ไขข้อมูล CISA เรียบร้อยแล้ว", "success");
+        } else {
+          dataCisa.unshift(item);
+          await postApi('CISA', 'create', item);
+          showToast("✅ บันทึกข้อมูล CISA เรียบร้อยแล้ว", "success");
+        }
+
+        closeModalCisa();
+        renderAll();
+      } catch (err) {
+        console.error("Submit CISA error:", err);
+        showToast("❌ เกิดข้อผิดพลาดในการบันทึก: " + err.message, "error");
       }
-
-      closeModalCisa();
-      renderAllViews();
     }
 
-    // --- DELETE LOGIC ---
-    function askDelete(type, id, label) {
-      checkAuthAndRun(() => {
-        pendingDelete = { type, id };
-        document.getElementById("del-name").textContent = label;
-        document.getElementById("modal-del").classList.remove("hidden");
-      });
+    // Modal Delete Handlers
+    function openModalDel(sheet, globalIdx, encodedName) {
+      const displayName = decodeURIComponent(encodedName);
+      delContext = { sheet, index: globalIdx, displayName };
+      document.getElementById('del-name').innerText = displayName;
+      document.getElementById('modal-del').classList.remove('hidden');
     }
 
-    function closeModalDel() {
-      document.getElementById("modal-del").classList.add("hidden");
-      pendingDelete = { type: null, id: null };
-    }
+    function closeModalDel() { document.getElementById('modal-del').classList.add('hidden'); }
 
     async function confirmDel() {
-      const { type, id } = pendingDelete;
-      if (!type) return;
+      try {
+        const idx = delContext.index;
+        if (delContext.sheet === 'Program2026' && idx >= 0 && idx < dataP2026.length) {
+          const deleted = dataP2026.splice(idx, 1)[0];
+          await postApi('Program2026', 'delete', deleted);
+        } else if (delContext.sheet === 'ProgramV2026' && idx >= 0 && idx < dataPV2026.length) {
+          const deleted = dataPV2026.splice(idx, 1)[0];
+          await postApi('ProgramV2026', 'delete', deleted);
+        } else if (delContext.sheet === 'Plan' && idx >= 0 && idx < dataPlan.length) {
+          const deleted = dataPlan.splice(idx, 1)[0];
+          await postApi('Plan', 'delete', deleted);
+        } else if (delContext.sheet === 'CISA' && idx >= 0 && idx < dataCisa.length) {
+          const deleted = dataCisa.splice(idx, 1)[0];
+          await postApi('CISA', 'delete', deleted);
+        }
 
-      if (type === "p2026") {
-        dataP2026 = dataP2026.filter(x => x.id !== id);
-        sendDataActionToGas("deleteP2026", { id });
-      } else if (type === "pV2026") {
-        dataPV2026.splice(id, 1);
-        sendDataActionToGas("deletePV2026", { index: id });
-      } else if (type === "plan") {
-        dataPlan.splice(id, 1);
-        sendDataActionToGas("deletePlan", { index: id });
-      } else if (type === "cisa") {
-        dataCisa.splice(id, 1);
-        sendDataActionToGas("deleteCisa", { index: id });
+        closeModalDel();
+        saveLocalStorage();
+        renderAll();
+        showToast("🗑️ ลบข้อมูลเรียบร้อยแล้ว", "info");
+      } catch (err) {
+        console.error("Delete error:", err);
+        showToast("❌ เกิดข้อผิดพลาดในการลบ: " + err.message, "error");
       }
-
-      closeModalDel();
-      renderAllViews();
-      showToast("ลบข้อมูลเรียบร้อย", "🗑️");
     }
 
-    // --- TOAST HELPER ---
-    let toastTimer = null;
-    function showToast(msg, icon = "ℹ️") {
-      const t = document.getElementById("toast");
-      document.getElementById("toast-msg").textContent = msg;
-      document.getElementById("toast-icon").textContent = icon;
-      t.classList.remove("translate-y-20", "opacity-0");
-      
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        t.classList.add("translate-y-20", "opacity-0");
-      }, 3000);
-    }
-
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      document.getElementById('toast-icon').innerText = type === "success" ? "✅" : (type === "error" ? "❌" : "ℹ️");
+      toast.classList.remove('translate-x-full', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-x-full', 'opacity-0'), 3000);
     }
   </script>
 </body>

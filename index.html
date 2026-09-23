@@ -1,103 +1,461 @@
-function doGet(e) {
-  var sheetName = (e && e.parameter && e.parameter.sheet) ? e.parameter.sheet : "Program2026";
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(sheetName);
-
-  if (!sheet) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
-
-  var data = sheet.getDataRange().getValues();
-  if (data.length < 2) return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
-
-  var headers = data[0];
-  var result = [];
-
-  for (var i = 1; i < data.length; i++) {
-    var row = data[i];
-    var item = {};
-    var isEmpty = true;
-    for (var j = 0; j < headers.length; j++) {
-      item[headers[j]] = row[j] !== undefined ? row[j] : "";
-      if (row[j] !== "") isEmpty = false;
-    }
-    if (!isEmpty) result.push(item);
-  }
-
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  try {
-    var contents = "";
-    if (e && e.postData && e.postData.contents) {
-      contents = e.postData.contents;
-    } else if (e && e.parameter && e.parameter.data) {
-      contents = e.parameter.data;
-    }
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบบริหารจัดการหลักสูตร 2569 - มทร.พระนคร</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Sarabun', sans-serif; }
     
-    var postData = (typeof contents === "string") ? JSON.parse(contents) : contents;
-    var sheetName = postData.sheet || "Program2026";
-    var action = postData.action; // 'create', 'update', 'delete'
-    var payload = postData.data;
-
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(sheetName);
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
+    /* Custom Sleek Scrollbar */
+    ::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
     }
-
-    var data = sheet.getDataRange().getValues();
-    if (data.length === 0 || (data.length === 1 && data[0][0] === "")) {
-      if (sheetName === "Program2026") {
-        sheet.appendRow(["รหัสหลักสูตร", "คณะ", "ระดับ", "หลักสูตร", "สาขาวิชา", "ปี", "IQA", "เกณฑ์", "ISCED", "หมายเหตุ"]);
-      } else if (sheetName === "ProgramV2026") {
-        sheet.appendRow(["รหัสหลักสูตร", "คณะ", "ประเภทวิชา", "กลุ่มอาชีพ", "สาขาวิชา", "ปี", "ระดับ", "หมายเหตุ"]);
-      } else if (sheetName === "Plan") {
-        sheet.appendRow(["คณะ", "หลักสูตร", "สาขาวิชา", "ปี", "ระดับ", "วิพากษ์", "ขับเคลื่อนฯ", "สภาวิชาการ", "สภามหาวิทยาลัย", "หมายเหตุ"]);
-      } else if (sheetName === "CISA") {
-        sheet.appendRow(["คณะ", "ระดับ", "หลักสูตร", "สาขาวิชา", "ปี", "CISA status"]);
-      }
-      data = sheet.getDataRange().getValues();
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
     }
-
-    var headers = data[0];
-    var keyColIndex = (sheetName === "Program2026" || sheetName === "ProgramV2026") ? headers.indexOf("รหัสหลักสูตร") : headers.indexOf("สาขาวิชา");
-    if (keyColIndex === -1 && (sheetName === "ProgramV2026" || sheetName === "CISA")) keyColIndex = headers.indexOf("สาขาวิชา");
-    if (keyColIndex === -1) keyColIndex = 0;
-
-    if (action === "create") {
-      var newRow = headers.map(function(h) { return payload[h] !== undefined ? payload[h] : ""; });
-      sheet.appendRow(newRow);
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Created" })).setMimeType(ContentService.MimeType.JSON);
-
-    } else if (action === "update") {
-      var keyValue = payload[headers[keyColIndex]];
-      var updated = false;
-      for (var i = 1; i < data.length; i++) {
-        if (String(data[i][keyColIndex]).trim() === String(keyValue).trim()) {
-          var updatedRow = headers.map(function(h) { return payload[h] !== undefined ? payload[h] : ""; });
-          sheet.getRange(i + 1, 1, 1, headers.length).setValues([updatedRow]);
-          updated = true;
-          break;
-        }
-      }
-      if (!updated) {
-        var appendRow = headers.map(function(h) { return payload[h] !== undefined ? payload[h] : ""; });
-        sheet.appendRow(appendRow);
-      }
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Updated" })).setMimeType(ContentService.MimeType.JSON);
-
-    } else if (action === "delete") {
-      var delKeyValue = payload[headers[keyColIndex]];
-      for (var k = 1; k < data.length; k++) {
-        if (String(data[k][keyColIndex]).trim() === String(delKeyValue).trim()) {
-          sheet.deleteRow(k + 1);
-          return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Deleted" })).setMimeType(ContentService.MimeType.JSON);
-        }
-      }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-700 min-h-screen flex flex-col">
 
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: "Invalid action" })).setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
+    <div id="toast-content" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-xs font-semibold text-slate-800 bg-white border border-slate-200">
+      <span id="toast-icon">✨</span>
+      <span id="toast-message">แจ้งเตือน</span>
+    </div>
+  </div>
+
+  <!-- Top Header (Pastel Slate & Soft Navy Theme - Full Responsive Width) -->
+  <header class="bg-gradient-to-r from-slate-800 via-slate-700 to-indigo-900/90 text-white shadow-md sticky top-0 z-30 border-b border-indigo-200/20 w-full">
+    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3">
+          <!-- Logo RMUTP in Soft Pastel Purple -->
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 backdrop-blur border border-purple-300/30 text-[#d8b4fe] font-bold text-lg flex items-center justify-center shadow-inner flex-shrink-0">
+            RMUTP
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              ระบบจัดการข้อมูลหลักสูตร มทร.พระนคร (ปีการศึกษา 2569)
+            </h1>
+            <p class="text-xs text-slate-300 font-normal">มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+          </div>
+        </div>
+
+        <!-- Mobile-only Admin Controls -->
+        <div class="md:hidden flex items-center gap-1.5">
+          <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg text-xs">⚙️</button>
+        </div>
+      </div>
+
+      <!-- Right Controls: Admin Password Mode & API Settings -->
+      <div class="hidden md:flex items-center gap-2 text-xs flex-wrap justify-end">
+        
+        <!-- Admin Mode Toggle Button -->
+        <div id="admin-mode-container">
+          <!-- Rendered by JS: Locked / Unlocked Status -->
+        </div>
+
+        <!-- API Settings Button -->
+        <button type="button" onclick="toggleApiSettings()" class="bg-white/10 hover:bg-white/20 border border-white/15 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="api-status-text" class="text-[11px] font-medium">Google Sheets สด</span>
+          <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono">⚙️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (Full Responsive Width) -->
+    <div class="w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 border-t border-white/10 mt-1">
+      <nav class="flex space-x-4 sm:space-x-8 text-xs sm:text-sm font-medium pt-2 overflow-x-auto no-scrollbar">
+        <button type="button" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="pb-2 px-1 text-amber-200 border-b-2 border-amber-300 font-semibold flex items-center gap-1.5 whitespace-nowrap">
+          📊 สรุปภาพรวม
+        </button>
+        <button type="button" onclick="switchTab('p2026')" id="tab-btn-p2026" class="pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap">
+          🎓 หลักสูตรอุดมศึกษา
+        </button>
+        <button type="button" onclick="switchTab('pV2026')" id="tab-btn-pV2026" class="pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap">
+          🛠️ หลักสูตร ปวช.
+        </button>
+        <button type="button" onclick="switchTab('plan')" id="tab-btn-plan" class="pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap">
+          🗓️ แผนการพัฒนาหลักสูตร
+        </button>
+        <button type="button" onclick="switchTab('cisa')" id="tab-btn-cisa" class="pb-2 px-1 text-slate-300 hover:text-white flex items-center gap-1.5 font-normal whitespace-nowrap">
+          🌐 CISA
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Admin Mode Bar -->
+  <div class="md:hidden bg-slate-800 px-4 py-2 border-b border-slate-700 flex justify-between items-center text-xs">
+    <div id="admin-mode-container-mobile"></div>
+    <div class="flex items-center gap-1.5 text-slate-300">
+      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      <span class="text-[11px]">Google Sheets</span>
+    </div>
+  </div>
+
+  <!-- API Drawer -->
+  <div id="api-drawer" class="hidden bg-slate-900 text-white border-b border-slate-800 p-4 transition-all shadow-inner w-full">
+    <div class="w-full max-w-[1700px] mx-auto space-y-2.5 text-xs">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-amber-300 text-xs">⚙️ การเชื่อมต่อ Google Sheets (ไฟล์ curr_by_year_2026)</h3>
+        <button type="button" onclick="toggleApiSettings()" class="text-slate-400 hover:text-white text-base font-bold">&times;</button>
+      </div>
+      <p class="text-slate-300 text-[11px]">เชื่อมต่อสดอัตโนมัติผ่าน Google Apps Script Web App</p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-indigo-400 font-mono text-xs">
+        <button type="button" onclick="saveGasUrl()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3.5 py-1.5 rounded-lg transition text-xs">บันทึกเชื่อมต่อสด</button>
+        <button type="button" onclick="resetToLocalData()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg transition text-xs">โหมดในเครื่อง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container (Full Responsive Width up to 1700px) -->
+  <main class="w-full max-w-[1700px] mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 flex-1">
+
+    <!-- ==================== TAB 1: DASHBOARD SUMMARY (สรุปภาพรวม) ==================== -->
+    <section id="sec-dashboard" class="space-y-4">
+      
+      <!-- 1. Top Metric Cards in Pastel Palette -->
+      <div>
+        <h2 class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+          <span>📊</span> 1. สรุปจำนวนหลักสูตรตามระดับการศึกษา (ปีการศึกษา 2569)
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
+          
+          <div class="bg-[#f1f5f9] p-3 rounded-xl border border-slate-200 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-slate-500">รวมทุกระดับ</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-800 mt-0.5" id="dash-total-all">0</h3>
+            <p class="text-[10px] text-slate-400">หลักสูตร</p>
+          </div>
+
+          <div class="bg-[#eff6ff] p-3 rounded-xl border border-blue-100 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-blue-700">ปริญญาตรี</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-900 mt-0.5" id="dash-total-bachelor">0</h3>
+            <p class="text-[10px] text-blue-400">หลักสูตร</p>
+          </div>
+
+          <div class="bg-[#eef2ff] p-3 rounded-xl border border-indigo-100 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-indigo-700">ปริญญาโท</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-indigo-900 mt-0.5" id="dash-total-master">0</h3>
+            <p class="text-[10px] text-indigo-400">หลักสูตร</p>
+          </div>
+
+          <div class="bg-[#faf5ff] p-3 rounded-xl border border-purple-100 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-purple-700">ปริญญาเอก</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-purple-900 mt-0.5" id="dash-total-doctor">0</h3>
+            <p class="text-[10px] text-purple-400">หลักสูตร</p>
+          </div>
+
+          <div class="bg-[#fdf4ff] p-3 rounded-xl border border-fuchsia-100 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-fuchsia-700">ประกาศนียบัตรบัณฑิต</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-fuchsia-900 mt-0.5" id="dash-total-gradcert">0</h3>
+            <p class="text-[10px] text-fuchsia-400">หลักสูตร</p>
+          </div>
+
+          <div class="bg-[#f0fdf4] p-3 rounded-xl border border-emerald-100 text-center shadow-sm">
+            <p class="text-[11px] font-medium text-emerald-700">หลักสูตร ปวช.</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-emerald-900 mt-0.5" id="dash-total-voc">0</h3>
+            <p class="text-[10px] text-emerald-400">หลักสูตร</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 2. Faculty Summary Table (11 Faculties) -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-3 sm:p-4">
+        <h3 class="text-xs font-bold text-slate-800 mb-2.5 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <span>🏛️</span> 2. สรุปจำนวนหลักสูตรจำแนกตามคณะและระดับการศึกษา (11 คณะ/วิทยาลัย)
+          </span>
+          <span class="text-[11px] font-normal text-slate-400">เรียงตามลำดับโครงสร้างมหาวิทยาลัย</span>
+        </h3>
+        
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
+            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-2 px-3 w-10 text-center font-mono">ที่</th>
+                <th class="py-2 px-4 min-w-[200px]">คณะ / วิทยาลัย</th>
+                <th class="py-2 px-3 text-center w-20">ป.ตรี</th>
+                <th class="py-2 px-3 text-center w-20">ป.โท</th>
+                <th class="py-2 px-3 text-center w-20">ป.เอก</th>
+                <th class="py-2 px-3 text-center w-24">ป.บัณฑิต</th>
+                <th class="py-2 px-3 text-center w-20">ปวช.</th>
+                <th class="py-2 px-4 text-center w-24 bg-slate-100/60 font-bold text-slate-900">รวม (หลักสูตร)</th>
+              </tr>
+            </thead>
+            <tbody id="dash-tbody-fac-level" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3, 4, 5. Three Breakdown Cards (IQA, เกณฑ์มาตรฐาน, ISCED) - เฉพาะระดับอุดมศึกษา -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        
+        <!-- Card 3: IQA -->
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm">
+          <h4 class="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5 pb-2 border-b">
+            <span>🛡️</span> 3. จำแนกตามเกณฑ์ IQA <span class="text-[10px] text-slate-400 font-normal">(เฉพาะอุดมศึกษา)</span>
+          </h4>
+          <div id="dash-breakdown-iqa" class="space-y-1.5 text-xs">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Card 4: เกณฑ์มาตรฐาน -->
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm">
+          <h4 class="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5 pb-2 border-b">
+            <span>📜</span> 4. จำแนกตามเกณฑ์มาตรฐาน <span class="text-[10px] text-slate-400 font-normal">(เฉพาะอุดมศึกษา)</span>
+          </h4>
+          <div id="dash-breakdown-std" class="space-y-1.5 text-xs">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Card 5: ISCED -->
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-sm">
+          <h4 class="text-xs font-bold text-slate-800 mb-2 flex items-center gap-1.5 pb-2 border-b">
+            <span>🌐</span> 5. จำแนกตามกลุ่ม ISCED <span class="text-[10px] text-slate-400 font-normal">(เฉพาะอุดมศึกษา)</span>
+          </h4>
+          <div id="dash-breakdown-isced" class="space-y-1.5 text-xs">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 2: HIGHER ED (หลักสูตรอุดมศึกษา - Full Responsive) ==================== -->
+    <section id="sec-p2026" class="hidden space-y-3">
+      
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <input type="text" id="search-p2026" oninput="filterP2026()" placeholder="🔍 ค้นหารหัส, คณะ, หลักสูตร, สาขา..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          
+          <select id="filter-p2026-fac" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-p2026-level" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกระดับ</option>
+            <option value="ปริญญาตรี">ปริญญาตรี</option>
+            <option value="ปริญญาโท">ปริญญาโท</option>
+            <option value="ปริญญาเอก">ปริญญาเอก</option>
+            <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+          </select>
+
+          <select id="filter-p2026-iqa" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุก IQA</option>
+            <option value="สป.อว.">สป.อว.</option>
+            <option value="AUNQA">AUNQA</option>
+            <option value="ABET">ABET</option>
+          </select>
+
+          <select id="filter-p2026-isced" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกกลุ่ม ISCED</option>
+            <option value="ยังไม่ระบุ">ยังไม่ระบุ</option>
+            <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
+            <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          <span class="text-xs text-slate-500" id="p2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" id="btn-add-p2026" onclick="checkAuthAndRun(() => openModalP2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
+            <span>+</span> เพิ่มหลักสูตรอุดมศึกษา
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
+            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-2.5 sm:px-3.5 whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">ปี (ประเภท & พ.ศ.)</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">IQA</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">เกณฑ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">ISCED</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[100px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-p2026" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 3: VOCATIONAL (หลักสูตร ปวช. - Full Responsive) ==================== -->
+    <section id="sec-pV2026" class="hidden space-y-3">
+      
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <input type="text" id="search-pV2026" oninput="filterPV2026()" placeholder="🔍 ค้นหารหัส, คณะ, สาขาวิชา, อาชีพ..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          
+          <select id="filter-pV2026-fac" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-pV2026-cat" onchange="filterPV2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกประเภทวิชา</option>
+            <option value="ช่างอุตสาหกรรม">ช่างอุตสาหกรรม</option>
+            <option value="พาณิชยกรรม">พาณิชยกรรม</option>
+            <option value="ศิลปกรรม">ศิลปกรรม</option>
+            <option value="คหกรรมศาสตร์">คหกรรมศาสตร์</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          <span class="text-xs text-slate-500" id="pV2026-count-label">แสดง 0 รายการ</span>
+          <button type="button" id="btn-add-pV2026" onclick="checkAuthAndRun(() => openModalPV2026('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
+            <span>+</span> เพิ่มหลักสูตร ปวช.
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
+            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-2.5 sm:px-3.5 whitespace-nowrap w-[130px]">รหัสหลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[140px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">ประเภทวิชา</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">กลุ่มอาชีพ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ปี</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[80px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[120px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-pV2026" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 4: PLAN (แผนการพัฒนาหลักสูตร - Full Responsive) ==================== -->
+    <section id="sec-plan" class="hidden space-y-3">
+      
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <input type="text" id="search-plan" oninput="filterPlan()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา..." class="w-full sm:w-64 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          
+          <select id="filter-plan-fac" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-plan-level" onchange="filterPlan()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกระดับการศึกษา</option>
+            <option value="ปริญญาตรี">ปริญญาตรี</option>
+            <option value="ปริญญาโท">ปริญญาโท</option>
+            <option value="ปริญญาเอก">ปริญญาเอก</option>
+            <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+            <option value="ปวช.">ปวช.</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          <span class="text-xs text-slate-500" id="plan-count-label">แสดง 0 รายการ</span>
+          <button type="button" id="btn-add-plan" onclick="checkAuthAndRun(() => openModalPlan('create'))" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1 whitespace-nowrap">
+            <span>+</span> เพิ่มแผนการพัฒนาหลักสูตร
+          </button>
+        </div>
+      </div>
+
+      <!-- Full Responsive Table Container -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden w-full">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left text-xs text-slate-700 table-auto sm:table-fixed lg:table-auto">
+            <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[130px]">คณะ/วิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[150px]">หลักสูตร</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[160px]">สาขาวิชา</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[110px]">ปี พ.ศ.</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap w-[70px]">ระดับ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">1. วิพากษ์</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">2. ขับเคลื่อนฯ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">3. สภาวิชาการ</th>
+                <th class="py-2.5 px-2.5 sm:px-3 min-w-[130px]">4. สภามหาวิทยาลัย</th>
+                <th class="py-2.5 px-2.5 sm:px-3.5 min-w-[90px]">หมายเหตุ</th>
+                <th class="py-2.5 px-2 text-center whitespace-nowrap col-manage w-[70px]">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-plan" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== TAB 5: CISA (ระบบ CISA - Full Responsive) ==================== -->
+    <section id="sec-cisa" class="hidden space-y-3">
+      
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-2.5 justify-between items-center w-full">
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <input type="text" id="search-cisa" oninput="filterCisa()" placeholder="🔍 ค้นหาคณะ, หลักสูตร, สาขาวิชา, สถานะ..." class="w-full sm:w-60 border border-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 bg-slate-50/50">
+          
+          <select id="filter-cisa-fac" onchange="filterCisa()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกคณะ/วิทยาลัย</option>
+          </select>
+
+          <select id="filter-cisa-level" onchange="filterCisa()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกระดับการศึกษา</option>
+            <option value="ปริญญาตรี">ปริญญาตรี</option>
+            <option value="ปริญญาโท">ปริญญาโท</option>
+            <option value="ปริญญาเอก">ปริญญาเอก</option>
+            <option value="ประกาศนียบัตรบัณฑิต">ประกาศนียบัตรบัณฑิต</option>
+            <option value="ปวช.">ปวช.</option>
+          </select>
+
+          <select id="filter-cisa-status" onchange="filterCisa()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกสถานะ CISA</option>
+            <option value="ส่งเข้า CISA แล้ว">ส่งเข้า CISA แล้ว</option>
+            <option value="CISA ส่งกลับมาแก้ไข">CISA ส่งกลับมาแก้ไข</option>
+            <option value="ผ่านแล้ว">ผ่านแล้ว</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          <span class="text-xs text-slate-500" id="cisa-count-label">แสดง 0 รายการ</span>
+          <button type="button" id="btn-add

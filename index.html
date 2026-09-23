@@ -276,6 +276,13 @@
             <option value="AUNQA">AUNQA</option>
             <option value="ABET">ABET</option>
           </select>
+
+          <select id="filter-p2026-isced" onchange="filterP2026()" class="border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 bg-slate-50/50 focus:outline-none flex-1 sm:flex-initial">
+            <option value="">ทุกกลุ่ม ISCED</option>
+            <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
+            <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
+            <option value="ยังไม่ระบุ">ยังไม่ระบุ</option>
+          </select>
         </div>
 
         <div class="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
@@ -523,6 +530,7 @@
           <div>
             <label class="block font-semibold mb-1">ISCED *</label>
             <select id="p2026-isced" required class="w-full border border-slate-200 rounded-lg p-2 bg-white font-medium">
+              <option value="ยังไม่ระบุ">ยังไม่ระบุ</option>
               <option value="มนุษยศาสตร์และสังคมศาสตร์">มนุษยศาสตร์และสังคมศาสตร์</option>
               <option value="วิทยาศาสตร์เทคโนโลยี">วิทยาศาสตร์เทคโนโลยี</option>
             </select>
@@ -1096,7 +1104,8 @@
       // 5. ISCED Breakdown (เฉพาะอุดมศึกษา)
       const iscedMap = {};
       dataP2026.forEach(d => {
-        const val = (d["ISCED"] || "ไม่ระบุ").trim();
+        let val = (d["ISCED"] || "ยังไม่ระบุ").trim();
+        if (!val || val === "-" || val === "ไม่ระบุ") val = "ยังไม่ระบุ";
         iscedMap[val] = (iscedMap[val] || 0) + 1;
       });
       renderBreakdownCard('dash-breakdown-isced', iscedMap, higherEdTotal);
@@ -1131,6 +1140,7 @@
       const fac = document.getElementById('filter-p2026-fac')?.value || '';
       const level = document.getElementById('filter-p2026-level')?.value || '';
       const iqa = document.getElementById('filter-p2026-iqa')?.value || '';
+      const isced = document.getElementById('filter-p2026-isced')?.value || '';
 
       const filtered = dataP2026.filter(d => {
         const text = `${d["รหัสหลักสูตร"]} ${d["คณะ"]} ${d["หลักสูตร"]} ${d["สาขาวิชา"]} ${d["ปี"]}`.toLowerCase();
@@ -1138,7 +1148,10 @@
         const matchFac = !fac || isFacMatch(d["คณะ"], fac);
         const matchLevel = !level || d["ระดับ"] === level;
         const matchIqa = !iqa || d["IQA"] === iqa;
-        return matchSearch && matchFac && matchLevel && matchIqa;
+        const rawIsced = (d["ISCED"] || "").trim();
+        const itemIsced = (!rawIsced || rawIsced === "-" || rawIsced === "ไม่ระบุ") ? "ยังไม่ระบุ" : rawIsced;
+        const matchIsced = !isced || itemIsced === isced;
+        return matchSearch && matchFac && matchLevel && matchIqa && matchIsced;
       });
 
       // Sort by Faculty Order
@@ -1341,7 +1354,8 @@
         document.getElementById('p2026-year').value = item["ปี"] || "";
         document.getElementById('p2026-iqa').value = item["IQA"] || "สป.อว.";
         document.getElementById('p2026-std').value = item["เกณฑ์"] || "พ.ศ. 2565";
-        document.getElementById('p2026-isced').value = item["ISCED"] || "มนุษยศาสตร์และสังคมศาสตร์";
+        const iscedVal = (item["ISCED"] || "ยังไม่ระบุ").trim();
+        document.getElementById('p2026-isced').value = (!iscedVal || iscedVal === "-" || iscedVal === "ไม่ระบุ") ? "ยังไม่ระบุ" : iscedVal;
         document.getElementById('p2026-note').value = item["หมายเหตุ"] || "";
       } else {
         idInp.readOnly = false;
@@ -1353,7 +1367,7 @@
         document.getElementById('p2026-year').value = "";
         document.getElementById('p2026-iqa').selectedIndex = 0;
         document.getElementById('p2026-std').selectedIndex = 0;
-        document.getElementById('p2026-isced').selectedIndex = 0;
+        document.getElementById('p2026-isced').value = "ยังไม่ระบุ";
         document.getElementById('p2026-note').value = "";
       }
       document.getElementById('modal-p2026').classList.remove('hidden');
